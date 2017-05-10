@@ -83,6 +83,7 @@ public class RegisterFragment extends Fragment {
             String level=etLevel.getText().toString().trim();
 
             Toast.makeText(getActivity(), "Registered", Toast.LENGTH_LONG).show();
+
             if (mListener != null) {
                 mListener.onRegisterSuccessFul();
             }
