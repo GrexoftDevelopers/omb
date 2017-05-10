@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
         ViewPagerAdapter formsAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         formsAdapter.addItem(new LoginFragment());
+        formsAdapter.addItem(new RegisterFragment());
         vpLogin.setAdapter(formsAdapter);
 
     }
