@@ -1,0 +1,18 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.oneminutebefore.workout.ImageFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/img_slide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/hello_blank_fragment"
+        android:src="@drawable/slide_1"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        />
+
+</FrameLayout>
