@@ -52,7 +52,7 @@ public class RegisterFragment extends Fragment {
         etLevel.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.register || id == EditorInfo.IME_NULL) {
                     Toast.makeText(getActivity(), "Registered", Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -62,7 +62,9 @@ public class RegisterFragment extends Fragment {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptRegister();
+                if(mListener!=null){
+                    mListener.onSignInClicked();
+                }
             }
         });
         btnRegister.setOnClickListener(new View.OnClickListener() {

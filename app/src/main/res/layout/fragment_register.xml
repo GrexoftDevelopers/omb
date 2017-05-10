@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
-            app:cardElevation="4dp"
             app:cardUseCompatPadding="true"
             app:contentPadding="@dimen/margin_padding_10dp">
 
@@ -33,7 +32,7 @@
                         android:id="@+id/et_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text|textNoSuggestions"
+                        android:inputType="text|textNoSuggestions|textCapWords"
                         android:hint="@string/first_name_asterisk"
                         android:textColor="@color/text_hint_color"
                         android:textSize="@dimen/text_size_large" />
@@ -49,7 +48,7 @@
                         android:id="@+id/et_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text|textNoSuggestions"
+                        android:inputType="text|textNoSuggestions|textCapWords"
                         android:hint="@string/last_name_asterisk"
                         android:textColor="@color/text_hint_color"
                         android:textSize="@dimen/text_size_large" />
@@ -82,6 +81,7 @@
                         android:id="@+id/et_time_zone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textCapWords|text"
                         android:hint="@string/time_zone_asterisk"
                         android:textColor="@color/text_hint_color"
                         android:textSize="@dimen/text_size_large" />
@@ -109,6 +109,7 @@
                         android:imeActionId="@+id/register"
                         android:imeActionLabel="@string/register"
                         android:imeOptions="actionUnspecified"
+                        android:inputType="text|textCapWords"
                         android:textColor="@color/text_hint_color"
                         android:textSize="@dimen/text_size_large" />
 
@@ -141,7 +142,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
-            app:cardElevation="4dp"
             app:cardUseCompatPadding="true"
             app:contentPadding="@dimen/margin_padding_10dp">
 
