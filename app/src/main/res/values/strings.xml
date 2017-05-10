@@ -23,4 +23,6 @@
     <string name="time_zone_example">(EST,CST, MST or PST)</string>
     <string name="level_asterisk">Level*</string>
     <string name="level_example">(Light, Medium, Advanced or All Star)</string>
+    <string name="register">Register</string>
+    <string name="have_login">Already Registered ?</string>
 </resources>
