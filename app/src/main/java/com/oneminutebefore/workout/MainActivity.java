@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener{
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
 
     private ViewPager vpLogin;
 
@@ -52,6 +52,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onSignUpClicked() {
         vpLogin.setCurrentItem(1);
+    }
+
+    @Override
+    public void onRegisterSuccessFul() {
+
+    }
+
+    @Override
+    public void onSignInClicked() {
+
     }
 
 
