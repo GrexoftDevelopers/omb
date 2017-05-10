@@ -124,7 +124,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="@dimen/margin_padding_10dp"
-                    android:background="@color/colorPrimary"
                     android:text="@string/register"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_xl" />
@@ -159,7 +158,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_padding_10dp"
-                    android:background="@color/colorPrimary"
                     android:text="@string/action_sign_in_short"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_xl" />
