@@ -14,7 +14,7 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener{
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
 
     private ViewPager vpLogin;
 
@@ -91,6 +91,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onSignUpClicked() {
         vpLogin.setCurrentItem(1);
+    }
+
+    @Override
+    public void onRegisterSuccessFul() {
+        vpLogin.setCurrentItem(0);
+
+    }
+
+    @Override
+    public void onSignInClicked() {
+        vpLogin.setCurrentItem(0);
+
     }
 
 
