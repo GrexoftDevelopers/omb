@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -57,6 +58,7 @@ public class LoginFragment extends Fragment {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private View fragmentView;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -93,12 +95,12 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) fragmentView.findViewById(R.id.email);
 
-        mPasswordView = (EditText) view.findViewById(R.id.password);
+        mPasswordView = (EditText) fragmentView.findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -110,7 +112,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        Button mEmailSignInButton = (Button) view.findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) fragmentView.findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,10 +120,10 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        mLoginFormView = view.findViewById(R.id.login_form);
-        mProgressView = view.findViewById(R.id.login_progress);
+        mLoginFormView = fragmentView.findViewById(R.id.login_form);
+        mProgressView = fragmentView.findViewById(R.id.login_progress);
 
-        view.findViewById(R.id.email_sign_up_button).setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.email_sign_up_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mListener != null){
@@ -130,7 +132,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        return view;
+        return fragmentView;
     }
 
     /**
@@ -156,18 +158,18 @@ public class LoginFragment extends Fragment {
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }

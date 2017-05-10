@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.activity_main);
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.setShowFullscreenButton(true);
-                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                 youTubePlayer.cueVideo("WngOnjCVcqU");
             }
 
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onLoginSuccessFul() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_successful), Snackbar.LENGTH_SHORT).show();
+        startActivity(new Intent(this, HomeActivity.class));
     }
 
     @Override
@@ -95,14 +98,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onRegisterSuccessFul() {
-        vpLogin.setCurrentItem(0);
-
+        Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, HomeActivity.class));
     }
 
     @Override
     public void onSignInClicked() {
         vpLogin.setCurrentItem(0);
-
     }
 
 

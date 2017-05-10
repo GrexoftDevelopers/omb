@@ -20,17 +20,10 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"></FrameLayout>-->
 
-    <fragment
-        class="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:id="@+id/player_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_forms"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/player_layout"
         android:padding="8dp"
         android:clipToPadding="false">
 
