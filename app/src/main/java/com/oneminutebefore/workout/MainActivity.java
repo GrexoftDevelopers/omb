@@ -56,11 +56,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onRegisterSuccessFul() {
+        vpLogin.setCurrentItem(0);
 
     }
 
     @Override
     public void onSignInClicked() {
+        vpLogin.setCurrentItem(0);
 
     }
 
