@@ -8,19 +8,29 @@
     tools:context="com.oneminutebefore.workout.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp_slide_show"
-        android:layout_width="match_parent"
-        android:layout_height="192dp"
-        >
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/vp_slide_show"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="192dp"-->
+        <!--&gt;-->
 
-    </android.support.v4.view.ViewPager>
+    <!--</android.support.v4.view.ViewPager>-->
+    <!--<FrameLayout-->
+        <!--android:id="@+id/player_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"></FrameLayout>-->
+
+    <fragment
+        class="com.google.android.youtube.player.YouTubePlayerFragment"
+        android:id="@+id/player_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_forms"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/vp_slide_show"
+        android:layout_below="@+id/player_layout"
         android:padding="8dp">
 
         

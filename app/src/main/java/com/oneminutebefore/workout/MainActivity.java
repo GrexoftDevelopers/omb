@@ -8,6 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener{
@@ -30,12 +34,46 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 //            }
 //        });
 
-        ViewPager vpSlide = (ViewPager)findViewById(R.id.vp_slide_show);
-        ViewPagerAdapter sliderAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_1));
-        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_2));
-        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_3));
-        vpSlide.setAdapter(sliderAdapter);
+//        ViewPager vpSlide = (ViewPager)findViewById(R.id.vp_slide_show);
+//        ViewPagerAdapter sliderAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_1));
+//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_2));
+//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_3));
+//        vpSlide.setAdapter(sliderAdapter);
+
+//        YouTubePlayerView youTubePlayerView = (YouTubePlayerView)findViewById(R.id.youtube_player);
+//        youTubePlayerView.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
+//            @Override
+//            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+//                youTubePlayer.setShowFullscreenButton(true);
+//                youTubePlayer.cueVideo("https://youtu.be/WngOnjCVcqU");
+//            }
+//
+//            @Override
+//            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+//
+//            }
+//        });
+
+        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
+        youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayer.setShowFullscreenButton(true);
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                youTubePlayer.cueVideo("WngOnjCVcqU");
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        });
+
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.player_layout, YoutubePlayerFragment.newInstance("https://youtu.be/WngOnjCVcqU"))
+//                .commit();
 
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
         ViewPagerAdapter formsAdapter = new ViewPagerAdapter(getSupportFragmentManager());
