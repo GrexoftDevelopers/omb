@@ -203,8 +203,8 @@ public class RegisterFragment extends Fragment {
     }
     private void setErrorFalse(){
         ((TextInputLayout)fragmentView.findViewById(R.id.til_first_name)).setError(null);
-        ((TextInputLayout)fragmentView.findViewById(R.id.til_last_name)).setError(null);
-        ((TextInputLayout)fragmentView.findViewById(R.id.til_mobile_no)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(null);
     }
