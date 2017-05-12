@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -19,6 +18,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.VolleyHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -40,18 +46,6 @@ public class LoginFragment extends Fragment {
     private String mParam2;
 
     private LoginInteractionListener mListener;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -141,13 +135,10 @@ public class LoginFragment extends Fragment {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
@@ -156,8 +147,13 @@ public class LoginFragment extends Fragment {
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        // Check for a valid password.
+        if (TextUtils.isEmpty(password)) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+        if (!isPasswordValid(password)) {
             ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -182,8 +178,34 @@ public class LoginFragment extends Fragment {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            String url = new UrlBuilder(UrlBuilder.API_REGISTER)
+                    .addParameters("email", email)
+                    .addParameters("password", password)
+                    .build();
+
+            VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
+            volleyHelper.callApiGet(url, new VolleyHelper.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) throws JSONException {
+                    showProgress(false);
+                    JSONObject responseJson = new JSONObject(result);
+                    String userId = responseJson.optString("status","-1");
+                    if(!userId.equals("-1")){
+                        WorkoutApplication.getmInstance().setUserId(userId);
+                        SharedPrefsUtil.setStringPreference(getActivity(), SharedPrefsUtil.Keys.KEY_USER_ID, userId);
+                        if (mListener != null) {
+                            mListener.onLoginSuccessFul();
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    showProgress(false);
+                }
+            });
+
         }
     }
 
@@ -230,65 +252,6 @@ public class LoginFragment extends Fragment {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                if(mListener != null){
-                    mListener.onLoginSuccessFul();
-                }
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
         }
     }
 

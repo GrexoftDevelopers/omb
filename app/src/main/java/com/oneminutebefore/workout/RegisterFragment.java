@@ -2,7 +2,6 @@ package com.oneminutebefore.workout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -17,9 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.VolleyHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class RegisterFragment extends Fragment {
-    private EditText etFirstName, etLastName, etMobileNo, etTimeZone, etLevel;
+    private EditText etName, etEmail, etPassword, etTimeZone, etLevel;
     private Button btnRegister, btnSignIn;
     private RegisterInteractionListener mListener;
 
@@ -48,9 +54,9 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
-        etFirstName = (EditText) fragmentView.findViewById(R.id.et_first_name);
-        etLastName = (EditText) fragmentView.findViewById(R.id.et_last_name);
-        etMobileNo = (EditText) fragmentView.findViewById(R.id.et_mobile_no);
+        etName = (EditText) fragmentView.findViewById(R.id.et_first_name);
+        etEmail = (EditText) fragmentView.findViewById(R.id.et_email);
+        etPassword = (EditText) fragmentView.findViewById(R.id.et_password);
         etTimeZone = (EditText) fragmentView.findViewById(R.id.et_time_zone);
         etLevel = (EditText) fragmentView.findViewById(R.id.et_level);
         btnRegister = (Button) fragmentView.findViewById(R.id.btn_register);
@@ -86,25 +92,53 @@ public class RegisterFragment extends Fragment {
 
     private void attemptRegister() {
         if (isFeldNotEmpty()) {
-            String firstName=etFirstName.getText().toString().trim();
-            String lastName=etLastName.getText().toString().trim();
-            String mobileNo=etMobileNo.getText().toString().trim();
+            String firstName= etName.getText().toString().trim();
+            String lastName= etEmail.getText().toString().trim();
+            String mobileNo= etPassword.getText().toString().trim();
             String timeZone=etTimeZone.getText().toString().trim();
             String level=etLevel.getText().toString().trim();
 
             btnRegister.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
 
-            new Handler().postDelayed(new Runnable() {
+            String url = new UrlBuilder(UrlBuilder.API_REGISTER)
+                    .addParameters("name", firstName)
+                    .addParameters("email", lastName)
+                    .addParameters("password",mobileNo)
+                    .build();
+
+            VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
+            volleyHelper.callApiGet(url, new VolleyHelper.VolleyCallback() {
                 @Override
-                public void run() {
+                public void onSuccess(String result) throws JSONException {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
-                    if (mListener != null) {
-                        mListener.onRegisterSuccessFul();
+                    JSONObject responseJson = new JSONObject(result);
+                    String userId = responseJson.optString("status","-1");
+                    if(!userId.equals("-1")){
+                        WorkoutApplication.getmInstance().setUserId(userId);
+                        SharedPrefsUtil.setStringPreference(getActivity(), SharedPrefsUtil.Keys.KEY_USER_ID, userId);
+                        if (mListener != null) {
+                            mListener.onRegisterSuccessFul();
+                        }
                     }
                 }
-            }, 2000);
+
+                @Override
+                public void onError(String error) {
+                    progressBar.setVisibility(View.GONE);
+                    btnRegister.setEnabled(true);
+                }
+            });
+
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    progressBar.setVisibility(View.GONE);
+//                    btnRegister.setEnabled(true);
+//
+//                }
+//            }, 2000);
         }
     }
 
@@ -126,40 +160,44 @@ public class RegisterFragment extends Fragment {
     }
 
     public interface RegisterInteractionListener {
-        // TODO: Update argument type and name
         void onRegisterSuccessFul();
-
         void onSignInClicked();
     }
 
     private boolean isFeldNotEmpty() {
-        if (TextUtils.isEmpty(etFirstName.getText().toString())) {
+
+        // Reset errors
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_first_name)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(null);
+
+        if (TextUtils.isEmpty(etName.getText().toString())) {
             ((TextInputLayout)fragmentView.findViewById(R.id.til_first_name)).setError(getString(R.string.error_field_required));
-            etFirstName.requestFocus();
+            etName.requestFocus();
             return false;
         }
-        if (TextUtils.isEmpty(etLastName.getText().toString())) {
-            ((TextInputLayout)fragmentView.findViewById(R.id.til_last_name)).setError(getString(R.string.error_field_required));
-            etLastName.requestFocus();
-            return false;
-
-        }
-        if (TextUtils.isEmpty(etMobileNo.getText().toString())) {
-            ((TextInputLayout)fragmentView.findViewById(R.id.til_mobile_no)).setError(getString(R.string.error_field_required));
-            etMobileNo.requestFocus();
-            return false;
-        }
-        if (TextUtils.isEmpty(etTimeZone.getText().toString())) {
-            ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(getString(R.string.error_field_required));
-            etTimeZone.requestFocus();
+        if (TextUtils.isEmpty(etEmail.getText().toString())) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(getString(R.string.error_field_required));
+            etEmail.requestFocus();
             return false;
 
         }
-        if (TextUtils.isEmpty(etLevel.getText().toString())) {
-            ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(getString(R.string.error_field_required));
-            etLevel.requestFocus();
+        if (TextUtils.isEmpty(etPassword.getText().toString())) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(getString(R.string.error_field_required));
+            etPassword.requestFocus();
             return false;
         }
+//        if (TextUtils.isEmpty(etTimeZone.getText().toString())) {
+//            ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(getString(R.string.error_field_required));
+//            etTimeZone.requestFocus();
+//            return false;
+//
+//        }
+//        if (TextUtils.isEmpty(etLevel.getText().toString())) {
+//            ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(getString(R.string.error_field_required));
+//            etLevel.requestFocus();
+//            return false;
+//        }
         return true;
     }
 }
