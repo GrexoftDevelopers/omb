@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -16,7 +15,7 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
+public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
 
     private ViewPager vpLogin;
 
