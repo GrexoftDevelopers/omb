@@ -92,6 +92,7 @@ public class RegisterFragment extends Fragment {
             String timeZone=etTimeZone.getText().toString().trim();
             String level=etLevel.getText().toString().trim();
 
+            setErrorFalse();
             btnRegister.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
 
@@ -162,6 +163,14 @@ public class RegisterFragment extends Fragment {
         }
         return true;
     }
+    private void setErrorFalse(){
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_first_name)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_last_name)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_mobile_no)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(null);
+    }
+
 }
 
 

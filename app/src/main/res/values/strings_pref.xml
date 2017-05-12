@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_00_59">00_59</string>
+    <string name="key_01_59">01_59</string>
+    <string name="key_02_59">02_59</string>
+    <string name="key_03_59">03_59</string>
+    <string name="key_04_59">04_59</string>
+    <string name="key_05_59">05_59</string>
+    <string name="key_06_59">06_59</string>
+    <string name="key_07_59">07_59</string>
+    <string name="key_08_59">08_59</string>
+    <string name="key_09_59">09_59</string>
+    <string name="key_10_59">10_59</string>
+    <string name="key_11_59">11_59</string>
+    <string name="key_12_59">12_59</string>
+    <string name="key_13_59">13_59</string>
+    <string name="key_14_59">14_59</string>
+    <string name="key_15_59">15_59</string>
+    <string name="key_16_59">16_59</string>
+    <string name="key_17_59">17_59</string>
+    <string name="key_18_59">18_59</string>
+    <string name="key_19_59">19_59</string>
+    <string name="key_20_59">20_59</string>
+    <string name="key_21_59">21_59</string>
+    <string name="key_22_59">22_59</string>
+    <string name="key_23_59">23_59</string>
+
+
+
+    <!-- Example General settings -->
+    <string name="pref_header_workout">Workout Notification Setting</string>
+    <string name="pref_title_workout">Select suitable workout timing for alert</string>
+
+    <string name="pref_title_00_59">Enable 12:59 a.m notification</string>
+    <string name="pref_title_01_59">Enable 01:59 a.m notification</string>
+    <string name="pref_title_02_59">Enable 02:59 a.m notification</string>
+    <string name="pref_title_03_59">Enable 03:59 a.m notification</string>
+    <string name="pref_title_04_59">Enable 04:59 a.m notification</string>
+    <string name="pref_title_05_59">Enable 05:59 a.m notification</string>
+    <string name="pref_title_06_59">Enable 06:59 a.m notification</string>
+    <string name="pref_title_07_59">Enable 07:59 a.m notification</string>
+    <string name="pref_title_08_59">Enable 08:59 a.m notification</string>
+    <string name="pref_title_09_59">Enable 09:59 a.m notification</string>
+    <string name="pref_title_10_59">Enable 10:59 a.m notification</string>
+    <string name="pref_title_11_59">Enable 11:59 a.m notification</string>
+    <string name="pref_title_12_59">Enable 12:59 p.m notification</string>
+    <string name="pref_title_13_59">Enable 01:59 p.m notification</string>
+    <string name="pref_title_14_59">Enable 02:59 p.m notification</string>
+    <string name="pref_title_15_59">Enable 03:59 p.m notification</string>
+    <string name="pref_title_16_59">Enable 04:59 p.m notification</string>
+    <string name="pref_title_17_59">Enable 05:59 p.m notification</string>
+    <string name="pref_title_18_59">Enable 06:59 p.m notification</string>
+    <string name="pref_title_19_59">Enable 07:59 p.m notification</string>
+    <string name="pref_title_20_59">Enable 080:59 p.m notification</string>
+    <string name="pref_title_21_59">Enable 09:59 p.m notification</string>
+    <string name="pref_title_22_59">Enable 10:59 p.m notification</string>
+    <string name="pref_title_23_59">Enable 11:59 p.m notification</string>
+    <string name="pref_description_checkbox">Set checked to get notify for this time</string>
+
+
+
+</resources>

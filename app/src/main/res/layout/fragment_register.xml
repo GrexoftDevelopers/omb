@@ -34,7 +34,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="text|textNoSuggestions|textCapWords"
                         android:hint="@string/first_name_asterisk"
-                        android:textColor="@color/text_hint_color"
+                        android:textColorHint="@color/text_hint_color"
+                        android:textColor="@color/text_type_color"
                         android:textSize="@dimen/text_size_large" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -50,7 +51,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="text|textNoSuggestions|textCapWords"
                         android:hint="@string/last_name_asterisk"
-                        android:textColor="@color/text_hint_color"
+                        android:textColorHint="@color/text_hint_color"
+                        android:textColor="@color/text_type_color"
                         android:textSize="@dimen/text_size_large" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -67,7 +69,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="phone"
                         android:hint="@string/mobile_no_asterisk"
-                        android:textColor="@color/text_hint_color"
+                        android:textColorHint="@color/text_hint_color"
+                        android:textColor="@color/text_type_color"
                         android:textSize="@dimen/text_size_large" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -83,7 +86,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="textCapWords|text"
                         android:hint="@string/time_zone_asterisk"
-                        android:textColor="@color/text_hint_color"
+                        android:textColorHint="@color/text_hint_color"
+                        android:textColor="@color/text_type_color"
                         android:textSize="@dimen/text_size_large" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -110,7 +114,8 @@
                         android:imeActionLabel="@string/register"
                         android:imeOptions="actionUnspecified"
                         android:inputType="text|textCapWords"
-                        android:textColor="@color/text_hint_color"
+                        android:textColorHint="@color/text_hint_color"
+                        android:textColor="@color/text_type_color"
                         android:textSize="@dimen/text_size_large" />
 
                 </android.support.design.widget.TextInputLayout>
