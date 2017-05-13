@@ -48,4 +48,8 @@
     <string name="action_sign">Sign up</string>
     <string name="sign_up">sign up</string>
     <string name="one_minute_workout">One minute workout</string>
+    <string name="title_activity_video_player">VideoPlayerActivity</string>
+    <string name="height_256dp">256dp</string>
+    <string name="one_minute_before_video">Watch your one minute before video</string>
+    <string name="no_video_available_something_went_wrong">No video available, Something went wrong, Try later</string>
 </resources>

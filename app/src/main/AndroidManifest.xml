@@ -45,6 +45,10 @@
             android:name=".services.WorkoutNotificationService"
             android:enabled="true"
             android:exported="true" />
+        <activity
+            android:name=".VideoPlayerActivity"
+            android:label="@string/title_activity_video_player"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
