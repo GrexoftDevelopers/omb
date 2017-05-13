@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -21,6 +23,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_player);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar mActionBar=getSupportActionBar();
+        if(mActionBar!=null){
+            mActionBar.setTitle("OMB");
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
         Intent mIntent=getIntent();
         final String url=mIntent.getStringExtra("URL");
 
@@ -58,4 +65,14 @@ public class VideoPlayerActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+           onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
