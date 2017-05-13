@@ -38,10 +38,14 @@
     <!-- Strings related to Settings -->
 
 
-=======
+    =======
     <string name="please_wait">Please wait...</string>
     <string name="some_error_occured">Sone error occured.</string>
     <string name="name_asterisk">Name*</string>
     <string name="email_asterisk">Email*</string>
     <string name="password_asterisk">Password*</string>
+    <string name="login">Login</string>
+    <string name="action_sign">Sign up</string>
+    <string name="sign_up">sign up</string>
+    <string name="one_minute_workout">One minute workout</string>
 </resources>

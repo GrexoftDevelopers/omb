@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
 
 import java.util.ArrayList;
 
@@ -81,6 +82,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         formsAdapter.addItem(new LoginFragment());
         formsAdapter.addItem(new RegisterFragment());
         vpLogin.setAdapter(formsAdapter);
+        ((SwipeDisabledViewPager)vpLogin).setPagingEnabled(false);
 
     }
 

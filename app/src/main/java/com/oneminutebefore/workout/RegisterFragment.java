@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
@@ -118,7 +119,7 @@ public class RegisterFragment extends Fragment {
                     String userId = responseJson.optString("status","-1");
                     if(!userId.equals("-1")){
                         WorkoutApplication.getmInstance().setUserId(userId);
-                        SharedPrefsUtil.setStringPreference(getActivity(), SharedPrefsUtil.Keys.KEY_USER_ID, userId);
+                        SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, userId);
                         if (mListener != null) {
                             mListener.onRegisterSuccessFul();
                         }
@@ -129,17 +130,12 @@ public class RegisterFragment extends Fragment {
                 public void onError(String error) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
+                    if (mListener != null) {
+                        mListener.onRegisterSuccessFul();
+                    }
                 }
             });
 
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    progressBar.setVisibility(View.GONE);
-//                    btnRegister.setEnabled(true);
-//
-//                }
-//            }, 2000);
         }
     }
 
@@ -203,8 +199,8 @@ public class RegisterFragment extends Fragment {
     }
     private void setErrorFalse(){
         ((TextInputLayout)fragmentView.findViewById(R.id.til_first_name)).setError(null);
-        ((TextInputLayout)fragmentView.findViewById(R.id.til_last_name)).setError(null);
-        ((TextInputLayout)fragmentView.findViewById(R.id.til_mobile_no)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(null);
     }

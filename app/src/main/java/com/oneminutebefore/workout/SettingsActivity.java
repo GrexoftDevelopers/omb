@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.oneminutebefore.workout.helpers.IntentUtils;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -153,5 +155,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        IntentUtils.scheduleWorkoutNotifications(SettingsActivity.this);
+        super.onDestroy();
+    }
 }

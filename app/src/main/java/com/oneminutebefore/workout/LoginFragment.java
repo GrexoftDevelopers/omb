@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
@@ -193,7 +194,7 @@ public class LoginFragment extends Fragment {
                     String userId = responseJson.optString("status","-1");
                     if(!userId.equals("-1")){
                         WorkoutApplication.getmInstance().setUserId(userId);
-                        SharedPrefsUtil.setStringPreference(getActivity(), SharedPrefsUtil.Keys.KEY_USER_ID, userId);
+                        SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, userId);
                         if (mListener != null) {
                             mListener.onLoginSuccessFul();
                         }

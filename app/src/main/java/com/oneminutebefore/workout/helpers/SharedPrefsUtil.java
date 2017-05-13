@@ -21,6 +21,15 @@ public class SharedPrefsUtil {
         return value;
     }
 
+    public static boolean getBooleanPreference(Context context, String key, boolean defaultValue){
+        boolean value = defaultValue;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (preferences != null) {
+            value = preferences.getBoolean(key, defaultValue);
+        }
+        return value;
+    }
+
     public static boolean setStringPreference(Context context, String key, String value) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences != null && !TextUtils.isEmpty(key)) {
@@ -48,13 +57,6 @@ public class SharedPrefsUtil {
             return true;
         }
         return false;
-    }
-
-    public class Keys{
-
-        public static final String KEY_USER_ID = "user_id";
-
-
     }
 }
 
