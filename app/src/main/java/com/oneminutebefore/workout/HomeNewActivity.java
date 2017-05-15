@@ -16,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
+
 public class HomeNewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -48,12 +52,56 @@ public class HomeNewActivity extends AppCompatActivity
 
         Menu menu = navigationView.getMenu();
         WorkoutApplication application = WorkoutApplication.getmInstance();
-        if(application.getUserId().equals("-1")){
-            menu.findItem(R.id.action_settings).setVisible(false);
+        String userId = application.getUserId();
+        if(userId.equals("-1")){
+            menu.findItem(R.id.action_setting).setVisible(false);
             menu.findItem(R.id.action_logout).setVisible(false);
         }else{
             menu.findItem(R.id.action_sign_up).setVisible(false);
         }
+
+        YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView)findViewById(R.id.yt_sample_1);
+        youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        });
+        youTubeThumbnailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
+                intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
+                startActivity(intent);
+            }
+        });
+
+        YouTubeThumbnailView youTubeThumbnailView2 = (YouTubeThumbnailView)findViewById(R.id.yt_sample_2);
+        youTubeThumbnailView2.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        });
+        youTubeThumbnailView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
+                intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -91,13 +139,17 @@ public class HomeNewActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.action_sign_up) {
-            startActivityForResult(new Intent(this, MainActivity.class), RC_SIGNUP);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivityForResult(intent, RC_SIGNUP);
         } else if (id == R.id.action_sample) {
             startActivity(new Intent(this, SampleWorkoutActivity.class));
         } else if (id == R.id.action_contact) {

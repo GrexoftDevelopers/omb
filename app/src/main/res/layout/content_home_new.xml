@@ -1,11 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.oneminutebefore.workout.HomeNewActivity"
-    tools:showIn="@layout/app_bar_home_new">
+    >
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.oneminutebefore.workout.HomeNewActivity"
+        tools:showIn="@layout/app_bar_home_new"
+        android:background="#ffffff">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/stopwatch"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"/>
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#80000000"/>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/one_minute_before"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:textAllCaps="true"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/one_minute_before_desc"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#212121"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                    />
+
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/camp_button_selector"
+                    android:textColor="@android:color/white"
+                    android:text="@string/sign_up"/>
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/desc_home_3"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:layout_margin="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/desc_home_4"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_margin="8dp"
+            android:textStyle="italic"
+            android:fontFamily="sans-serif-condensed" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#757575"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <com.google.android.youtube.player.YouTubeThumbnailView
+                android:id="@+id/yt_sample_1"
+                android:layout_width="96dp"
+                android:layout_height="72dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_home_1"
+                android:gravity="left"
+                android:layout_toRightOf="@+id/yt_sample_1"
+                android:textColor="@color/colorPrimary"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <com.google.android.youtube.player.YouTubeThumbnailView
+                android:id="@+id/yt_sample_2"
+                android:layout_width="96dp"
+                android:layout_height="72dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_home_2"
+                android:gravity="left"
+                android:layout_toRightOf="@+id/yt_sample_2"
+                android:textColor="@color/colorPrimary"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

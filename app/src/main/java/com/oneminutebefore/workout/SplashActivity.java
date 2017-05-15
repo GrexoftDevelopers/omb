@@ -43,14 +43,15 @@ public class SplashActivity extends BaseRequestActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                String userId = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_USER_ID, "-1");
+                String userId = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_USER_ID, "-1");
+                WorkoutApplication.getmInstance().setUserId(userId);
 //                if(!userId.equals("-1")){
 //                    WorkoutApplication.getmInstance().setUserId(userId);
 //                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
 //                }else{
 //                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
 //                }
-                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                startActivity(new Intent(SplashActivity.this, HomeNewActivity.class));
             }
         },2000);
 
