@@ -3,9 +3,7 @@ package com.oneminutebefore.workout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,11 +17,14 @@ import android.view.View;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 
 public class HomeNewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RC_SIGNUP = 1001;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,33 +33,14 @@ public class HomeNewActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        Menu menu = navigationView.getMenu();
-        WorkoutApplication application = WorkoutApplication.getmInstance();
-        String userId = application.getUserId();
-        if(userId.equals("-1")){
-            menu.findItem(R.id.action_setting).setVisible(false);
-            menu.findItem(R.id.action_logout).setVisible(false);
-        }else{
-            menu.findItem(R.id.action_sign_up).setVisible(false);
-        }
 
         YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView)findViewById(R.id.yt_sample_1);
         youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
@@ -102,6 +84,26 @@ public class HomeNewActivity extends AppCompatActivity
             }
         });
 
+        initNavigationItems();
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        initNavigationItems();
+    }
+
+    private void initNavigationItems(){
+        Menu menu = navigationView.getMenu();
+        WorkoutApplication application = WorkoutApplication.getmInstance();
+        String userId = application.getUserId();
+        if(userId.equals("-1")){
+            menu.findItem(R.id.action_setting).setVisible(false);
+            menu.findItem(R.id.action_logout).setVisible(false);
+        }else{
+            menu.findItem(R.id.action_sign_up).setVisible(false);
+        }
     }
 
     @Override
@@ -143,7 +145,7 @@ public class HomeNewActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_setting) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.action_sign_up) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -164,6 +166,8 @@ public class HomeNewActivity extends AppCompatActivity
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            WorkoutApplication.getmInstance().setUserId("-1");
+                            SharedPrefsUtil.deletePreference(HomeNewActivity.this, Keys.KEY_USER_ID);
                             Intent intent = new Intent(HomeNewActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);

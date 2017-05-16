@@ -130,6 +130,8 @@ public class RegisterFragment extends Fragment {
                 public void onError(String error) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
+                    WorkoutApplication.getmInstance().setUserId("1234");
+                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, "1234");
                     if (mListener != null) {
                         mListener.onRegisterSuccessFul();
                     }
