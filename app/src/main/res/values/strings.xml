@@ -74,4 +74,10 @@
     <string name="desc_home_2">EXERCISES from Star Athletes like James Lawrence the Iron Cowboy. These are some of the same workouts that helped the Iron Cowboy achieve 2 Guiness World Records. Also in 2015 he completed 50 Ironman Courses, in 50 consecutive days through all 50 States.</string>
     <string name="desc_home_3">Recieve text alerts of great exercices you can do at your desk for one minute every hour, the minute before that hour ends</string>
     <string name="desc_home_4">*7:59 am, 8:59 am and so on throughout the day till 4:59 pm - total of 10 text exercises</string>
+    <string name="upcoming_alarm">Upcoming alarm</string>
+    <string name="push_ups">Push ups</string>
+    <string name="upcoming_exercise">Upcoming exercise</string>
+    <string name="time_left_hour" >%1sh</string>
+    <string name="time_left_minutes" formatted="false">%1sm %2ss</string>
+    <string name="today_count">Today\'s count</string>
 </resources>

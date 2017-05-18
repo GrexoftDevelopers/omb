@@ -53,7 +53,7 @@ public class IntentUtils {
 
         AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                120000 , pIntent);
+                AlarmManager.INTERVAL_HOUR , pIntent);
 
     }
 
