@@ -12,16 +12,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -36,6 +43,8 @@ public class HomeNewActivity extends AppCompatActivity
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
     private TextView tvTimerMinutes;
+
+    private ArrayList<WorkoutExercise> workoutsDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,48 +64,6 @@ public class HomeNewActivity extends AppCompatActivity
 
         tvTimer = (TextView)findViewById(R.id.tv_timer_hour);
         tvTimerMinutes = (TextView)findViewById(R.id.tv_timer_minutes);
-
-//        YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView)findViewById(R.id.yt_sample_1);
-//        youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
-//            @Override
-//            public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
-//                youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
-//            }
-//
-//            @Override
-//            public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-//
-//            }
-//        });
-//        youTubeThumbnailView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
-//                intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
-//                startActivity(intent);
-//            }
-//        });
-//
-//        YouTubeThumbnailView youTubeThumbnailView2 = (YouTubeThumbnailView)findViewById(R.id.yt_sample_2);
-//        youTubeThumbnailView2.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
-//            @Override
-//            public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
-//                youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
-//            }
-//
-//            @Override
-//            public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-//
-//            }
-//        });
-//        youTubeThumbnailView2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
-//                intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
-//                startActivity(intent);
-//            }
-//        });
 
         initNavigationItems();
 
@@ -124,10 +91,59 @@ public class HomeNewActivity extends AppCompatActivity
             menu.findItem(R.id.action_sign_up).setVisible(true);
             menu.findItem(R.id.action_setting).setVisible(false);
             menu.findItem(R.id.action_logout).setVisible(false);
+            findViewById(R.id.btn_register).setVisibility(View.VISIBLE);
+            findViewById(R.id.videos_box).setVisibility(View.VISIBLE);
+
+            YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView)findViewById(R.id.yt_sample_1);
+            youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                    youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+                }
+            });
+            youTubeThumbnailView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
+                    intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
+                    startActivity(intent);
+                }
+            });
+
+            YouTubeThumbnailView youTubeThumbnailView2 = (YouTubeThumbnailView)findViewById(R.id.yt_sample_2);
+            youTubeThumbnailView2.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                    youTubeThumbnailLoader.setVideo("s7CNC9irjt0");
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+                }
+            });
+            youTubeThumbnailView2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(HomeNewActivity.this, YoutubePlayerActivity.class);
+                    intent.putExtra(YoutubePlayerActivity.KEY_LINK,"s7CNC9irjt0");
+                    startActivity(intent);
+                }
+            });
+
+
         }else{
+            findViewById(R.id.btn_register).setVisibility(View.GONE);
             menu.findItem(R.id.action_sign_up).setVisible(false);
             menu.findItem(R.id.action_setting).setVisible(true);
             menu.findItem(R.id.action_logout).setVisible(true);
+            findViewById(R.id.btn_register).setVisibility(View.GONE);
+            findViewById(R.id.videos_box).setVisibility(View.GONE);
         }
 
 
@@ -135,38 +151,66 @@ public class HomeNewActivity extends AppCompatActivity
 
 
     private void resetTimer(){
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-        String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
-
-        boolean restarted = false;
-        boolean timerSet = false;
-        for(int i = hour ;; i++){
-
-            if(i == hours.length){
-                restarted = true;
-                i = 0;
-                calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
-            }
-            if(preferences.getBoolean(hours[i], false)){
-                calendar.set(Calendar.HOUR_OF_DAY, i);
-                calendar.set(Calendar.MINUTE,59);
-                timerTask = new TimerTask(calendar.getTimeInMillis());
-                timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                timerSet = true;
-                findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
-                break;
-            }
-            if(i==hour && restarted){
-                break;
-            }
-        }
-        if(!timerSet){
+        WorkoutApplication application = WorkoutApplication.getmInstance();
+        String userId = application.getUserId();
+        if(userId.equals("-1")){
             findViewById(R.id.card_timer).setVisibility(View.GONE);
+            findViewById(R.id.card_workout_count).setVisibility(View.GONE);
+        }else{
+            findViewById(R.id.card_workout_count).setVisibility(View.VISIBLE);
+            findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
+
+
+
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+            String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
+
+            boolean restarted = false;
+            boolean timerSet = false;
+            for(int i = hour ;; i++){
+
+                if(i == hours.length){
+                    restarted = true;
+                    i = 0;
+                    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+                }
+                if(preferences.getBoolean(hours[i], false)){
+                    calendar.set(Calendar.HOUR_OF_DAY, i);
+                    calendar.set(Calendar.MINUTE,59);
+                    if(timerTask != null){
+                        timerTask.cancel(true);
+                    }
+                    timerTask = new TimerTask(calendar.getTimeInMillis());
+                    timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    timerSet = true;
+                    findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
+                    break;
+                }
+                if(i==hour && restarted){
+                    break;
+                }
+            }
+            if(!timerSet){
+                findViewById(R.id.card_timer).setVisibility(View.GONE);
+            }
+
+            // Dummy content showing right now
+            workoutsDone = new ArrayList<>();
+            workoutsDone.add(new WorkoutExercise("1","Push Ups","","",18,7));
+            workoutsDone.add(new WorkoutExercise("1","Jump Rope","","",24,11));
+            workoutsDone.add(new WorkoutExercise("1","Stair Run","","",56,2));
+            workoutsDone.add(new WorkoutExercise("1","Squat Jump","","",24,3));
+
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
+            recyclerView.setAdapter(new WorkoutCountAdapter());
+
         }
+
     }
 
     @Override
@@ -299,5 +343,85 @@ public class HomeNewActivity extends AppCompatActivity
             tvTimer.setText(String.format(getString(R.string.time_left_hour),hours));
             tvTimerMinutes.setText(String.format(getString(R.string.time_left_minutes),minutes,String.valueOf(values[0])));
         }
+    }
+
+    private class WorkoutCountAdapter extends RecyclerView.Adapter<WorkoutCountAdapter.ViewHolder>{
+
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View view = getLayoutInflater().inflate(R.layout.item_workout_count, viewGroup, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder viewHolder, int i) {
+
+            WorkoutExercise workoutExercise = workoutsDone.get(i);
+            viewHolder.tvName.setText(workoutExercise.getName());
+            viewHolder.tvCount.setText(String.valueOf(workoutExercise.getRepsCount()));
+            viewHolder.tvTime.setText(workoutExercise.getTime() + ":59 " + (workoutExercise.getTime() >= 7 ? "A.M" : "P.M"));
+            switch (workoutExercise.getTime()){
+                case 7 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_blue_grey);
+                    break;
+                case 8 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_brown);
+                    break;
+                case 9 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_amber);
+                    break;
+                case 10 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_green);
+                    break;
+                case 11 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_teel);
+                    break;
+                case 12 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_blue);
+                    break;
+                case 1 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_deep_purple);
+                    break;
+                case 2 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_purple);
+                    break;
+                case 3 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_lime);
+                    break;
+                case 4 :
+                    viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_red);
+                    break;
+            }
+
+            if(i == getItemCount() - 1){
+                viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.GONE);
+            }else{
+                viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return workoutsDone != null ? workoutsDone.size() : 0;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder{
+
+            private TextView tvCount;
+            private TextView tvName;
+            private TextView tvTime;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+
+                tvTime = (TextView)itemView.findViewById(R.id.tv_workout_time);
+                tvName = (TextView)itemView.findViewById(R.id.tv_workout_name);
+                tvCount = (TextView)itemView.findViewById(R.id.tv_count);
+
+            }
+        }
+
     }
 }
