@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 
 public class RegisterFragment extends Fragment {
-    private EditText etName, etEmail, etPassword, etTimeZone, etLevel;
+    private EditText etName, etEmail, etPassword, etTimeZone, etLevel, etReferenceCode, etPhone;
     private Button btnRegister, btnSignIn;
     private RegisterInteractionListener mListener;
 
@@ -59,6 +59,8 @@ public class RegisterFragment extends Fragment {
         etEmail = (EditText) fragmentView.findViewById(R.id.et_email);
         etPassword = (EditText) fragmentView.findViewById(R.id.et_password);
         etTimeZone = (EditText) fragmentView.findViewById(R.id.et_time_zone);
+        etReferenceCode = (EditText) fragmentView.findViewById(R.id.et_reference_code);
+        etPhone = (EditText) fragmentView.findViewById(R.id.et_phone);
         etLevel = (EditText) fragmentView.findViewById(R.id.et_level);
         btnRegister = (Button) fragmentView.findViewById(R.id.btn_register);
         btnSignIn = (Button) fragmentView.findViewById(R.id.btn_login);
@@ -92,25 +94,33 @@ public class RegisterFragment extends Fragment {
     }
 
     private void attemptRegister() {
+        setErrorFalse();
         if (isFeldNotEmpty()) {
             String firstName= etName.getText().toString().trim();
             String lastName= etEmail.getText().toString().trim();
             String mobileNo= etPassword.getText().toString().trim();
             String timeZone=etTimeZone.getText().toString().trim();
             String level=etLevel.getText().toString().trim();
+            String referenceCode=etReferenceCode.getText().toString().trim();
+            String phone=etPhone.getText().toString().trim();
 
-            setErrorFalse();
             btnRegister.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
 
-            String url = new UrlBuilder(UrlBuilder.API_REGISTER)
+            UrlBuilder builder = new UrlBuilder(UrlBuilder.API_REGISTER)
                     .addParameters("name", firstName)
                     .addParameters("email", lastName)
                     .addParameters("password",mobileNo)
-                    .build();
+                    .addParameters("time_zone", timeZone)
+                    .addParameters("user_level", level)
+                    .addParameters("phone", phone);
+
+            if(!TextUtils.isEmpty(referenceCode)){
+                builder.addParameters("company", referenceCode);
+            }
 
             VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
-            volleyHelper.callApiGet(url, new VolleyHelper.VolleyCallback() {
+            volleyHelper.callApiGet(builder.build(), new VolleyHelper.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) throws JSONException {
                     progressBar.setVisibility(View.GONE);
@@ -179,24 +189,28 @@ public class RegisterFragment extends Fragment {
             ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(getString(R.string.error_field_required));
             etEmail.requestFocus();
             return false;
-
+        }
+        if (TextUtils.isEmpty(etPhone.getText().toString())) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_phone)).setError(getString(R.string.error_field_required));
+            etPhone.requestFocus();
+            return false;
         }
         if (TextUtils.isEmpty(etPassword.getText().toString())) {
             ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(getString(R.string.error_field_required));
             etPassword.requestFocus();
             return false;
         }
-//        if (TextUtils.isEmpty(etTimeZone.getText().toString())) {
-//            ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(getString(R.string.error_field_required));
-//            etTimeZone.requestFocus();
-//            return false;
-//
-//        }
-//        if (TextUtils.isEmpty(etLevel.getText().toString())) {
-//            ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(getString(R.string.error_field_required));
-//            etLevel.requestFocus();
-//            return false;
-//        }
+        if (TextUtils.isEmpty(etTimeZone.getText().toString())) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(getString(R.string.error_field_required));
+            etTimeZone.requestFocus();
+            return false;
+
+        }
+        if (TextUtils.isEmpty(etLevel.getText().toString())) {
+            ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(getString(R.string.error_field_required));
+            etLevel.requestFocus();
+            return false;
+        }
         return true;
     }
     private void setErrorFalse(){
@@ -205,6 +219,7 @@ public class RegisterFragment extends Fragment {
         ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_level)).setError(null);
         ((TextInputLayout)fragmentView.findViewById(R.id.til_time_zone)).setError(null);
+        ((TextInputLayout)fragmentView.findViewById(R.id.til_phone)).setError(null);
     }
 
 }

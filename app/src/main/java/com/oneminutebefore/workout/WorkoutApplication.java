@@ -2,6 +2,10 @@ package com.oneminutebefore.workout;
 
 import android.app.Application;
 
+import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import java.util.HashMap;
+
 /**
  * Created by tahir on 13/5/17.
  */
@@ -9,8 +13,11 @@ import android.app.Application;
 public class WorkoutApplication extends Application {
 
     private String userId;
+    private String sessionToken;
 
     private static WorkoutApplication mInstance;
+
+    private HashMap<String, WorkoutExercise> workouts;
 
     @Override
     public void onCreate() {
@@ -28,5 +35,21 @@ public class WorkoutApplication extends Application {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public HashMap<String, WorkoutExercise> getWorkouts() {
+        return workouts;
+    }
+
+    public void setWorkouts(HashMap<String, WorkoutExercise> workouts) {
+        this.workouts = workouts;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 }

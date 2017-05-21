@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 public class UrlBuilder {
 
-    private static final String BASE_URL = "http://www.oneminutebefore.com/";
-    public static final String API_REGISTER = "register.php";
+    private static final String BASE_URL = "http://www.1minutebefore.com/";
+    public static final String API_REGISTER = "api/users";
+    public static final String API_LOGIN = "auth/local";
+    public static final String API_ALL_VIDEOS = "api/packages";
 
     private String uri;
 

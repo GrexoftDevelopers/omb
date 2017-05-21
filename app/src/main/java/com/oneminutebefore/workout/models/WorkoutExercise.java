@@ -1,5 +1,13 @@
 package com.oneminutebefore.workout.models;
 
+import android.text.TextUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 /**
  * Created by tahir on 20/5/17.
  */
@@ -16,6 +24,8 @@ public class WorkoutExercise {
     private String videoLink;
     private int repsCount;
     private int time;
+    private int v;
+    private boolean orders;
 
     public WorkoutExercise(String id, String name, String description, String videoLink, int repsCount, int time) {
         this.id = id;
@@ -72,5 +82,36 @@ public class WorkoutExercise {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public static HashMap<String, WorkoutExercise> createMapFromJson(String data){
+
+        if(!TextUtils.isEmpty(data)){
+            try{
+                JSONArray dataArray = new JSONArray(data);
+                if(dataArray != null && dataArray.length() > 0){
+                    HashMap<String, WorkoutExercise> map = new HashMap<>();
+                    WorkoutExercise workoutExercise;
+                    for(int i = 0 ; i < dataArray.length() ; i++){
+                        JSONObject jsonObject = dataArray.getJSONObject(i);
+                        String id = jsonObject.optString("_id");
+                        String name = jsonObject.optString("name");
+                        String link = jsonObject.optString("info");
+                        boolean orders = jsonObject.optBoolean("orders",true);
+                        int v = jsonObject.optInt("__v",0);
+                        workoutExercise = new WorkoutExercise(id,name,null,link,0,0);
+                        workoutExercise.orders = orders;
+                        workoutExercise.v = v;
+                        map.put(id, workoutExercise);
+                    }
+                    return map;
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return null;
     }
 }

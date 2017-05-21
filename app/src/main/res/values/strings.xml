@@ -81,4 +81,8 @@
     <string name="time_left_minutes" formatted="false">%1sm %2ss</string>
     <string name="today_count">Today\'s count</string>
     <string name="title_activity_workout_setting">WorkoutSettingActivity</string>
+    <string name="reference_code">Reference code</string>
+    <string name="phone_asterisk">Phone*</string>
+    <string name="time_zone_asterisk">Time Zone*</string>
+    <string name="level_asterisk">Level*</string>
 </resources>

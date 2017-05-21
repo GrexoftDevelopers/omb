@@ -3,13 +3,13 @@ package com.oneminutebefore.workout.helpers;
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.oneminutebefore.workout.BaseRequestActivity;
@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class VolleyHelper {
@@ -62,25 +64,23 @@ public class VolleyHelper {
         System.out.println("api url: " + url);
         System.out.println("api obj: " + obj);
         queue = Volley.newRequestQueue(activity);
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(method, url, obj,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if(showProgress && pd.isShowing()){
-                            pd.dismiss();
-                        }
-                        System.out.println("api response: " + response.toString());
-                        if(!isCancelled && callback != null){
-                            try {
-                                callback.onSuccess(response.toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                callback.onError(activity.getString(R.string.some_error_occured));
-                            }
-                        }
-
+        StringRequest stringRequest = new StringRequest(method, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if(showProgress && pd.isShowing()){
+                    pd.dismiss();
+                }
+                System.out.println("api response: " + response.toString());
+                if(!isCancelled && callback != null){
+                    try {
+                        callback.onSuccess(response.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onError(activity.getString(R.string.some_error_occured));
                     }
-                }, new Response.ErrorListener() {
+                }
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if(showProgress && pd.isShowing()){
@@ -90,12 +90,53 @@ public class VolleyHelper {
                     callback.onError("error: " + error.toString());
                 }
             }
-        });
-        jsObjRequest.setShouldCache(false);
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return super.getParams();
+            }
 
-        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(method, url, obj,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        if(showProgress && pd.isShowing()){
+//                            pd.dismiss();
+//                        }
+//                        System.out.println("api response: " + response.toString());
+//                        if(!isCancelled && callback != null){
+//                            try {
+//                                callback.onSuccess(response.toString());
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                                callback.onError(activity.getString(R.string.some_error_occured));
+//                            }
+//                        }
+//
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if(showProgress && pd.isShowing()){
+//                    pd.dismiss();
+//                }
+//                if(!isCancelled && callback != null){
+//                    callback.onError("error: " + error.toString());
+//                }
+//            }
+//        });
+        stringRequest.setShouldCache(false);
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(jsObjRequest);
+        queue.add(stringRequest);
 
     }
 
