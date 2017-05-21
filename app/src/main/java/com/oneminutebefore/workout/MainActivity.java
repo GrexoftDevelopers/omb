@@ -89,7 +89,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onLoginSuccessFul() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_successful), Snackbar.LENGTH_SHORT).show();
-        startActivity(new Intent(this, HomeActivity.class));
+        Intent intent = new Intent(this, HomeNewActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
@@ -100,7 +102,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onRegisterSuccessFul() {
         Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
-        startActivity(new Intent(this, HomeActivity.class));
+        Intent intent = new Intent(this, HomeNewActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

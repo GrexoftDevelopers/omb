@@ -12,6 +12,7 @@ import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.oneminutebefore.workout.R;
+import com.oneminutebefore.workout.VideoPlayerActivity;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 
@@ -76,8 +77,11 @@ public class WorkoutNotificationService extends IntentService {
                                 .bigText(link))
                         .setDefaults(NotificationCompat.DEFAULT_SOUND);
 
+        Intent intent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
+        intent.putExtra("URL", link);
+
         PendingIntent contentIntent =
-                PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(contentIntent);
 

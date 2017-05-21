@@ -38,7 +38,6 @@
     <!-- Strings related to Settings -->
 
 
-    =======
     <string name="please_wait">Please wait...</string>
     <string name="some_error_occured">Sone error occured.</string>
     <string name="name_asterisk">Name*</string>
@@ -46,10 +45,39 @@
     <string name="password_asterisk">Password*</string>
     <string name="login">Login</string>
     <string name="action_sign">Sign up</string>
-    <string name="sign_up">sign up</string>
+    <string name="sign_up">Sign up</string>
     <string name="one_minute_workout">One minute workout</string>
     <string name="title_activity_video_player">VideoPlayerActivity</string>
     <string name="height_256dp">256dp</string>
     <string name="one_minute_before_video">Watch your one minute before video</string>
     <string name="no_video_available_something_went_wrong">No video available, Something went wrong, Try later</string>
+    <string name="contact">Contact us</string>
+    <string name="sample_exercises">Sample exercises</string>
+    <string name="about">About us</string>
+    <string name="logout">Logout</string>
+    <string name="title_activity_home_new">Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sample_workout">Sample Exercises</string>
+    <string name="confirm_logout">Confirm logout</string>
+    <string name="msg_confirm_logout">Are you sure you want to logout?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="title_activity_about">About us</string>
+    <string name="title_activity_contact">Contact us</string>
+    <string name="one_minute_before">One minute Before</string>
+    <string name="one_minute_before_desc"><![CDATA[Provides Exercise Alerts Via Your Cell And Social Media At Your Desk, Home & More! Every Hour For One Minute Before The Hour Ends]]></string>
+    <string name="desc_home_1">EXERCISES from Entrepreneur Greg Reid. Greg is an entrepreneur, and the CEO of several successful corporations. His other projects include The Millionaire Mentor, Positive Impact, Three Feet from Gold and Napoleon Hill’s Road to Riches.</string>
+    <string name="desc_home_2">EXERCISES from Star Athletes like James Lawrence the Iron Cowboy. These are some of the same workouts that helped the Iron Cowboy achieve 2 Guiness World Records. Also in 2015 he completed 50 Ironman Courses, in 50 consecutive days through all 50 States.</string>
+    <string name="desc_home_3">Recieve text alerts of great exercices you can do at your desk for one minute every hour, the minute before that hour ends</string>
+    <string name="desc_home_4">*7:59 am, 8:59 am and so on throughout the day till 4:59 pm - total of 10 text exercises</string>
+    <string name="upcoming_alarm">Upcoming alarm</string>
+    <string name="push_ups">Push ups</string>
+    <string name="upcoming_exercise">Upcoming exercise</string>
+    <string name="time_left_hour" >%1sh</string>
+    <string name="time_left_minutes" formatted="false">%1sm %2ss</string>
+    <string name="today_count">Today\'s count</string>
 </resources>

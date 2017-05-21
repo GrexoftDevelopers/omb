@@ -1,41 +1,41 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/pref_title_workout">
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_00_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_00_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_01_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_01_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_02_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_02_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_03_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_03_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_04_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_04_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_05_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_05_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_06_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_06_59" />
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_00_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_00_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_01_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_01_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_02_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_02_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_03_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_03_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_04_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_04_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_05_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_05_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_06_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_06_59" />-->
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_07_59"
@@ -86,41 +86,41 @@
         android:key="@string/key_16_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_16_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_17_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_17_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_18_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_18_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_19_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_19_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_20_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_20_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_21_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_21_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_22_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_22_59" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/key_23_59"
-        android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_23_59" />
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_17_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_17_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_18_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_18_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_19_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_19_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_20_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_20_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_21_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_21_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_22_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_22_59" />-->
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/key_23_59"-->
+        <!--android:summary="@string/pref_description_checkbox"-->
+        <!--android:title="@string/pref_title_23_59" />-->
 </PreferenceCategory>
 
 </PreferenceScreen>
