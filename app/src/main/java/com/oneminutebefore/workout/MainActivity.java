@@ -9,9 +9,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
 
 import java.util.ArrayList;
@@ -57,20 +54,20 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 //            }
 //        });
 
-        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
-        youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.setShowFullscreenButton(true);
-                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                youTubePlayer.cueVideo("WngOnjCVcqU");
-            }
-
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-            }
-        });
+//        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
+//        youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
+//            @Override
+//            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+//                youTubePlayer.setShowFullscreenButton(true);
+//                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+//                youTubePlayer.cueVideo("WngOnjCVcqU");
+//            }
+//
+//            @Override
+//            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+//
+//            }
+//        });
 
 //        getSupportFragmentManager()
 //                .beginTransaction()
