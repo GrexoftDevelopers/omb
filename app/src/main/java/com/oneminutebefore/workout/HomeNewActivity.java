@@ -362,6 +362,7 @@ public class HomeNewActivity extends AppCompatActivity
             viewHolder.tvTime.setText(workoutExercise.getTime() + ":59 " + (workoutExercise.getTime() >= 7 ? "A.M" : "P.M"));
             switch (workoutExercise.getTime()){
                 case 7 :
+//                    ((GradientDrawable)viewHolder.tvCount.getBackground()).setColor(ContextCompat.getColor(HomeNewActivity.this,R.color.blue_grey));
                     viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_blue_grey);
                     break;
                 case 8 :
