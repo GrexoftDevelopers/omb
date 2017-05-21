@@ -107,7 +107,7 @@
     <string name="pref_cat_title_22_59">10:59 P.M</string>
     <string name="pref_cat_title_23_59">11:59 P.M</string>
 
-    <string name="pref_description_checkbox">checked this item to get notification for this hour</string>
+    <string name="pref_description_checkbox">check this item to get notification for this hour</string>
 
 
     <string-array name="entry_title_list_pref">

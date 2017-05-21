@@ -2,8 +2,6 @@ package com.oneminutebefore.workout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,10 +12,16 @@ import android.view.View;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.oneminutebefore.workout.models.WorkoutExercise;
 
 public class VideoPlayerActivity extends AppCompatActivity {
 
+    public static final String KEY_URL = "url";
+    public static final String KEY_WORKOUT = "workout";
+
     private YouTubePlayerFragment youTubePlayerFragment;
+
+    private WorkoutExercise workoutExercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,34 +29,30 @@ public class VideoPlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_player);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setTitle("OMB");
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
+
         Intent mIntent = getIntent();
-        final String url = mIntent.getStringExtra("URL");
+//        final String url = mIntent.getStringExtra(KEY_URL);
+        workoutExercise = (WorkoutExercise) mIntent.getSerializableExtra(KEY_WORKOUT);
         youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        ActionBar mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setTitle(workoutExercise.getName());
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
 
-        if (!TextUtils.isEmpty(url)) {
+        if (!TextUtils.isEmpty(workoutExercise.getVideoLink())) {
             findViewById(R.id.youtube_content).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_no_content).setVisibility(View.GONE);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.setShowFullscreenButton(true);
+                    String url = workoutExercise.getVideoLink();
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                    youTubePlayer.cueVideo(url);
+                    youTubePlayer.cueVideo(url.substring(url.lastIndexOf("/") + 1));
                 }
 
                 @Override
@@ -80,7 +80,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        youTubePlayerFragment.onDestroy();
+//        youTubePlayerFragment.onDestroy();
         super.onDestroy();
     }
 }
