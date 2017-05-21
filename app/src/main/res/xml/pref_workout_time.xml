@@ -2,7 +2,7 @@
 
     <PreferenceCategory android:title="@string/pref_title_workout" />
 
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_00_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_00_59"
@@ -12,16 +12,12 @@
     <ListPreference
         android:defaultValue="0"
         android:dependency="@string/key_00_59"
-        android:entries="@array/entry_title_list_pref"
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_00_59"
-        android:title="@string/pref_title_list_preference"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:layout="?android:attr/preferenceLayoutChild"/>
+        android:title="@string/pref_title_list_preference" />
 
 
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_01_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_01_59"
@@ -34,19 +30,13 @@
         android:entries="@array/entry_title_list_pref"
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_01_59"
-        android:title="@string/pref_title_list_preference"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:layout="?android:attr/preferenceLayoutChild"/>
-    <PreferenceCategory android:title="@string/pref_category_title" />
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_cat_title_02_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_02_59"
         android:summary="@string/pref_description_checkbox"
-        android:title="@string/pref_title_02_59"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:layout="?android:attr/preferenceLayoutChild"/>
+        android:title="@string/pref_title_02_59" />
 
     <ListPreference
         android:defaultValue="0"
@@ -54,11 +44,8 @@
         android:entries="@array/entry_title_list_pref"
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_02_59"
-        android:title="@string/pref_title_list_preference"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:layout="?android:attr/preferenceLayoutChild"/>
-    <PreferenceCategory android:title="@string/pref_category_title" />
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_cat_title_03_59"/>
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_03_59"
@@ -71,11 +58,8 @@
         android:entries="@array/entry_title_list_pref"
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_03_59"
-        android:title="@string/pref_title_list_preference"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:layout="?android:attr/preferenceLayoutChild"/>
-    <PreferenceCategory android:title="@string/pref_category_title" />
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_cat_title_04_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_04_59"
@@ -88,7 +72,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_04_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_05_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_05_59"
@@ -101,7 +85,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_05_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_06_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_06_59"
@@ -115,7 +99,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_06_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_07_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_07_59"
@@ -128,7 +112,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_07_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_08_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_08_59"
@@ -142,7 +126,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_08_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_09_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_09_59"
@@ -156,7 +140,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_09_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_10_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_10_59"
@@ -170,7 +154,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_10_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_11_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_11_59"
@@ -183,7 +167,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_11_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_12_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_12_59"
@@ -197,7 +181,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_12_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_13_59" />
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -211,7 +195,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_13_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_14_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_14_59"
@@ -225,7 +209,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_14_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_15_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_15_59"
@@ -238,7 +222,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_15_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_16_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_16_59"
@@ -252,7 +236,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_16_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_17_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_17_59"
@@ -265,7 +249,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_17_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_18_59" />
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -279,7 +263,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_18_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_19_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_19_59"
@@ -293,7 +277,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_19_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_20_59" />
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -307,7 +291,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_20_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_21_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_21_59"
@@ -320,7 +304,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_21_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_22_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_22_59"
@@ -334,7 +318,7 @@
         android:entryValues="@array/entry_value_list_pref"
         android:key="@string/list_key_22_59"
         android:title="@string/pref_title_list_preference" />
-    <PreferenceCategory android:title="@string/pref_category_title" />
+    <PreferenceCategory android:title="@string/pref_cat_title_23_59" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_23_59"
