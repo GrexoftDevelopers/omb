@@ -54,9 +54,8 @@
 
     <!-- Example General settings -->
     <string name="pref_header_workout">Workout Notification Setting</string>
-    <string name="pref_title_workout">Select suitable workout timing for alert</string>
-    <string name="pref_title_list_preference">Select video </string>
-    <string name="pref_category_title">Set check and choose workout type </string>
+    <string name="pref_title_workout">Select suitable workout timings for alert</string>
+    <string name="pref_title_list_preference">Select workout </string>
 
     <string name="pref_title_00_59">Enable 12:59 a.m notification</string>
     <string name="pref_title_01_59">Enable 01:59 a.m notification</string>
@@ -82,7 +81,33 @@
     <string name="pref_title_21_59">Enable 09:59 p.m notification</string>
     <string name="pref_title_22_59">Enable 10:59 p.m notification</string>
     <string name="pref_title_23_59">Enable 11:59 p.m notification</string>
-    <string name="pref_description_checkbox">Set checked to get notify for this time</string>
+
+    <string name="pref_cat_title_00_59">12:59 A.M</string>
+    <string name="pref_cat_title_01_59">01:59 A.M</string>
+    <string name="pref_cat_title_02_59">02:59 A.M</string>
+    <string name="pref_cat_title_03_59">03:59 A.M</string>
+    <string name="pref_cat_title_04_59">04:59 A.M</string>
+    <string name="pref_cat_title_05_59">05:59 A.M</string>
+    <string name="pref_cat_title_06_59">06:59 A.M</string>
+    <string name="pref_cat_title_07_59">07:59 A.M</string>
+    <string name="pref_cat_title_08_59">08:59 A.M</string>
+    <string name="pref_cat_title_09_59">09:59 A.M</string>
+    <string name="pref_cat_title_10_59">10:59 A.M</string>
+    <string name="pref_cat_title_11_59">11:59 A.M</string>
+    <string name="pref_cat_title_12_59">12:59 P.M</string>
+    <string name="pref_cat_title_13_59">01:59 P.M</string>
+    <string name="pref_cat_title_14_59">02:59 P.M</string>
+    <string name="pref_cat_title_15_59">03:59 P.M</string>
+    <string name="pref_cat_title_16_59">04:59 P.M </string>
+    <string name="pref_cat_title_17_59">05:59 P.M</string>
+    <string name="pref_cat_title_18_59">06:59 P.M</string>
+    <string name="pref_cat_title_19_59">07:59 P.M</string>
+    <string name="pref_cat_title_20_59">0*:59 P.M</string>
+    <string name="pref_cat_title_21_59">09:59 P.M</string>
+    <string name="pref_cat_title_22_59">10:59 P.M</string>
+    <string name="pref_cat_title_23_59">11:59 P.M</string>
+
+    <string name="pref_description_checkbox">checked this item to get notification for this hour</string>
 
 
     <string-array name="entry_title_list_pref">
