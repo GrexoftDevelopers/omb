@@ -85,7 +85,7 @@
     <string name="pref_description_checkbox">checked this item to get notification for this hour</string>
 
 
-    <array name="entry_title_list_pref">
+    <string-array name="entry_title_list_pref">
         <item>Push up</item>
         <item>Push up</item>
         <item>Push up</item>
@@ -96,9 +96,9 @@
         <item>Push up</item>
         <item>Push up</item>
 
-    </array>
+    </string-array>
 
-    <array name="entry_value_list_pref">
+    <string-array name="entry_value_list_pref">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -108,7 +108,7 @@
         <item>6</item>
         <item>7</item>
         <item>8</item>
-    </array>
+    </string-array>
 
 
 </resources>
