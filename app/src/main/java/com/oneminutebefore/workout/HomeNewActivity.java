@@ -347,7 +347,6 @@ public class HomeNewActivity extends AppCompatActivity
 
     private class WorkoutCountAdapter extends RecyclerView.Adapter<WorkoutCountAdapter.ViewHolder>{
 
-
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View view = getLayoutInflater().inflate(R.layout.item_workout_count, viewGroup, false);
