@@ -35,5 +35,20 @@ public class Keys{
 
     }
 
+    public static String[] getWorkoutSelectionKeys(Context context){
+
+        String[] array = new String[]{context.getString(R.string.list_key_00_59),context.getString(R.string.list_key_01_59),context.getString(R.string.list_key_02_59)
+                ,context.getString(R.string.list_key_03_59),context.getString(R.string.list_key_04_59),context.getString(R.string.list_key_05_59)
+                ,context.getString(R.string.list_key_06_59),context.getString(R.string.list_key_07_59),context.getString(R.string.list_key_08_59)
+                ,context.getString(R.string.list_key_09_59),context.getString(R.string.list_key_10_59),context.getString(R.string.list_key_11_59)
+                ,context.getString(R.string.list_key_12_59),context.getString(R.string.list_key_13_59),context.getString(R.string.list_key_14_59)
+                ,context.getString(R.string.list_key_15_59),context.getString(R.string.list_key_16_59),context.getString(R.string.list_key_17_59)
+                ,context.getString(R.string.list_key_18_59),context.getString(R.string.list_key_19_59),context.getString(R.string.list_key_20_59)
+                ,context.getString(R.string.list_key_21_59),context.getString(R.string.list_key_22_59),context.getString(R.string.list_key_23_59)};
+
+        return array;
+
+    }
+
 
 }

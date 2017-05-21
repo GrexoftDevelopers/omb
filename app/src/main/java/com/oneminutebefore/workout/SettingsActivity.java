@@ -14,6 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.oneminutebefore.workout.helpers.IntentUtils;
+import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -143,30 +149,59 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_workout_time);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_00_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_01_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_02_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_03_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_04_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_05_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_06_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_07_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_08_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_09_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_10_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_11_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_12_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_13_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_14_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_15_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_16_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_17_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_18_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_19_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_20_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_21_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_22_59)));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_13_59)));
+
+            String prefKeys[] = Keys.getWorkoutSelectionKeys(getActivity());
+            HashMap<String, WorkoutExercise> workouts = WorkoutApplication.getmInstance().getWorkouts();
+            if(workouts != null && !workouts.isEmpty()){
+                String entries[] = new String[workouts.size()];
+                ArrayList<String> entriesValues = new ArrayList<>();
+                int i = 0;
+                for(Map.Entry entry : workouts.entrySet()){
+                    WorkoutExercise workoutExercise = ((WorkoutExercise)entry.getValue());
+                    entries[i] = workoutExercise.getName();
+                    entriesValues.add(String.valueOf(i));
+                    i++;
+                }
+                for(i = 0 ; i < prefKeys.length ; i++){
+
+                    ListPreference preference = (ListPreference) findPreference(prefKeys[i]);
+                    String defaultValue = preference.getValue();
+                    preference.setValue(entriesValues.get(0));
+                    preference.setEntries(entries);
+                    String[] entriesValueArray = new String[entriesValues.size()];
+                    entriesValues.toArray(entriesValueArray);
+                    preference.setEntryValues(entriesValueArray);
+                    if(entriesValues.contains(defaultValue)){
+                        preference.setValue(defaultValue);
+                    }
+                    bindPreferenceSummaryToValue(preference);
+                }
+            }
+
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_00_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_01_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_02_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_03_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_04_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_05_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_06_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_07_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_08_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_09_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_10_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_11_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_12_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_13_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_14_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_15_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_16_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_17_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_18_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_19_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_20_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_21_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_22_59)));
+//            bindPreferenceSummaryToValue(findPreference(getString(R.string.list_key_13_59)));
             setHasOptionsMenu(true);
 
         }

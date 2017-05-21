@@ -15,6 +15,8 @@ import org.json.JSONException;
 
 import java.util.HashMap;
 
+import static com.oneminutebefore.workout.WorkoutApplication.getmInstance;
+
 public class SplashActivity extends BaseRequestActivity {
 
     @Override
@@ -50,9 +52,12 @@ public class SplashActivity extends BaseRequestActivity {
             @Override
             public void run() {
                 String userId = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_USER_ID, "-1");
-                WorkoutApplication.getmInstance().setUserId(userId);
+                WorkoutApplication application = WorkoutApplication.getmInstance();
+                application.setUserId(userId);
+                String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
+                application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
                 if(!userId.equals("-1")){
-                    WorkoutApplication.getmInstance().setUserId(userId);
+                    getmInstance().setUserId(userId);
                     startActivity(new Intent(SplashActivity.this, HomeNewActivity.class));
                 }else{
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
@@ -74,7 +79,7 @@ public class SplashActivity extends BaseRequestActivity {
 
         HashMap<String, WorkoutExercise> map = WorkoutExercise.createMapFromJson(linksData);
         if(map != null && !map.isEmpty()){
-            WorkoutApplication.getmInstance().setWorkouts(map);
+            getmInstance().setWorkouts(map);
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_VIDEOS_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_LINKS_DOWNLOADED, true);
         }
