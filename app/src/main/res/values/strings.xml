@@ -77,7 +77,8 @@
     <string name="upcoming_alarm">Upcoming alarm</string>
     <string name="push_ups">Push ups</string>
     <string name="upcoming_exercise">Upcoming exercise</string>
-    <string name="time_left_hour" >%1sh</string>
+    <string name="time_left_hour">%1sh</string>
     <string name="time_left_minutes" formatted="false">%1sm %2ss</string>
     <string name="today_count">Today\'s count</string>
+    <string name="title_activity_workout_setting">WorkoutSettingActivity</string>
 </resources>

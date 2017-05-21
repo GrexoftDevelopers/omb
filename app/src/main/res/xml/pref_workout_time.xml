@@ -1,126 +1,337 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/pref_title_workout">
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_00_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_00_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_01_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_01_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_02_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_02_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_03_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_03_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_04_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_04_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_05_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_05_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_06_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_06_59" />-->
+    <PreferenceCategory android:title="@string/pref_title_workout" />
+
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_00_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_00_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_00_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_00_59"
+        android:title="@string/pref_title_list_preference" />
+
+
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_01_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_01_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_01_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_01_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_02_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_02_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_02_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_02_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_03_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_03_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_03_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_03_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_04_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_04_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_04_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_04_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_05_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_05_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_05_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_05_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_06_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_06_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_06_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_06_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_07_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_07_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_07_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_07_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_08_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_08_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_08_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_08_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_09_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_09_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_09_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_09_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_10_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_10_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_10_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_10_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_11_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_11_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_11_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_11_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_12_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_12_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_12_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_12_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_13_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_13_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_13_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_13_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_14_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_14_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_14_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_14_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_15_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_15_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_15_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_15_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_16_59"
         android:summary="@string/pref_description_checkbox"
         android:title="@string/pref_title_16_59" />
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_17_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_17_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_18_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_18_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_19_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_19_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_20_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_20_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_21_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_21_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_22_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_22_59" />-->
-    <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/key_23_59"-->
-        <!--android:summary="@string/pref_description_checkbox"-->
-        <!--android:title="@string/pref_title_23_59" />-->
-</PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_16_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_16_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_17_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_17_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_17_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_17_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_18_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_18_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_18_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_18_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_19_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_19_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_19_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_19_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_20_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_20_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_20_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_20_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_21_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_21_59" />
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_21_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_21_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_22_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_22_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_22_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_22_59"
+        android:title="@string/pref_title_list_preference" />
+    <PreferenceCategory android:title="@string/pref_category_title" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/key_23_59"
+        android:summary="@string/pref_description_checkbox"
+        android:title="@string/pref_title_23_59" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:dependency="@string/key_23_59"
+        android:entries="@array/entry_title_list_pref"
+        android:entryValues="@array/entry_value_list_pref"
+        android:key="@string/list_key_23_59"
+        android:title="@string/pref_title_list_preference" />
 
 </PreferenceScreen>

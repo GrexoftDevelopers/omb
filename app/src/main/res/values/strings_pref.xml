@@ -26,9 +26,37 @@
     <string name="key_23_59">23_59</string>
 
 
+    <string name="list_key_00_59">list_00_59</string>
+    <string name="list_key_01_59">list_01_59</string>
+    <string name="list_key_02_59">list_02_59</string>
+    <string name="list_key_03_59">list_03_59</string>
+    <string name="list_key_04_59">list_04_59</string>
+    <string name="list_key_05_59">list_05_59</string>
+    <string name="list_key_06_59">list_06_59</string>
+    <string name="list_key_07_59">list_07_59</string>
+    <string name="list_key_08_59">list_08_59</string>
+    <string name="list_key_09_59">list_09_59</string>
+    <string name="list_key_10_59">list_10_59</string>
+    <string name="list_key_11_59">list_11_59</string>
+    <string name="list_key_12_59">list_12_59</string>
+    <string name="list_key_13_59">list_13_59</string>
+    <string name="list_key_14_59">list_14_59</string>
+    <string name="list_key_15_59">list_15_59</string>
+    <string name="list_key_16_59">list_16_59</string>
+    <string name="list_key_17_59">list_17_59</string>
+    <string name="list_key_18_59">list_18_59</string>
+    <string name="list_key_19_59">list_19_59</string>
+    <string name="list_key_20_59">list_20_59</string>
+    <string name="list_key_21_59">list_21_59</string>
+    <string name="list_key_22_59">list_22_59</string>
+    <string name="list_key_23_59">list_23_59</string>
+
+
     <!-- Example General settings -->
     <string name="pref_header_workout">Workout Notification Setting</string>
     <string name="pref_title_workout">Select suitable workout timing for alert</string>
+    <string name="pref_title_list_preference">Select video </string>
+    <string name="pref_category_title">Set check and choose workout type </string>
 
     <string name="pref_title_00_59">Enable 12:59 a.m notification</string>
     <string name="pref_title_01_59">Enable 01:59 a.m notification</string>
@@ -56,6 +84,31 @@
     <string name="pref_title_23_59">Enable 11:59 p.m notification</string>
     <string name="pref_description_checkbox">Set checked to get notify for this time</string>
 
+
+    <array name="entry_title_list_pref">
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+        <item>Push up</item>
+
+    </array>
+
+    <array name="entry_value_list_pref">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </array>
 
 
 </resources>
