@@ -15,26 +15,56 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:contentInsetEnd="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetRight="0dp"
-            app:contentInsetStart="0dp"
+            android:elevation="2dp"
+            android:background="@android:color/white"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-            <fragment
-                class="com.google.android.youtube.player.YouTubePlayerFragment"
-                android:id="@+id/player_layout"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_logo"
+                    android:layout_width="144dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/logo_cropped"/>
+
+                <TextView
+                    android:id="@+id/tv_key_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/iv_logo"
+                    android:textColor="@color/colorPrimary"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_xxl"
+                    android:fontFamily="serif-monospace"
+                    android:text="@string/title_activity_main"
+                    android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+            </RelativeLayout>
+            <!--<fragment-->
+                <!--class="com.google.android.youtube.player.YouTubePlayerFragment"-->
+                <!--android:id="@+id/player_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
 
         </android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+
+
+
+
+        <include layout="@layout/content_main" />
+
 
     <!--<android.support.design.widget.FloatingActionButton-->
         <!--android:id="@+id/fab"-->
