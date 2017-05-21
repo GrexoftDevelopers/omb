@@ -180,7 +180,7 @@ public class LoginFragment extends Fragment {
             // perform the user login attempt.
             showProgress(true);
 
-            String url = new UrlBuilder(UrlBuilder.API_REGISTER)
+            String url = new UrlBuilder(UrlBuilder.API_LOGIN)
                     .addParameters("email", email)
                     .addParameters("password", password)
                     .build();

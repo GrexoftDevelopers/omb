@@ -13,6 +13,7 @@ public class Keys{
     public static final String KEY_USER_ID = "user_id";
 
     public static final String KEY_LINKS_DOWNLOADED = "links_downloaded";
+    public static final String KEY_VIDEOS_INFO = "videos_info";
 
     public static final String[] KEY_VIDEO_LINKS = new String[]{"omb_video_0","omb_video_1","omb_video_2","omb_video_3","omb_video_4","omb_video_5"
             ,"omb_video_6","omb_video_7","omb_video_8","omb_video_9","omb_video_10","omb_video_11"

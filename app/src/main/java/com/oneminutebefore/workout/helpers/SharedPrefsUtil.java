@@ -40,6 +40,16 @@ public class SharedPrefsUtil {
         return false;
     }
 
+    public static boolean setBooleanPreference(Context context, String key, boolean value) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (preferences != null && !TextUtils.isEmpty(key)) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(key, value);
+            return editor.commit();
+        }
+        return false;
+    }
+
     public static boolean deletePreference(Context context, String key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences != null && !TextUtils.isEmpty(key)) {
