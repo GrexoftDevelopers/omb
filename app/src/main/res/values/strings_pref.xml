@@ -54,8 +54,8 @@
 
     <!-- Example General settings -->
     <string name="pref_header_workout">Workout Notification Setting</string>
-    <string name="pref_title_workout">Select suitable workout timing for alert</string>
-    <string name="pref_title_list_preference">Select video </string>
+    <string name="pref_title_workout">Select suitable workout timings for alert</string>
+    <string name="pref_title_list_preference">Select workout </string>
     <string name="pref_category_title">Set check and choose workout type </string>
 
     <string name="pref_title_00_59">Enable 12:59 a.m notification</string>
@@ -82,7 +82,7 @@
     <string name="pref_title_21_59">Enable 09:59 p.m notification</string>
     <string name="pref_title_22_59">Enable 10:59 p.m notification</string>
     <string name="pref_title_23_59">Enable 11:59 p.m notification</string>
-    <string name="pref_description_checkbox">Set checked to get notify for this time</string>
+    <string name="pref_description_checkbox">checked this item to get notification for this hour</string>
 
 
     <array name="entry_title_list_pref">
