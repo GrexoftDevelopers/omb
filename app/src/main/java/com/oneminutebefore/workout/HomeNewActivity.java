@@ -207,6 +207,7 @@ public class HomeNewActivity extends AppCompatActivity
             workoutsDone.add(new WorkoutExercise("1","Squat Jump","","",24,3));
 
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
+            recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setAdapter(new WorkoutCountAdapter());
 
         }

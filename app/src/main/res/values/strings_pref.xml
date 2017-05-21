@@ -77,7 +77,7 @@
     <string name="pref_title_17_59">Enable 05:59 p.m notification</string>
     <string name="pref_title_18_59">Enable 06:59 p.m notification</string>
     <string name="pref_title_19_59">Enable 07:59 p.m notification</string>
-    <string name="pref_title_20_59">Enable 080:59 p.m notification</string>
+    <string name="pref_title_20_59">Enable 80:59 p.m notification</string>
     <string name="pref_title_21_59">Enable 09:59 p.m notification</string>
     <string name="pref_title_22_59">Enable 10:59 p.m notification</string>
     <string name="pref_title_23_59">Enable 11:59 p.m notification</string>
@@ -102,7 +102,7 @@
     <string name="pref_cat_title_17_59">05:59 P.M</string>
     <string name="pref_cat_title_18_59">06:59 P.M</string>
     <string name="pref_cat_title_19_59">07:59 P.M</string>
-    <string name="pref_cat_title_20_59">0*:59 P.M</string>
+    <string name="pref_cat_title_20_59">08:59 P.M</string>
     <string name="pref_cat_title_21_59">09:59 P.M</string>
     <string name="pref_cat_title_22_59">10:59 P.M</string>
     <string name="pref_cat_title_23_59">11:59 P.M</string>
