@@ -9,14 +9,15 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 
 import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.VideoPlayerActivity;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 
 public class WorkoutNotificationService extends IntentService {
@@ -52,17 +53,28 @@ public class WorkoutNotificationService extends IntentService {
 
         if(isHourSelected){
 
-            String workoutLink = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.KEY_VIDEO_LINKS[hour], "");
+            String workoutsJson = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.KEY_VIDEOS_INFO, "[]");
+            HashMap<String, WorkoutExercise> workouts = WorkoutExercise.createMapFromJson(workoutsJson);
 
-            if(!TextUtils.isEmpty(workoutLink)){
-                addNotification(workoutLink);
+            if(workouts != null && !workouts.isEmpty()){
+                String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[hour], "");
+                WorkoutExercise workoutExercise = workouts.get(workoutId);
+                if(workoutExercise != null){
+                    addNotification(workoutExercise);
+                }
             }
+
+//            String workoutLink = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.KEY_VIDEO_LINKS[hour], "");
+//
+//            if(!TextUtils.isEmpty(workoutLink)){
+//                addNotification(workoutLink);
+//            }
 
         }
 
     }
 
-    private void addNotification(String link) {
+    private void addNotification(WorkoutExercise workoutExercise) {
 
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(this)
@@ -70,15 +82,13 @@ public class WorkoutNotificationService extends IntentService {
                         .setSmallIcon(R.mipmap.ic_launcher_round)
                         .setTicker("OMB")
                         .setAutoCancel(true)
-                        .setStyle(new NotificationCompat.BigTextStyle())
                         .setContentTitle(getString(R.string.one_minute_workout))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(link))
+                        .setContentText(workoutExercise.getName())
                         .setDefaults(NotificationCompat.DEFAULT_SOUND);
 
         Intent intent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
-        intent.putExtra("URL", link);
+        intent.putExtra(VideoPlayerActivity.KEY_WORKOUT, workoutExercise);
 
         PendingIntent contentIntent =
                 PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

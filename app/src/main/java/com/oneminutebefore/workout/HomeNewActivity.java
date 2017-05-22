@@ -79,7 +79,7 @@ public class HomeNewActivity extends AppCompatActivity
         btnScheduleTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mIntent=new Intent(getApplicationContext(),SettingsActivity.class);
+                Intent mIntent=new Intent(HomeNewActivity.this,SettingsActivity.class);
                 startActivity(mIntent);
             }
         });
@@ -199,10 +199,19 @@ public class HomeNewActivity extends AppCompatActivity
                     calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
                 }
                 if(preferences.getBoolean(hours[i], false)){
-                    calendar.set(Calendar.HOUR_OF_DAY, i);
-                    calendar.set(Calendar.MINUTE,59);
-                    if(timerTask != null){
-                        timerTask.cancel(true);
+                    String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[hour], "");
+                    if(application.getWorkouts() != null){
+                        WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
+                        calendar.set(Calendar.HOUR_OF_DAY, i);
+                        calendar.set(Calendar.MINUTE,59);
+                        if(timerTask != null){
+                            timerTask.cancel(true);
+                        }
+                        ((TextView)findViewById(R.id.tv_workout_name)).setText(workoutExercise.getName());
+                        timerTask = new TimerTask(calendar.getTimeInMillis());
+                        timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        timerSet = true;
+                        findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
                     }
                     timerTask = new TimerTask(calendar.getTimeInMillis());
                     timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -364,7 +373,12 @@ public class HomeNewActivity extends AppCompatActivity
             values[0] %= 3600;
             String minutes = String.valueOf(values[0] / 60);
             values[0] %= 60;
-            tvTimer.setText(String.format(getString(R.string.time_left_hour),hours));
+            if(!hours.equals("0")){
+                tvTimer.setText(String.format(getString(R.string.time_left_hour),hours));
+                tvTimer.setVisibility(View.VISIBLE);
+            }else{
+                tvTimer.setVisibility(View.GONE);
+            }
             tvTimerMinutes.setText(String.format(getString(R.string.time_left_minutes),minutes,String.valueOf(values[0])));
         }
     }

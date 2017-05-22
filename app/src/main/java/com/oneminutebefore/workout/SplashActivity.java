@@ -42,6 +42,9 @@ public class SplashActivity extends BaseRequestActivity {
                 }
             });
         }else{
+            WorkoutApplication application = WorkoutApplication.getmInstance();
+            String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
+            application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
             checkLoginAndRedirect();
         }
     }
@@ -54,8 +57,6 @@ public class SplashActivity extends BaseRequestActivity {
                 String userId = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_USER_ID, "-1");
                 WorkoutApplication application = WorkoutApplication.getmInstance();
                 application.setUserId(userId);
-                String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
-                application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
                 if(!userId.equals("-1")){
                     getmInstance().setUserId(userId);
                     startActivity(new Intent(SplashActivity.this, HomeNewActivity.class));

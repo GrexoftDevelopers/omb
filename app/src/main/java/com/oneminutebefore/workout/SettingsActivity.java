@@ -159,7 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
                 for(Map.Entry entry : workouts.entrySet()){
                     WorkoutExercise workoutExercise = ((WorkoutExercise)entry.getValue());
                     entries[i] = workoutExercise.getName();
-                    entriesValues.add(String.valueOf(i));
+                    entriesValues.add(workoutExercise.getId());
                     i++;
                 }
                 for(i = 0 ; i < prefKeys.length ; i++){
