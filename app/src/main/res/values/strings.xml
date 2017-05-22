@@ -85,4 +85,6 @@
     <string name="phone_asterisk">Phone*</string>
     <string name="time_zone_asterisk">Time Zone*</string>
     <string name="level_asterisk">Level*</string>
+    <string name="schedule_workout">Schedule your Workouts Now</string>
+    <string name="no_workouts_schedule_workout">You don\'t have any workouts configured </string>
 </resources>

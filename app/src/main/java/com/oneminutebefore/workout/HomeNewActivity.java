@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -41,8 +43,11 @@ public class HomeNewActivity extends AppCompatActivity
     private TextView tvTimer;
     private TimerTask timerTask;
 
+    @SuppressLint("SimpleDateFormat")
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
     private TextView tvTimerMinutes;
+    private View layoutUpcomingTask,layoutScheduleTask;
+    private Button btnScheduleTask;
 
     private ArrayList<WorkoutExercise> workoutsDone;
 
@@ -52,6 +57,9 @@ public class HomeNewActivity extends AppCompatActivity
         setContentView(R.layout.activity_home_new);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setTitle(getString(R.string.one_minute_before));
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,6 +72,17 @@ public class HomeNewActivity extends AppCompatActivity
 
         tvTimer = (TextView)findViewById(R.id.tv_timer_hour);
         tvTimerMinutes = (TextView)findViewById(R.id.tv_timer_minutes);
+        layoutScheduleTask = findViewById(R.id.layout_schedule_task);
+        layoutUpcomingTask = findViewById(R.id.layout_upcoming_task);
+        btnScheduleTask=(Button)findViewById(R.id.btn_schedule_workout);
+
+        btnScheduleTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent=new Intent(getApplicationContext(),SettingsActivity.class);
+                startActivity(mIntent);
+            }
+        });
 
         initNavigationItems();
 
@@ -188,7 +207,9 @@ public class HomeNewActivity extends AppCompatActivity
                     timerTask = new TimerTask(calendar.getTimeInMillis());
                     timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     timerSet = true;
-                    findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
+//                    findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
+                    layoutUpcomingTask.setVisibility(View.VISIBLE);
+                    layoutScheduleTask.setVisibility(View.GONE);
                     break;
                 }
                 if(i==hour && restarted){
@@ -196,7 +217,9 @@ public class HomeNewActivity extends AppCompatActivity
                 }
             }
             if(!timerSet){
-                findViewById(R.id.card_timer).setVisibility(View.GONE);
+//                findViewById(R.id.card_timer).setVisibility(View.GONE);
+                layoutUpcomingTask.setVisibility(View.GONE);
+                layoutScheduleTask.setVisibility(View.VISIBLE);
             }
 
             // Dummy content showing right now
