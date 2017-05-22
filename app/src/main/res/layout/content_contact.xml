@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,5 +7,25 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.oneminutebefore.workout.ContactActivity"
     tools:showIn="@layout/activity_contact">
+    <ImageView
+        android:id="@+id/iv_comming"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="comming soon"
+        android:src="@drawable/ic_comming_soon"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_comming"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        android:fontFamily="monospace"
+        android:text="Stay tuned"/>
 
-</android.support.constraint.ConstraintLayout>
+
+
+</RelativeLayout>

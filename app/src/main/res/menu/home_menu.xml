@@ -22,6 +22,10 @@
         android:id="@+id/action_contact"
         android:icon="@drawable/ic_contact_24dp"
         android:title="@string/contact" />
+    <item
+        android:id="@+id/action_report"
+        android:icon="@drawable/ic_trending_up_black_24dp"
+        android:title="@string/reports" />
 
     <item
         android:id="@+id/action_about"

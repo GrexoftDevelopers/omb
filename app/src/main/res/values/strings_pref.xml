@@ -56,6 +56,7 @@
     <string name="pref_header_workout">Workout Notification Setting</string>
     <string name="pref_title_workout">Select suitable workout timings for alert</string>
     <string name="pref_title_list_preference">Select workout </string>
+    <string name="pref_title_list_fitness_preference">Select Fitness Level </string>
 
     <string name="pref_title_00_59">Enable 12:59 a.m notification</string>
     <string name="pref_title_01_59">Enable 01:59 a.m notification</string>
@@ -136,4 +137,16 @@
     </string-array>
 
 
+    <string-array name="entry_title_fitness_pref">
+        <item>Starter</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+    <string-array name="entry_value_fitness_pref">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+<string name="key_list_fitness_level">fitness_level</string>
 </resources>
