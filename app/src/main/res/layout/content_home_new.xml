@@ -20,12 +20,12 @@
             android:layout_height="wrap_content">
 
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/stopwatch"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"/>
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/stopwatch"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:scaleType="centerCrop"/>-->
 
             <!--<View-->
             <!--android:layout_width="match_parent"-->
@@ -39,25 +39,25 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/one_minute_before"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#000000"
-                    android:textAllCaps="true"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/one_minute_before"-->
+                    <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+                    <!--android:textColor="#000000"-->
+                    <!--android:textAllCaps="true"-->
+                    <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
+                    <!--/>-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/one_minute_before_desc"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#212121"
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                    />
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/one_minute_before_desc"-->
+                    <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+                    <!--android:textColor="#212121"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:layout_marginBottom="@dimen/activity_horizontal_margin"-->
+                    <!--/>-->
 
                 <Button
                     android:id="@+id/btn_register"
@@ -80,18 +80,19 @@
             <!--android:textAppearance="?android:attr/textAppearanceListItem"-->
             <!--android:layout_margin="8dp"/>-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/desc_home_4"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_margin="8dp"
-            android:textStyle="italic"
-            android:fontFamily="sans-serif-condensed" />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/desc_home_4"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:layout_margin="8dp"-->
+            <!--android:textStyle="italic"-->
+            <!--android:fontFamily="sans-serif-condensed" />-->
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
+            android:visibility="gone"
             android:background="#757575"/>
 
 
@@ -150,10 +151,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
+           <LinearLayout
+               android:id="@+id/layout_schedule_task"
+               android:orientation="vertical"
+               android:visibility="gone"
+               android:padding="@dimen/margin_padding_12dp"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+               <TextView
+                   android:id="@+id/tv_schedule_key"
+                   android:layout_width="wrap_content"
+                   android:layout_gravity="center"
+                   android:layout_height="wrap_content"
+                   android:text="@string/no_workouts_schedule_workout"
+                   android:textColor="@color/colorAccent"
+                   android:textSize="@dimen/text_size_large"
+                   android:fontFamily="serif-monospace"
+                   />
+
+               <Button
+                   android:layout_marginTop="@dimen/activity_horizontal_margin"
+                   android:id="@+id/btn_schedule_workout"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   style="@style/Base.Widget.AppCompat.Button.Colored"
+                   android:textSize="@dimen/text_size_normal"
+                   android:layout_gravity="center"
+                   android:textAllCaps="false"
+                   android:text="@string/schedule_workout"/>
+
+           </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/layout_upcoming_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="visible"
                 android:padding="12dp">
 
                 <ImageView

@@ -74,7 +74,19 @@
         <activity
             android:name=".WorkoutSettingActivity"
             android:label="@string/title_activity_workout_setting"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ReportsActivity"
+            android:label="@string/reports"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SettingsActivityNew"
+            android:label="@string/title_activity_settings_new"
+            android:theme="@style/SettingTheme"/>
+        <activity
+            android:name=".ChangePassword"
+            android:label="@string/title_activity_change_password"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

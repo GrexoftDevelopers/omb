@@ -1,0 +1,26 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+    <header
+        android:fragment="com.oneminutebefore.workout.SettingsActivityNew$FitnessLevelPreferenceFragment"
+        android:icon="@drawable/ic_level"
+        android:title="@string/pref_header_fitness_level" />
+
+    <header
+        android:fragment="com.oneminutebefore.workout.SettingsActivityNew$WorkoutsPreferenceFragment"
+        android:icon="@drawable/ic_add_alarm_black_24dp"
+        android:title="@string/pref_header_workouts" />
+
+
+    <header
+        android:icon="@drawable/ic_vpn_key_black_24dp"
+        android:title="@string/pref_header_change_password"
+        >
+        <intent
+            android:targetClass="com.oneminutebefore.workout.ChangePassword"
+            android:targetPackage="com.oneminutebefore.workout" />
+    </header>
+
+    <!--android:fragment="com.oneminutebefore.workout.SettingsActivityNew$DataSyncPreferenceFragment"-->
+
+</preference-headers>
