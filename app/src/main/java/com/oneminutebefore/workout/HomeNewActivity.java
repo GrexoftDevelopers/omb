@@ -106,7 +106,7 @@ public class HomeNewActivity extends AppCompatActivity
     private void initNavigationItems() {
         Menu menu = navigationView.getMenu();
         WorkoutApplication application = WorkoutApplication.getmInstance();
-        String userId = application.getUserId();
+        String userId = application.getSessionToken();
         if (userId.equals("-1")) {
             menu.findItem(R.id.action_sign_up).setVisible(true);
             menu.findItem(R.id.action_setting).setVisible(false);
@@ -173,7 +173,7 @@ public class HomeNewActivity extends AppCompatActivity
     private void resetTimer() {
 
         WorkoutApplication application = WorkoutApplication.getmInstance();
-        String userId = application.getUserId();
+        String userId = application.getSessionToken();
         if (userId.equals("-1")) {
             findViewById(R.id.card_timer).setVisibility(View.GONE);
             findViewById(R.id.card_workout_count).setVisibility(View.GONE);
@@ -332,8 +332,8 @@ public class HomeNewActivity extends AppCompatActivity
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            WorkoutApplication.getmInstance().setUserId("-1");
-                            SharedPrefsUtil.deletePreference(HomeNewActivity.this, Keys.KEY_USER_ID);
+                            WorkoutApplication.getmInstance().setSessionToken("-1");
+                            SharedPrefsUtil.deletePreference(HomeNewActivity.this, Keys.KEY_TOKEN);
                             Intent intent = new Intent(HomeNewActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/reps_count"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_reps_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <EditText
+            android:id="@+id/et_reps_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_reps"
+            android:imeActionId="@+id/register"
+            android:imeActionLabel="@string/register"
+            android:imeOptions="actionUnspecified"
+            android:inputType="number"
+            android:textColorHint="@color/text_hint_color"
+            android:textColor="@color/text_type_color"
+            android:textSize="@dimen/text_size_large" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

@@ -2,6 +2,7 @@ package com.oneminutebefore.workout;
 
 import android.app.Application;
 
+import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -13,14 +14,16 @@ import java.util.HashMap;
 
 public class WorkoutApplication extends Application {
 
-    private String userId;
     private String sessionToken;
+    private String userId;
 
     private static WorkoutApplication mInstance;
 
     private HashMap<String, WorkoutExercise> workouts;
 
     private HashMap<String, WorkoutCategory> workoutCategories;
+
+    private User user;
 
     @Override
     public void onCreate() {
@@ -32,12 +35,12 @@ public class WorkoutApplication extends Application {
         return mInstance;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getSessionToken() {
+        return sessionToken;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 
     public HashMap<String, WorkoutExercise> getWorkouts() {
@@ -48,11 +51,20 @@ public class WorkoutApplication extends Application {
         this.workouts = workouts;
     }
 
-    public String getSessionToken() {
-        return sessionToken;
+    public User getUser() {
+        return user;
     }
 
-    public void setSessionToken(String sessionToken) {
-        this.sessionToken = sessionToken;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

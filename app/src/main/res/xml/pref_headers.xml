@@ -21,6 +21,17 @@
             android:targetPackage="com.oneminutebefore.workout" />
     </header>
 
+    <header
+        android:icon="@drawable/ic_access_alarm_24dp"
+        android:title="@string/pref_header_timer_demo"
+        >
+        <intent
+            android:targetClass="com.oneminutebefore.workout.VideoPlayerActivity"
+            android:targetPackage="com.oneminutebefore.workout"
+            >
+        </intent>
+    </header>
+
     <!--android:fragment="com.oneminutebefore.workout.SettingsActivityNew$DataSyncPreferenceFragment"-->
 
 </preference-headers>

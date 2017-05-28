@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
@@ -120,7 +121,7 @@ public class RegisterFragment extends Fragment {
             }
 
             VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
-            volleyHelper.callApiGet(builder.build(), new VolleyHelper.VolleyCallback() {
+            volleyHelper.callApi(Request.Method.POST, builder.build(), null, new VolleyHelper.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) throws JSONException {
                     progressBar.setVisibility(View.GONE);
@@ -128,7 +129,7 @@ public class RegisterFragment extends Fragment {
                     JSONObject responseJson = new JSONObject(result);
                     String userId = responseJson.optString("status","-1");
                     if(!userId.equals("-1")){
-                        WorkoutApplication.getmInstance().setUserId(userId);
+                        WorkoutApplication.getmInstance().setSessionToken(userId);
                         SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, userId);
                         if (mListener != null) {
                             mListener.onRegisterSuccessFul();
@@ -140,7 +141,7 @@ public class RegisterFragment extends Fragment {
                 public void onError(String error) {
                     progressBar.setVisibility(View.GONE);
                     btnRegister.setEnabled(true);
-                    WorkoutApplication.getmInstance().setUserId("1234");
+                    WorkoutApplication.getmInstance().setSessionToken("1234");
                     SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, "1234");
                     if (mListener != null) {
                         mListener.onRegisterSuccessFul();

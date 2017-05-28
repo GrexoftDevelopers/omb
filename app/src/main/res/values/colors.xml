@@ -22,4 +22,6 @@
     <color name="deep_purple">#651fff</color>
     <color name="purple">#aa00ff</color>
     <color name="red">#d50000</color>
+    <color name="seconday_text">#757575</color>
+    <color name="divider_color">#bdbdbd</color>
 </resources>

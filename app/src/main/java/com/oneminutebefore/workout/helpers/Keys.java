@@ -20,6 +20,8 @@ public class Keys{
             ,"omb_video_12","omb_video_13","omb_video_14","omb_video_15","omb_video_16","omb_video_17"
             ,"omb_video_18","omb_video_19","omb_video_20","omb_video_21","omb_video_22","omb_video_23"};
 
+    public static final String KEY_TOKEN = "token";
+
     public static String[] getHourSelectionKeys(Context context){
 
         String[] array = new String[]{context.getString(R.string.key_00_59),context.getString(R.string.key_01_59),context.getString(R.string.key_02_59)

@@ -5,17 +5,14 @@ import android.content.Context;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.oneminutebefore.workout.BaseRequestActivity;
 import com.oneminutebefore.workout.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +28,10 @@ public class VolleyHelper {
     private boolean isInProgress;
     private boolean isCancelled;
     private RequestQueue queue;
+
+    private static final int mConnectionTimeout = 20000;
+
+    private static final int mSocketTimeout = 60000;
 
     public VolleyHelper(Context activity) {
         this(activity, true);
@@ -53,7 +54,7 @@ public class VolleyHelper {
         isCancelled = cancelled;
     }
 
-    public void callApi(int method, String url, final JSONObject obj, final VolleyCallback callback) {
+    public void callApi(int method, final String urlWithParams, final JSONObject obj, final VolleyCallback callback) {
         final ProgressDialog pd = new ProgressDialog(activity);
         if(showProgress)
         {
@@ -61,9 +62,11 @@ public class VolleyHelper {
             pd.setMessage(activity.getString(R.string.please_wait));
             pd.show();
         }
-        System.out.println("api url: " + url);
+        System.out.println("api url: " + urlWithParams);
         System.out.println("api obj: " + obj);
         queue = Volley.newRequestQueue(activity);
+        final int paramsIndex = urlWithParams.indexOf('?');
+        String url = paramsIndex > 0 ? urlWithParams.substring(0,paramsIndex) : urlWithParams;
         StringRequest stringRequest = new StringRequest(method, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -93,6 +96,17 @@ public class VolleyHelper {
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+
+                if(paramsIndex > 0){
+                    HashMap<String, String> params = new HashMap<>();
+                    String paramsArray[] = urlWithParams.substring(paramsIndex + 1).split("&");
+                    for(String param : paramsArray){
+                        String nameValuePair[] = param.split("=");
+                        params.put(nameValuePair[0],nameValuePair[1]);
+                    }
+                    return params;
+                }
+
                 return super.getParams();
             }
 
@@ -139,81 +153,6 @@ public class VolleyHelper {
         queue.add(stringRequest);
 
     }
-
-    public void callApiGet(String url, final VolleyCallback callback) {
-        System.out.println("api url: " + url);
-        final ProgressDialog pd = new ProgressDialog(activity);
-        if(showProgress)
-        {
-            pd.setCancelable(false);
-            pd.setMessage(activity.getString(R.string.please_wait));
-            pd.show();
-        }
-        RequestQueue queue = Volley.newRequestQueue(activity);
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if(showProgress && pd.isShowing()){
-                    pd.dismiss();
-                }
-                System.out.println("api response: " +response);
-                if(!isCancelled && callback != null){
-                    try {
-                        callback.onSuccess(response);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        callback.onError(activity.getString(R.string.some_error_occured));
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println("error: " +error.toString());
-                if(showProgress && pd.isShowing()){
-                    pd.dismiss();
-                }
-                if(!isCancelled && callback != null){
-                    callback.onError(error.toString());
-                }
-            }
-        });
-        request.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(request);
-    }
-
-
-    public void CallApiGetArray(String url, final VolleyCallback callback) {
-
-        RequestQueue queue = Volley.newRequestQueue(activity);
-        JsonArrayRequest req = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-
-                try {
-                    JSONObject json = new JSONObject();
-                    json.put("array",response);
-                    System.out.println(json.toString());
-                    callback.onSuccess(json.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-//                System.out.println(error);
-                callback.onError(error.toString());
-
-            }
-        });
-        req.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        queue.add(req);
-
-    }
-
 
     public interface VolleyCallback {
         void onSuccess(String result) throws JSONException;

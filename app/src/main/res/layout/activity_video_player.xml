@@ -49,6 +49,46 @@
                 class="com.google.android.youtube.player.YouTubePlayerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/activity_horizontal_margin">
+
+                <com.dinuscxj.progressbar.CircleProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    app:draw_progress_text="false"
+                    app:progress_start_color="@color/colorPrimary"
+                    app:progress_end_color="@color/colorPrimary"
+                    app:style="solid_line"
+                    app:progress_stroke_width="5dp"/>
+
+                <ImageView
+                    android:id="@+id/iv_play_pause"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/ic_play_arrow_48dp"
+                    android:padding="@dimen/margin_padding_18dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+
+                <TextView
+                    android:id="@+id/txt_timer_action_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/iv_play_pause"
+                    android:layout_marginTop="8dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/start"/>
+
+
+
+            </RelativeLayout>
+
         </LinearLayout>
 
         <RelativeLayout

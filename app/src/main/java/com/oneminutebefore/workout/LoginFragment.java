@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -19,10 +21,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
-import com.oneminutebefore.workout.helpers.VolleyHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,7 +145,7 @@ public class LoginFragment extends Fragment {
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -185,16 +187,27 @@ public class LoginFragment extends Fragment {
                     .addParameters("password", password)
                     .build();
 
-            VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
-            volleyHelper.callApiGet(url, new VolleyHelper.VolleyCallback() {
+            HttpTask httpTask = new HttpTask(false, getActivity());
+            httpTask.setmCallback(new HttpTask.HttpCallback() {
                 @Override
-                public void onSuccess(String result) throws JSONException {
+                public void onResponse(String response) throws JSONException {
                     showProgress(false);
-                    JSONObject responseJson = new JSONObject(result);
-                    String userId = responseJson.optString("status","-1");
-                    if(!userId.equals("-1")){
-                        WorkoutApplication.getmInstance().setUserId(userId);
-                        SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, userId);
+                    JSONObject responseJson = new JSONObject(response);
+                    String token = responseJson.optString("token");
+                    if(TextUtils.isEmpty(token)){
+                        String message = responseJson.optString("message");
+                        if(!TextUtils.isEmpty(message)){
+                            String emailError = "This email is not registered.";
+                            String passwordError = "This password is not correct.";
+                            if(message.equals(emailError)){
+                                ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(emailError);
+                            }else if(message.equals(passwordError)){
+                                ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(passwordError);
+                            }
+                        }
+                    }else{
+                        SharedPrefsUtil.setStringPreference(getActivity(),Keys.KEY_TOKEN, token);
+                        WorkoutApplication.getmInstance().setSessionToken(token);
                         if (mListener != null) {
                             mListener.onLoginSuccessFul();
                         }
@@ -202,10 +215,60 @@ public class LoginFragment extends Fragment {
                 }
 
                 @Override
-                public void onError(String error) {
+                public void onException(Exception e) {
                     showProgress(false);
+                    try {
+                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                        String message = jsonObject.optString("message");
+                        String emailError = "This email is not registered.";
+                        String passwordError = "This password is not correct.";
+                        if(message.equals(emailError)){
+                            ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(emailError);
+                        }else if(message.equals(passwordError)){
+                            ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(passwordError);
+                        }else{
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
+            httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+
+//            VolleyHelper volleyHelper = new VolleyHelper(getActivity(), false);
+//            volleyHelper.callApi(Request.Method.POST, url, null, new VolleyHelper.VolleyCallback() {
+//                @Override
+//                public void onSuccess(String result) throws JSONException {
+//                    showProgress(false);
+//                    JSONObject responseJson = new JSONObject(result);
+//                    String token = responseJson.optString("token");
+//                    if(TextUtils.isEmpty(token)){
+//                        String message = responseJson.optString("message");
+//                        if(!TextUtils.isEmpty(message)){
+//                            String emailError = "This email is not registered.";
+//                            String passwordError = "This password is not correct.";
+//                            if(message.equals(emailError)){
+//                                ((TextInputLayout)fragmentView.findViewById(R.id.til_email)).setError(emailError);
+//                            }else if(message.equals(passwordError)){
+//                                ((TextInputLayout)fragmentView.findViewById(R.id.til_password)).setError(passwordError);
+//                            }
+//                        }
+//                    }else{
+//                        SharedPrefsUtil.setStringPreference(getActivity(),Keys.KEY_TOKEN, token);
+//                        WorkoutApplication.getmInstance().setSessionToken(token);
+//                        if (mListener != null) {
+//                            mListener.onLoginSuccessFul();
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(String error) {
+//                    showProgress(false);
+//                }
+//            });
 
         }
     }
