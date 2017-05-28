@@ -111,6 +111,7 @@ public class SplashActivity extends BaseRequestActivity {
 
         HashMap<String, WorkoutExercise> map = WorkoutExercise.createMapFromJson(linksData);
         if(map != null && !map.isEmpty()){
+            application.setWorkouts(map);
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_VIDEOS_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_LINKS_DOWNLOADED, true);
         }
@@ -122,6 +123,7 @@ public class SplashActivity extends BaseRequestActivity {
 
         HashMap<String, WorkoutCategory> map = WorkoutCategory.createMapFromJson(linksData);
         if(map != null && !map.isEmpty()){
+            application.setWorkoutCategories(map);
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_CATEGORIES_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_CATEGORIES_DOWNLOADED, true);
         }
