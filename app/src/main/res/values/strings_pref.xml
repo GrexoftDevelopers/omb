@@ -138,9 +138,10 @@
 
 
     <string-array name="entry_title_fitness_pref">
-        <item>Starter</item>
+        <item>Light</item>
         <item>Intermediate</item>
         <item>Advanced</item>
+        <item>All star</item>
     </string-array>
     <string-array name="entry_value_fitness_pref">
         <item>0</item>
@@ -149,4 +150,5 @@
     </string-array>
 
 <string name="key_list_fitness_level">fitness_level</string>
+    <string name="default_fitness">Light</string>
 </resources>

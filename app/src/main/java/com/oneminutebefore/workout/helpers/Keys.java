@@ -54,5 +54,9 @@ public class Keys{
 
     }
 
+    public static String getUserLevelKey(Context context){
+        return context.getString(R.string.key_list_fitness_level);
+    }
+
 
 }

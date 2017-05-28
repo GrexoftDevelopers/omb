@@ -4,6 +4,7 @@ package com.oneminutebefore.workout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -163,21 +164,27 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
             String prefKeys[] = Keys.getWorkoutSelectionKeys(getActivity());
             HashMap<String, WorkoutExercise> workouts = WorkoutApplication.getmInstance().getWorkouts();
             if (workouts != null && !workouts.isEmpty()) {
-                String entries[] = new String[workouts.size()];
+                ArrayList<String> entries = new ArrayList<>();
                 ArrayList<String> entriesValues = new ArrayList<>();
                 int i = 0;
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String userLevel = sharedPreferences.getString(Keys.getUserLevelKey(getActivity()),getString(R.string.default_fitness));
                 for (Map.Entry entry : workouts.entrySet()) {
                     WorkoutExercise workoutExercise = ((WorkoutExercise) entry.getValue());
-                    entries[i] = workoutExercise.getName();
-                    entriesValues.add(workoutExercise.getId());
-                    i++;
+                    if (workoutExercise.getCategory().getName().equals(userLevel) || userLevel.equals("All star")) {
+                        entries.add(workoutExercise.getName());
+                        entriesValues.add(workoutExercise.getId());
+                        i++;
+                    }
                 }
                 for (i = 0; i < prefKeys.length; i++) {
 
                     ListPreference preference = (ListPreference) findPreference(prefKeys[i]);
                     String defaultValue = preference.getValue();
                     preference.setValue(entriesValues.get(0));
-                    preference.setEntries(entries);
+                    String[] entriesArray = new String[entries.size()];
+                    entries.toArray(entriesArray);
+                    preference.setEntries(entriesArray);
                     String[] entriesValueArray = new String[entriesValues.size()];
                     entriesValues.toArray(entriesValueArray);
                     preference.setEntryValues(entriesValueArray);

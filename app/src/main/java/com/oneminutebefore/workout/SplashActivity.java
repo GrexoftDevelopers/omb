@@ -22,6 +22,7 @@ public class SplashActivity extends BaseRequestActivity {
 
     private boolean videosSaved;
     private boolean categoriesSaved;
+    private WorkoutApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,9 @@ public class SplashActivity extends BaseRequestActivity {
 
         boolean areLinksDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
         boolean areCategoriesDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
+
+        application = WorkoutApplication.getmInstance();
+
 
         if(!areLinksDownloaded){
             VolleyHelper volleyHelper = new VolleyHelper(this, false);
@@ -47,7 +51,6 @@ public class SplashActivity extends BaseRequestActivity {
                 }
             });
         }else{
-            WorkoutApplication application = WorkoutApplication.getmInstance();
             String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
             application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
             videosSaved = true;
@@ -68,7 +71,6 @@ public class SplashActivity extends BaseRequestActivity {
                 }
             });
         }else{
-            WorkoutApplication application = WorkoutApplication.getmInstance();
             String categoriesJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_CATEGORIES_INFO, "[]");
             application.setWorkoutCategories(WorkoutCategory.createMapFromJson(categoriesJson));
             categoriesSaved = true;
@@ -109,7 +111,6 @@ public class SplashActivity extends BaseRequestActivity {
 
         HashMap<String, WorkoutExercise> map = WorkoutExercise.createMapFromJson(linksData);
         if(map != null && !map.isEmpty()){
-            getmInstance().setWorkouts(map);
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_VIDEOS_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_LINKS_DOWNLOADED, true);
         }
@@ -121,7 +122,6 @@ public class SplashActivity extends BaseRequestActivity {
 
         HashMap<String, WorkoutCategory> map = WorkoutCategory.createMapFromJson(linksData);
         if(map != null && !map.isEmpty()){
-            getmInstance().setWorkoutCategories(map);
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_CATEGORIES_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_CATEGORIES_DOWNLOADED, true);
         }

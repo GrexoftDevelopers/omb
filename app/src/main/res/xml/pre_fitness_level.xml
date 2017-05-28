@@ -2,8 +2,8 @@
 
     <PreferenceCategory android:title="@string/pref_header_fitness_level" />
     <ListPreference
-        android:defaultValue="0"
-        android:entryValues="@array/entry_value_fitness_pref"
+        android:defaultValue="@string/default_fitness"
+        android:entryValues="@array/entry_title_fitness_pref"
         android:entries="@array/entry_title_fitness_pref"
         android:key="@string/key_list_fitness_level"
         android:title="@string/pref_title_list_fitness_preference"
