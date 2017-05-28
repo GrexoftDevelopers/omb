@@ -67,4 +67,12 @@ public class WorkoutApplication extends Application {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public void setWorkoutCategories(HashMap<String, WorkoutCategory> workoutCategories) {
+        this.workoutCategories = workoutCategories;
+    }
+
+    public HashMap<String, WorkoutCategory> getWorkoutCategories() {
+        return workoutCategories;
+    }
 }

@@ -14,6 +14,7 @@ public class UrlBuilder {
     public static final String API_REGISTER = "/api/users";
     public static final String API_LOGIN = "/auth/local";
     public static final String API_ALL_VIDEOS = "/api/packages";
+    public static final String API_ALL_CATEGORIES = "/api/categories";
 
     private String uri;
 
