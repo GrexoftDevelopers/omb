@@ -26,7 +26,7 @@
     <string name="time_zone">Time Zone</string>
     <string name="time_zone_example">(EST,CST, MST or PST)</string>
     <string name="level">Level</string>
-    <string name="level_example">(Light, Medium, Advanced or All Star)</string>
+    <string name="level_example">(Light, Medium or Advanced)</string>
     <string name="register">Register</string>
     <string name="have_login">Already Registered ?</string>
     <!--<string name="error_required_field">This field is required</string>-->
@@ -40,7 +40,7 @@
 
 
     <string name="please_wait">Please wait...</string>
-    <string name="some_error_occured">Sone error occured.</string>
+    <string name="some_error_occured">Some error occurred.</string>
     <string name="name_asterisk">Name*</string>
     <string name="email_asterisk">Email*</string>
     <string name="password_asterisk">Password*</string>
@@ -168,4 +168,17 @@
     <string name="pause">Pause</string>
     <string name="start">Start</string>
     <string name="unauthorized">Unauthorized</string>
+
+    <string-array name="level_array">
+        <item>Light</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+        <item>All Star</item>
+    </string-array>
+    <string-array name="time_zone_array">
+        <item>EST</item>
+        <item>CST</item>
+        <item>MST</item>
+        <item>PST</item>
+    </string-array>
 </resources>

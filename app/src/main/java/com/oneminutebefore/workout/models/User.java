@@ -20,8 +20,20 @@ public class User {
     private String groupCode;
     private String provider;
     private String role;
+    private String timeZone;
 
     private boolean isActive;
+
+    public User(String email, String name, String phone, String userLevel, String groupCode, String provider,String role,String timeZone) {
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.userLevel = userLevel;
+        this.groupCode = groupCode;
+        this.provider = provider;
+        this.timeZone=timeZone;
+        this.role=role;
+    }
 
     public String getSalt() {
         return salt;
