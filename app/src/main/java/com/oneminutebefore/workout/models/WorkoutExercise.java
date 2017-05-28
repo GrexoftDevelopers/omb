@@ -23,6 +23,8 @@ public class WorkoutExercise implements Serializable{
     private int time;
     private int v;
     private boolean orders;
+    private WorkoutCategory category;
+    private String categoryId;
 
     public WorkoutExercise(String id, String name, String description, String videoLink, int repsCount, int time) {
         this.id = id;
@@ -81,6 +83,14 @@ public class WorkoutExercise implements Serializable{
         this.time = time;
     }
 
+    public WorkoutCategory getCategory() {
+        return category;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
     public static HashMap<String, WorkoutExercise> createMapFromJson(String data){
 
         if(!TextUtils.isEmpty(data)){
@@ -99,6 +109,8 @@ public class WorkoutExercise implements Serializable{
                         workoutExercise = new WorkoutExercise(id,name,null,link,0,0);
                         workoutExercise.orders = orders;
                         workoutExercise.v = v;
+                        workoutExercise.categoryId = jsonObject.optString("brand_id");
+                        workoutExercise.category = WorkoutCategory.createFromJson(jsonObject.optJSONObject("brand"));
                         map.put(id, workoutExercise);
                     }
                     return map;

@@ -9,6 +9,7 @@ import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
+import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import org.json.JSONException;
@@ -19,6 +20,9 @@ import static com.oneminutebefore.workout.WorkoutApplication.getmInstance;
 
 public class SplashActivity extends BaseRequestActivity {
 
+    private boolean videosSaved;
+    private boolean categoriesSaved;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +30,7 @@ public class SplashActivity extends BaseRequestActivity {
         setContentView(R.layout.activity_splash);
 
         boolean areLinksDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
+        boolean areCategoriesDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
 
         if(!areLinksDownloaded){
             VolleyHelper volleyHelper = new VolleyHelper(this, false);
@@ -45,11 +50,36 @@ public class SplashActivity extends BaseRequestActivity {
             WorkoutApplication application = WorkoutApplication.getmInstance();
             String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
             application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
+            videosSaved = true;
+            checkLoginAndRedirect();
+        }
+        if(!areCategoriesDownloaded){
+            VolleyHelper volleyHelper = new VolleyHelper(this, false);
+            String url = new UrlBuilder(UrlBuilder.API_ALL_CATEGORIES).build();
+            volleyHelper.callApi(Request.Method.GET, url, null, new VolleyHelper.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) throws JSONException {
+                    saveCategories(result);
+                }
+
+                @Override
+                public void onError(String error) {
+                    saveCategories(null);
+                }
+            });
+        }else{
+            WorkoutApplication application = WorkoutApplication.getmInstance();
+            String categoriesJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_CATEGORIES_INFO, "[]");
+            application.setWorkoutCategories(WorkoutCategory.createMapFromJson(categoriesJson));
+            categoriesSaved = true;
             checkLoginAndRedirect();
         }
     }
 
     private void checkLoginAndRedirect(){
+
+        // Ensure that the required data is fetched
+        if(!videosSaved || !categoriesSaved) return;
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -63,7 +93,6 @@ public class SplashActivity extends BaseRequestActivity {
                 }else{
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 }
-//                startActivity(new Intent(SplashActivity.this, HomeNewActivity.class));
             }
         },2000);
 
@@ -84,6 +113,19 @@ public class SplashActivity extends BaseRequestActivity {
             SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_VIDEOS_INFO, linksData);
             SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_LINKS_DOWNLOADED, true);
         }
+        videosSaved = true;
+        checkLoginAndRedirect();
+    }
+
+    private void saveCategories(String linksData){
+
+        HashMap<String, WorkoutCategory> map = WorkoutCategory.createMapFromJson(linksData);
+        if(map != null && !map.isEmpty()){
+            getmInstance().setWorkoutCategories(map);
+            SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_CATEGORIES_INFO, linksData);
+            SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_CATEGORIES_DOWNLOADED, true);
+        }
+        categoriesSaved = true;
         checkLoginAndRedirect();
     }
 }

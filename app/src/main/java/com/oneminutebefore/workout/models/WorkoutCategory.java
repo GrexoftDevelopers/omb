@@ -1,5 +1,11 @@
 package com.oneminutebefore.workout.models;
 
+import android.text.TextUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 /**
@@ -7,10 +13,6 @@ import java.util.HashMap;
  */
 
 public class WorkoutCategory {
-
-
-
-
 
 
     private String id;
@@ -76,4 +78,50 @@ public class WorkoutCategory {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public static HashMap<String, WorkoutCategory> createMapFromJson(String data) {
+
+        if (!TextUtils.isEmpty(data)) {
+            try {
+                JSONArray dataArray = new JSONArray(data);
+                if (dataArray != null && dataArray.length() > 0) {
+                    HashMap<String, WorkoutCategory> map = new HashMap<>();
+                    WorkoutCategory workoutCategory;
+                    for (int i = 0; i < dataArray.length(); i++) {
+                        JSONObject jsonObject = dataArray.getJSONObject(i);
+                        workoutCategory = createFromJson(jsonObject);
+                        map.put(workoutCategory.id, workoutCategory);
+                    }
+                    return map;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    public static WorkoutCategory createFromJson(JSONObject jsonObject) {
+        if (jsonObject != null) {
+            WorkoutCategory workoutCategory = new WorkoutCategory();
+            workoutCategory.id = jsonObject.optString("_id");
+            workoutCategory.name = jsonObject.optString("name");
+            workoutCategory.slug = jsonObject.optString("slug");
+            workoutCategory.updateTime = jsonObject.optString("updated");
+            workoutCategory.isActive = jsonObject.optBoolean("active", true);
+            workoutCategory.v = jsonObject.optInt("__v", 0);
+//                        JSONArray workoutsArray = jsonObject.optJSONArray("products");
+//                        if(workoutsArray != null && workoutsArray.length() > 0){
+//
+//                            for(int j = 0 ; j < workoutsArray.length() ; j++){
+//
+//                            }
+//                        }
+            return workoutCategory;
+        }
+        return null;
+    }
+
 }
