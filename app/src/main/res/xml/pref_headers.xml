@@ -17,7 +17,7 @@
         android:title="@string/pref_header_change_password"
         >
         <intent
-            android:targetClass="com.oneminutebefore.workout.ChangePassword"
+            android:targetClass="com.oneminutebefore.workout.ChangePasswordActivity"
             android:targetPackage="com.oneminutebefore.workout" />
     </header>
 

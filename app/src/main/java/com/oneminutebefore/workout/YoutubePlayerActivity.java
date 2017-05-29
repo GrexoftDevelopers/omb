@@ -11,6 +11,7 @@ import com.google.android.youtube.player.YouTubePlayerFragment;
 public class YoutubePlayerActivity extends YouTubeBaseActivity {
 
     public static final String KEY_LINK = "link";
+    public static final String KEY_TITLE = "title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +19,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity {
         setContentView(R.layout.activity_youtube_player);
 
         final String videoLink = getIntent().getStringExtra(KEY_LINK);
+        final String videoTitle = getIntent().getStringExtra(KEY_TITLE);
         if(!TextUtils.isEmpty(videoLink)){
             YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.yt_fragment);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
