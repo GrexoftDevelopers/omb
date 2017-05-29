@@ -12,6 +12,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.oneminutebefore.workout.BaseRequestActivity;
 import com.oneminutebefore.workout.R;
+import com.oneminutebefore.workout.WorkoutApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,8 @@ public class VolleyHelper {
 
     private static final int mSocketTimeout = 60000;
 
+    private boolean isAuthorizationRequired;
+
     public VolleyHelper(Context activity) {
         this(activity, true);
     }
@@ -45,7 +48,11 @@ public class VolleyHelper {
         }
     }
 
-//    public RequestQueue getQueue() {
+    public void setAuthorizationRequired(boolean authorizationRequired) {
+        isAuthorizationRequired = authorizationRequired;
+    }
+
+    //    public RequestQueue getQueue() {
 //        return queue;
 //    }
 
@@ -114,40 +121,13 @@ public class VolleyHelper {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("Content-Type","application/x-www-form-urlencoded");
+                if(isAuthorizationRequired){
+                    params.put("Authorization","Bearer " + WorkoutApplication.getmInstance().getSessionToken());
+                }
                 return params;
             }
         };
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest(method, url, obj,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        if(showProgress && pd.isShowing()){
-//                            pd.dismiss();
-//                        }
-//                        System.out.println("api response: " + response.toString());
-//                        if(!isCancelled && callback != null){
-//                            try {
-//                                callback.onSuccess(response.toString());
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                                callback.onError(activity.getString(R.string.some_error_occured));
-//                            }
-//                        }
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                if(showProgress && pd.isShowing()){
-//                    pd.dismiss();
-//                }
-//                if(!isCancelled && callback != null){
-//                    callback.onError("error: " + error.toString());
-//                }
-//            }
-//        });
         stringRequest.setShouldCache(false);
-
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(stringRequest);

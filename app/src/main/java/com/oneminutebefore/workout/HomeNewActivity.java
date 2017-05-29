@@ -42,10 +42,9 @@ public class HomeNewActivity extends AppCompatActivity
     private NavigationView navigationView;
 
     private TextView tvTimer;
-    private TimerTask timerTask;
+    private static TimerTask timerTask;
 
     @SuppressLint("SimpleDateFormat")
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
     private TextView tvTimerMinutes;
     private View layoutUpcomingTask, layoutScheduleTask;
     private Button btnScheduleTask;
@@ -99,6 +98,7 @@ public class HomeNewActivity extends AppCompatActivity
     protected void onDestroy() {
         if (timerTask != null) {
             timerTask.cancel(true);
+            timerTask = null;
         }
         super.onDestroy();
     }
@@ -352,9 +352,11 @@ public class HomeNewActivity extends AppCompatActivity
         return true;
     }
 
-    private class TimerTask extends AsyncTask<Void, Long, Void> {
+    public class TimerTask extends AsyncTask<Void, Long, Void> {
 
         private long deadLine;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
 
         public TimerTask(long deadLine) {
             this.deadLine = deadLine;

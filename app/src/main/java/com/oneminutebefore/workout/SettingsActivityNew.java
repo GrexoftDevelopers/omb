@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -275,4 +276,12 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
 //            return super.onOptionsItemSelected(item);
 //        }
 //    }
+
+    @Override
+    protected void onDestroy() {
+        IntentUtils.scheduleWorkoutNotifications(SettingsActivityNew.this);
+        super.onDestroy();
+    }
+
+
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.oneminutebefore.workout.BaseRequestActivity;
 import com.oneminutebefore.workout.R;
+import com.oneminutebefore.workout.WorkoutApplication;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -18,6 +19,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -53,6 +55,13 @@ public class HttpTask extends AsyncTask<String, Void, String> {
 
     private String interceptedResponse;
 
+    private boolean isAuthorizationRequired;
+
+    private int requestMethod;
+
+    public static final int METHOD_POST = 1;
+    public static final int METHOD_GET = 2;
+
     public void setmCallback(HttpCallback mCallback) {
         this.mCallback = mCallback;
     }
@@ -60,9 +69,23 @@ public class HttpTask extends AsyncTask<String, Void, String> {
     public HttpTask(boolean showProgress, Context mContext) {
         this.showProgress = showProgress;
         this.mContext = mContext;
+        requestMethod = METHOD_POST;
         if(mContext instanceof BaseRequestActivity){
             ((BaseRequestActivity)mContext).addTask(this);
         }
+    }
+
+    public HttpTask(boolean showProgress, Context mContext, int requestMethod) {
+        this.showProgress = showProgress;
+        this.mContext = mContext;
+        this.requestMethod = requestMethod;
+        if(mContext instanceof BaseRequestActivity){
+            ((BaseRequestActivity)mContext).addTask(this);
+        }
+    }
+
+    public void setAuthorizationRequired(boolean authorizationRequired) {
+        isAuthorizationRequired = authorizationRequired;
     }
 
     private static final int mConnectionTimeout = 20000;
@@ -102,17 +125,14 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                             nameValuePairs);
                     postMethod.setEntity(urlEncodedFormEntity);
                 }
-//                postMethod.setParams(httpParams);
 
                 ResponseHandler<String> res = new BasicResponseHandler();
 
-//                StringEntity se = new StringEntity(data);
-//
-//                postMethod.setEntity(se);
-
-//                postMethod.setHeader("Accept", "application/json");
-
                 postMethod.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                if(isAuthorizationRequired){
+                    postMethod.setHeader("Authorization", "Bearer " + WorkoutApplication.getmInstance().getSessionToken());
+                }
 
                 client.addResponseInterceptor(new HttpResponseInterceptor() {
                     @Override
@@ -137,13 +157,66 @@ public class HttpTask extends AsyncTask<String, Void, String> {
         }
     }
 
+
+    private String getContent(Context context, String urlWithParams, DefaultHttpClient client) throws HttpConnectException {
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            try {
+                Log.d(TAG,"url :  " + urlWithParams);
+                HttpGet getMethod = new HttpGet(urlWithParams);
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, mConnectionTimeout);
+                HttpConnectionParams.setSoTimeout(httpParams, mSocketTimeout);
+
+                getMethod.setParams(httpParams);
+
+                ResponseHandler<String> res = new BasicResponseHandler();
+
+                getMethod.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                if(isAuthorizationRequired){
+                    getMethod.setHeader("Authorization", "Bearer " + WorkoutApplication.getmInstance().getSessionToken());
+                }
+
+                client.addResponseInterceptor(new HttpResponseInterceptor() {
+                    @Override
+                    public void process(HttpResponse httpResponse, HttpContext httpContext) throws HttpException, IOException {
+                        if(httpResponse.getStatusLine().getStatusCode() != 200){
+                            InputStream is = httpResponse.getEntity().getContent();
+                            interceptedResponse = Utils.convertStreamToString(is);
+                            Log.d(TAG, "content length : " + httpResponse.getEntity().getContentLength());
+                            Log.d(TAG,"response body : " + interceptedResponse);
+                        }
+                    }
+                });
+
+                return client.execute(getMethod,res);
+
+            } catch(Throwable t) {
+                t.printStackTrace();
+                throw new HttpConnectException(t instanceof HttpResponseException ? interceptedResponse : t.getMessage());
+            }
+        } else {
+            throw new HttpConnectException("No internet access");
+        }
+    }
+
     @Override
     protected String doInBackground(String... params) {
 
         String result = "";
         try{
             Log.d(TAG, "request : " + params[0]);
-            result = postContent(mContext, params[0],null);
+
+            if(requestMethod == METHOD_POST){
+                result = postContent(mContext, params[0],null);
+            }else{
+                result = getContent(mContext, params[0], new DefaultHttpClient());
+            }
 
             if(TextUtils.isEmpty(result)){
                 this.exception = new NullPointerException("no response");

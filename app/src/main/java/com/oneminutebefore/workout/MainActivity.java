@@ -1,6 +1,7 @@
 package com.oneminutebefore.workout;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
+import com.oneminutebefore.workout.helpers.HttpTask;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -83,12 +90,33 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
     }
 
+    private void fetchUserInfo(){
+
+        String url = new UrlBuilder(UrlBuilder.API_ME).build();
+        HttpTask httpTask = new HttpTask(true,MainActivity.this,HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true);
+        httpTask.setmCallback(new HttpTask.HttpCallback() {
+            @Override
+            public void onResponse(String response) throws JSONException {
+                User user = User.createFromJson(new JSONObject(response));
+                WorkoutApplication application = ((WorkoutApplication)getApplication());
+                application.setUser(user);
+                application.setUserId(user.getId());
+                switchToHomeActivity();
+            }
+
+            @Override
+            public void onException(Exception e) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+            }
+        });
+        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+    }
+
     @Override
     public void onLoginSuccessFul() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_successful), Snackbar.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, HomeNewActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        fetchUserInfo();
     }
 
     @Override
@@ -99,9 +127,14 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onRegisterSuccessFul() {
         Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
+        fetchUserInfo();
+    }
+
+    private void switchToHomeActivity(){
         Intent intent = new Intent(this, HomeNewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     @Override

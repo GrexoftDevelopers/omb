@@ -1,22 +1,26 @@
 package com.oneminutebefore.workout;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
+import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
-
-import static com.oneminutebefore.workout.WorkoutApplication.getmInstance;
 
 public class SplashActivity extends BaseRequestActivity {
 
@@ -83,28 +87,54 @@ public class SplashActivity extends BaseRequestActivity {
         // Ensure that the required data is fetched
         if(!videosSaved || !categoriesSaved) return;
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String token = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_TOKEN, "");
-                WorkoutApplication application = WorkoutApplication.getmInstance();
-                application.setSessionToken(token);
-                if(!token.equals("")){
-                    getmInstance().setSessionToken(token);
-                    startActivity(new Intent(SplashActivity.this, HomeNewActivity.class));
-                }else{
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                }
-            }
-        },2000);
+        String token = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_TOKEN, "");
+        WorkoutApplication application = WorkoutApplication.getmInstance();
+        application.setSessionToken(token);
+        if(!token.equals("")){
+            WorkoutApplication.getmInstance().setSessionToken(token);
+            fetchUserInfo();
+        }else{
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               finish();
-            }
-        }, 3000);
+    }
 
+    private void fetchUserInfo(){
+
+        String url = new UrlBuilder(UrlBuilder.API_ME).build();
+        HttpTask httpTask = new HttpTask(true,SplashActivity.this,HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true);
+        httpTask.setmCallback(new HttpTask.HttpCallback() {
+            @Override
+            public void onResponse(String response) throws JSONException {
+                User user = User.createFromJson(new JSONObject(response));
+                WorkoutApplication application = ((WorkoutApplication)getApplication());
+                application.setUser(user);
+                application.setUserId(user.getId());
+                Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
+                startActivity(intent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 1500);
+            }
+
+            @Override
+            public void onException(Exception e) {
+                Toast.makeText(SplashActivity.this, getString(R.string.some_error_occured), Toast.LENGTH_SHORT).show();
+                Utils.clearData(SplashActivity.this);
+                startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 1500);
+            }
+        });
+        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
     }
 
     private void saveLinks(String linksData){

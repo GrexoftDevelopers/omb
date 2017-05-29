@@ -1,5 +1,7 @@
 package com.oneminutebefore.workout.models;
 
+import org.json.JSONObject;
+
 /**
  * Created by tahir on 28/5/17.
  */
@@ -34,6 +36,10 @@ public class User {
         this.provider = provider;
         this.timeZone=timeZone;
         this.role=role;
+    }
+
+    public User(){
+
     }
 
     public String getSalt() {
@@ -87,4 +93,24 @@ public class User {
     public String getId() {
         return id;
     }
+
+    public static User createFromJson(JSONObject jsonObject){
+
+        if(jsonObject != null){
+            User user = new User();
+            user.id = jsonObject.optString("_id");
+            user.userLevel = jsonObject.optString("user_level");
+            user.isActive = jsonObject.optBoolean("active");
+            user.role = jsonObject.optString("role");
+            user._v = jsonObject.optInt("__v");
+            user.name = jsonObject.optString("name");
+            user.provider = jsonObject.optString("provider");
+            user.groupCode = jsonObject.optString("group_code");
+            user.email = jsonObject.optString("email");
+            user.phone = jsonObject.optString("phone");
+            return user;
+        }
+        return null;
+    }
+
 }

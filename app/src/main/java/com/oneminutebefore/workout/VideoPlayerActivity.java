@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -19,11 +20,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.oneminutebefore.workout.helpers.HttpTask;
+import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.VolleyHelper;
+import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +60,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private int timerSecond;
     private TimerTask timerTask;
+    private WorkoutApplication application;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +73,19 @@ public class VideoPlayerActivity extends AppCompatActivity {
         Intent mIntent = getIntent();
         workoutExercise = (WorkoutExercise) mIntent.getSerializableExtra(KEY_WORKOUT);
 
-
+        application = WorkoutApplication.getmInstance();
+        String session = application.getSessionToken();
+        if(TextUtils.isEmpty(session)){
+            session = SharedPrefsUtil.getStringPreference(this, Keys.KEY_TOKEN);
+            if(!TextUtils.isEmpty(session)){
+                application.setSessionToken(session);
+            }
+        }
+        if(!TextUtils.isEmpty(session)){
+            if(application.getUser() == null){
+                fetchUserInfo();
+            }
+        }
 
         isDemo = workoutExercise == null;
         if(isDemo){
@@ -126,6 +151,27 @@ public class VideoPlayerActivity extends AppCompatActivity {
             findViewById(R.id.youtube_content).setVisibility(View.GONE);
             findViewById(R.id.layout_no_content).setVisibility(View.VISIBLE);
         }
+    }
+
+    private void fetchUserInfo(){
+
+        String url = new UrlBuilder(UrlBuilder.API_ME).build();
+        HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true);
+        httpTask.setmCallback(new HttpTask.HttpCallback() {
+            @Override
+            public void onResponse(String response) throws JSONException {
+                User user = User.createFromJson(new JSONObject(response));
+                application.setUser(user);
+                application.setUserId(user.getId());
+            }
+
+            @Override
+            public void onException(Exception e) {
+
+            }
+        });
+        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
     }
 
     private void toggleTimer(){
@@ -226,7 +272,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 builder.setView(dialogView);
                 builder.setNegativeButton(getString(R.string.cancel), null);
                 builder.setPositiveButton(getString(R.string.ok), null);
-                final AlertDialog alertDialog = builder.create();
+                alertDialog = builder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(final DialogInterface dialog) {
@@ -237,9 +283,19 @@ public class VideoPlayerActivity extends AppCompatActivity {
                                 if(TextUtils.isEmpty(repsCount)){
                                     ((TextInputLayout)dialogView.findViewById(R.id.til_reps_count)).setError("Please enter reps");
                                 }else{
-                                    Toast.makeText(VideoPlayerActivity.this, "Thank you for entering", Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
-                                    finish();
+                                    if(repsCount.startsWith(".")){
+                                        repsCount = "0" + repsCount;
+                                    }
+                                    if(repsCount.equals("-")){
+                                        repsCount = "0";
+                                    }
+                                    double count = Double.valueOf(repsCount);
+                                    if(application.getUser() != null){
+                                        saveReps(count);
+                                    }else{
+                                        dialog.dismiss();
+                                        finish();
+                                    }
                                 }
                             }
                         });
@@ -249,5 +305,29 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 ivPlayPause.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void saveReps(double count) {
+        VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
+        String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
+                .addParameters("date","")
+                .addParameters("reps",String.valueOf(count))
+                .addParameters("id",workoutExercise.getId())
+                .addParameters("user_id", application.getUser().getId())
+                .build();
+        volleyHelper.setAuthorizationRequired(true);
+        volleyHelper.callApi(Request.Method.PUT, url, null, new VolleyHelper.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) throws JSONException {
+                Toast.makeText(VideoPlayerActivity.this, "Thank you for entering", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+                finish();
+            }
+
+            @Override
+            public void onError(String error) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+            }
+        });
     }
 }
