@@ -150,5 +150,5 @@
     </string-array>
 
 <string name="key_list_fitness_level">fitness_level</string>
-    <string name="default_fitness">Light</string>
+    <string name="default_fitness">Intermediate</string>
 </resources>
