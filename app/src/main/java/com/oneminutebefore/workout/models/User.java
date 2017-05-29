@@ -21,6 +21,7 @@ public class User {
     private String provider;
     private String role;
     private String timeZone;
+    private String id;
 
     private boolean isActive;
 
@@ -77,5 +78,13 @@ public class User {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -168,6 +168,12 @@
     <string name="pause">Pause</string>
     <string name="start">Start</string>
     <string name="unauthorized">Unauthorized</string>
+    <string name="submit">Submit</string>
+    <string name="prompt_new_password">New password</string>
+    <string name="prompt_confirm_password">Confirm password</string>
+    <string name="error_no_password">Please enter password</string>
+    <string name="error_confirm_password">Please confirm your password</string>
+    <string name="msg_password_changed">Password changed successfully</string>
 
     <string-array name="level_array">
         <item>Light</item>

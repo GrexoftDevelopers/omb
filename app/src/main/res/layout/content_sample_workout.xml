@@ -1,28 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
+    android:id="@+id/sample_list"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.oneminutebefore.workout.SampleWorkoutActivity"
     tools:showIn="@layout/activity_sample_workout">
 
-    <fragment
-        class="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:id="@+id/yp_sample_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        />
-
-    <fragment
-        class="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:id="@+id/yp_sample_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-</LinearLayout>
+</android.support.v7.widget.RecyclerView>

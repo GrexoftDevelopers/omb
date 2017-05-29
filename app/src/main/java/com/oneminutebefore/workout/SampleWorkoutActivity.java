@@ -1,16 +1,31 @@
 package com.oneminutebefore.workout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SampleWorkoutActivity extends AppCompatActivity {
+
+    private WorkoutApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,35 +38,82 @@ public class SampleWorkoutActivity extends AppCompatActivity {
         if(actionBar != null){
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getTitle());
         }
 
-        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.yp_sample_1);
-        youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                youTubePlayer.cueVideo("WngOnjCVcqU");
+        RecyclerView rclSample = (RecyclerView) findViewById(R.id.sample_list);
+        application = WorkoutApplication.getmInstance();
+        if(application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
+            rclSample.setLayoutManager(new GridLayoutManager(this,2));
+            rclSample.setAdapter(new SampleAdapter(application.getWorkouts()));
+        }
+    }
+
+    private class SampleAdapter extends RecyclerView.Adapter<SampleAdapter.ViewHolder>{
+
+        private ArrayList<WorkoutExercise> workouts;
+
+        SampleAdapter(HashMap<String, WorkoutExercise> workoutExerciseHashMap){
+
+            workouts = new ArrayList<>();
+            for(Map.Entry entry : workoutExerciseHashMap.entrySet()){
+                workouts.add((WorkoutExercise) entry.getValue());
             }
 
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        }
 
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = getLayoutInflater().inflate(R.layout.item_sample_exercise, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+
+            final WorkoutExercise workoutExercise = workouts.get(position);
+            final String link = workoutExercise.getVideoLink().substring(workoutExercise.getVideoLink().lastIndexOf("/") + 1);
+            holder.tvName.setText(workoutExercise.getName());
+
+            holder.youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                    youTubeThumbnailLoader.setVideo(link);
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+                    System.out.println("init failure");
+                }
+            });
+            holder.youTubeThumbnailView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SampleWorkoutActivity.this, YoutubePlayerActivity.class);
+                    intent.putExtra(YoutubePlayerActivity.KEY_LINK, link);
+                    startActivity(intent);
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return workouts != null ? workouts.size() : 0;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder{
+
+            private YouTubeThumbnailView youTubeThumbnailView;
+            private TextView tvName;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                tvName = (TextView) itemView.findViewById(R.id.txt_name);
+                youTubeThumbnailView = (YouTubeThumbnailView) itemView.findViewById(R.id.thumb_video);
             }
-        });
+        }
 
-        YouTubePlayerFragment youTubePlayerFragment2 = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.yp_sample_2);
-        youTubePlayerFragment2.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-            @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                youTubePlayer.cueVideo("zjGva56t19A");
-            }
-
-            @Override
-            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-            }
-        });
     }
 
     @Override

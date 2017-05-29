@@ -12,7 +12,7 @@ public class UrlBuilder {
 
     private static final String BASE_URL = "http://1minutebefore.com";
     public static final String API_REGISTER = "/api/users";
-    public static final String API_LOGIN = "/auth/local";
+    public static final String API_USERS = "/auth/local";
     public static final String API_ALL_VIDEOS = "/api/packages";
     public static final String API_ALL_CATEGORIES = "/api/categories";
 
@@ -31,11 +31,12 @@ public class UrlBuilder {
         return this;
     }
 
-    public void addSection(String section){
+    public UrlBuilder addSection(String section){
         if(sections == null){
             sections = new ArrayList<>();
         }
         sections.add(section);
+        return this;
     }
 
     public String build(){

@@ -103,7 +103,9 @@ public class WorkoutExercise implements Serializable{
                         JSONObject jsonObject = dataArray.getJSONObject(i);
                         String id = jsonObject.optString("_id");
                         String name = jsonObject.optString("name");
-                        String link = jsonObject.optString("info");
+//                        String link = jsonObject.optString("info");
+//                        String link = "http://www.youtu.be/s7CNC9irjt0";
+                        String link = "https://youtu.be/pOLppIAhgr0";
                         boolean orders = jsonObject.optBoolean("orders",true);
                         int v = jsonObject.optInt("__v",0);
                         workoutExercise = new WorkoutExercise(id,name,null,link,0,0);
