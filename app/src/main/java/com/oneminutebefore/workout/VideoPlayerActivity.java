@@ -119,9 +119,13 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.setShowFullscreenButton(true);
-                    String url = workoutExercise.getVideoLink();
+                    int substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
+                    if(substringIndex < 0){
+                        substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
+                    }
+                    String url = workoutExercise.getVideoLink().substring(substringIndex);
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-                    youTubePlayer.cueVideo(url.substring(url.lastIndexOf("/") + 1));
+                    youTubePlayer.cueVideo(url);
                 }
 
                 @Override

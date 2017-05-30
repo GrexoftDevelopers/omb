@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.oneminutebefore.workout.models.WorkoutExercise;
@@ -72,7 +70,11 @@ public class SampleWorkoutActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
 
             final WorkoutExercise workoutExercise = workouts.get(position);
-            final String link = workoutExercise.getVideoLink().substring(workoutExercise.getVideoLink().lastIndexOf("/") + 1);
+            int substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
+            if(substringIndex < 0){
+                substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
+            }
+            final String link = workoutExercise.getVideoLink().substring(substringIndex);
             holder.tvName.setText(workoutExercise.getName());
 
             holder.youTubeThumbnailView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
