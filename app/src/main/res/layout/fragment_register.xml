@@ -122,11 +122,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:gravity="start"
                     android:textColorHint="@color/text_hint_color"
                     android:text="@string/time_zone"
-                    android:textColor="@color/text_heading"
-                    android:textSize="@dimen/text_size_large" />
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/seconday_text"
+                    android:textSize="12sp" />
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinner_time_zone"
@@ -154,10 +155,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:gravity="start"
+                    android:layout_marginLeft="2dp"
                     android:text="@string/level"
-                    android:textColor="@color/text_heading"
-                    android:textSize="@dimen/text_size_large"
+                    android:textColor="@color/seconday_text"
+                    android:textSize="12sp"
                     />
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/spinner_level"

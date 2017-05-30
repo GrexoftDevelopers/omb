@@ -15,25 +15,23 @@ import java.util.HashMap;
 
 public class WorkoutExercise implements Serializable{
 
-    private String id;
-    private String name;
-    private String description;
-    private String videoLink;
-    private int repsCount;
-    private int time;
-    private int v;
-    private boolean orders;
-    private WorkoutCategory category;
-    private String categoryId;
+    protected String id;
+    protected String name;
+    protected String description;
+    protected String videoLink;
+    protected int v;
+    protected boolean orders;
+    protected WorkoutCategory category;
+    protected String categoryId;
 
-    public WorkoutExercise(String id, String name, String description, String videoLink, int repsCount, int time) {
+    public WorkoutExercise(String id, String name, String description, String videoLink) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.videoLink = videoLink;
-        this.repsCount = repsCount;
-        this.time = time;
     }
+
+    public WorkoutExercise(){}
 
     public String getId() {
         return id;
@@ -67,22 +65,6 @@ public class WorkoutExercise implements Serializable{
         this.videoLink = videoLink;
     }
 
-    public int getRepsCount() {
-        return repsCount;
-    }
-
-    public void setRepsCount(int repsCount) {
-        this.repsCount = repsCount;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
     public WorkoutCategory getCategory() {
         return category;
     }
@@ -103,11 +85,11 @@ public class WorkoutExercise implements Serializable{
                         JSONObject jsonObject = dataArray.getJSONObject(i);
                         String id = jsonObject.optString("_id");
                         String name = jsonObject.optString("name");
-//                        String link = jsonObject.optString("info");
-                        String link = "https://youtu.be/pOLppIAhgr0";
+                        String link = jsonObject.optString("info");
+//                        String link = "https://youtu.be/pOLppIAhgr0";
                         boolean orders = jsonObject.optBoolean("orders",true);
                         int v = jsonObject.optInt("__v",0);
-                        workoutExercise = new WorkoutExercise(id,name,null,link,0,0);
+                        workoutExercise = new WorkoutExercise(id,name,null,link);
                         workoutExercise.orders = orders;
                         workoutExercise.v = v;
                         workoutExercise.categoryId = jsonObject.optString("brand_id");

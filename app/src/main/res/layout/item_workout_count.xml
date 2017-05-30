@@ -31,17 +31,19 @@
         android:textAllCaps="true"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
+        android:layout_toLeftOf="@+id/iv_delete"
         />
 
     <TextView
         android:id="@+id/tv_workout_time"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/tv_count"
         android:layout_below="@+id/tv_workout_name"
         android:text="@string/push_ups"
         android:layout_marginBottom="8dp"
         android:textStyle="italic"
+        android:layout_toLeftOf="@+id/iv_delete"
         />
 
     <View
@@ -49,10 +51,19 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignLeft="@+id/tv_workout_name"
-        android:layout_alignRight="@+id/tv_workout_name"
-        android:layout_below="@+id/tv_count"
+        android:layout_below="@+id/tv_workout_time"
         android:layout_marginTop="@dimen/margin_padding_12dp"
         android:background="#cccccc"
         />
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete_24dp"
+        android:visibility="gone"
+        android:padding="@dimen/margin_padding_12dp"
+        android:layout_alignParentRight="true"
+        android:background="?attr/selectableItemBackground"/>
 
 </RelativeLayout>

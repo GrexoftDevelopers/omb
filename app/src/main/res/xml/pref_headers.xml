@@ -6,10 +6,19 @@
         android:icon="@drawable/ic_level"
         android:title="@string/pref_header_fitness_level" />
 
+    <!--<header-->
+        <!--android:fragment="com.oneminutebefore.workout.SettingsActivityNew$WorkoutsPreferenceFragment"-->
+        <!--android:icon="@drawable/ic_add_alarm_black_24dp"-->
+        <!--android:title="@string/pref_header_workouts" />-->
+
     <header
-        android:fragment="com.oneminutebefore.workout.SettingsActivityNew$WorkoutsPreferenceFragment"
         android:icon="@drawable/ic_add_alarm_black_24dp"
-        android:title="@string/pref_header_workouts" />
+        android:title="@string/pref_header_workouts" >
+
+        <intent
+            android:targetClass="com.oneminutebefore.workout.WorkoutSettingsActivity"
+            android:targetPackage="com.oneminutebefore.workout" />
+    </header>
 
 
     <header

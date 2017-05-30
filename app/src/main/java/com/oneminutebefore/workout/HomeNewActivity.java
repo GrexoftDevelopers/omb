@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +51,7 @@ public class HomeNewActivity extends AppCompatActivity
     private View layoutUpcomingTask, layoutScheduleTask;
     private Button btnScheduleTask;
 
-    private ArrayList<WorkoutExercise> workoutsDone;
+    private ArrayList<CompletedWorkout> workoutsDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +183,6 @@ public class HomeNewActivity extends AppCompatActivity
             findViewById(R.id.card_workout_count).setVisibility(View.VISIBLE);
             findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
 
-
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
@@ -199,8 +200,8 @@ public class HomeNewActivity extends AppCompatActivity
                     calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
                 }
                 if (preferences.getBoolean(hours[i], false)) {
-                    String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[hour], "");
-                    if (application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
+                    String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
+                    if (!TextUtils.isEmpty(workoutId) && application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
                         WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
                         calendar.set(Calendar.HOUR_OF_DAY, i);
                         calendar.set(Calendar.MINUTE, 59);
@@ -208,29 +209,30 @@ public class HomeNewActivity extends AppCompatActivity
                             timerTask.cancel(true);
                         }
                         ((TextView) findViewById(R.id.tv_workout_name)).setText(workoutExercise.getName());
+                        if(timerTask != null){
+                            timerTask.cancel(true);
+                        }
                         timerTask = new TimerTask(calendar.getTimeInMillis());
                         timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         timerSet = true;
-//                        findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
                         layoutUpcomingTask.setVisibility(View.VISIBLE);
+                        layoutScheduleTask.setVisibility(View.GONE);
+                        break;
+                    }else{
+                        if(timerTask != null){
+                            timerTask.cancel(true);
+                        }
+                        timerSet = false;
                     }
-                    timerTask = new TimerTask(calendar.getTimeInMillis());
-                    timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    timerSet = true;
-//                    findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
-                    layoutUpcomingTask.setVisibility(View.VISIBLE);
-                    layoutScheduleTask.setVisibility(View.GONE);
-                    break;
                 }
                 if (i == hour && restarted) {
                     break;
                 }
             }
-            if (!timerSet) {
-//                findViewById(R.id.card_timer).setVisibility(View.GONE);
-                layoutUpcomingTask.setVisibility(View.GONE);
-                layoutScheduleTask.setVisibility(View.VISIBLE);
-            }
+//            if (!timerSet) {
+//            }
+            layoutUpcomingTask.setVisibility(!timerSet ? View.GONE : View.VISIBLE);
+            layoutScheduleTask.setVisibility(!timerSet ? View.VISIBLE : View.GONE);
 
             // Dummy content showing right now
             workoutsDone = new ArrayList<>();
@@ -248,7 +250,7 @@ public class HomeNewActivity extends AppCompatActivity
                     Random rn = new Random();
                     int range = 56 - 5 + 1;
                     int randomNum =  rn.nextInt(range) + 5;
-                    workoutsDone.add(new WorkoutExercise("1", value, "", "", randomNum, 7+index));
+                    workoutsDone.add(new CompletedWorkout(new WorkoutExercise("1", value, "", ""), String.valueOf(7+index), randomNum));
                     if (index >= 4) {
                         break;
                     }
@@ -416,11 +418,11 @@ public class HomeNewActivity extends AppCompatActivity
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
-            WorkoutExercise workoutExercise = workoutsDone.get(i);
+            CompletedWorkout workoutExercise = workoutsDone.get(i);
             viewHolder.tvName.setText(workoutExercise.getName());
             viewHolder.tvCount.setText(String.valueOf(workoutExercise.getRepsCount()));
-            viewHolder.tvTime.setText(workoutExercise.getTime() + ":59 " + (workoutExercise.getTime() >= 7 ? "A.M" : "P.M"));
-            switch (workoutExercise.getTime()) {
+            viewHolder.tvTime.setText(workoutExercise.getTimeKey() + ":59 " + (Integer.parseInt(workoutExercise.getTimeKey()) >= 7 ? "A.M" : "P.M"));
+            switch (Integer.parseInt(workoutExercise.getTimeKey())) {
                 case 7:
 //                    ((GradientDrawable)viewHolder.tvCount.getBackground()).setColor(ContextCompat.getColor(HomeNewActivity.this,R.color.blue_grey));
                     viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_blue_grey);

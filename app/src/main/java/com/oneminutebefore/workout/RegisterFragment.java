@@ -98,7 +98,7 @@ public class RegisterFragment extends Fragment {
                 R.array.time_zone_array, android.R.layout.simple_spinner_item);
 
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        timezoneArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerTimeZone.setAdapter(timezoneArrayAdapter);
 

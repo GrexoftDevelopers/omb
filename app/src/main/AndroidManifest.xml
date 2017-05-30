@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:name=".WorkoutApplication"
         android:allowBackup="true"
@@ -72,9 +71,7 @@
             android:name=".ContactActivity"
             android:label="@string/title_activity_contact"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".YoutubePlayerActivity"
-            />
+        <activity android:name=".YoutubePlayerActivity" />
         <activity
             android:name=".WorkoutSettingActivity"
             android:label="@string/title_activity_workout_setting"
@@ -86,11 +83,15 @@
         <activity
             android:name=".SettingsActivityNew"
             android:label="@string/title_activity_settings_new"
-            android:theme="@style/SettingTheme"/>
+            android:theme="@style/SettingTheme" />
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".WorkoutSettingsActivity"
+            android:label="@string/title_activity_workout_settings"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
