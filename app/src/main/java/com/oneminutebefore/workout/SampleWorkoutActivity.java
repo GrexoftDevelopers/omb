@@ -70,9 +70,9 @@ public class SampleWorkoutActivity extends AppCompatActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
 
             final WorkoutExercise workoutExercise = workouts.get(position);
-            int substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
+            int substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
             if(substringIndex < 0){
-                substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
+                substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
             }
             final String link = workoutExercise.getVideoLink().substring(substringIndex);
             holder.tvName.setText(workoutExercise.getName());

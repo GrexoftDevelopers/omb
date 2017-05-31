@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.oneminutebefore.workout.helpers.HttpConnectException;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -40,7 +42,7 @@ public class SplashActivity extends BaseRequestActivity {
         application = WorkoutApplication.getmInstance();
 
 
-        if(!areLinksDownloaded){
+        if (!areLinksDownloaded) {
             VolleyHelper volleyHelper = new VolleyHelper(this, false);
             String url = new UrlBuilder(UrlBuilder.API_ALL_VIDEOS).build();
             volleyHelper.callApi(Request.Method.GET, url, null, new VolleyHelper.VolleyCallback() {
@@ -54,13 +56,13 @@ public class SplashActivity extends BaseRequestActivity {
                     saveLinks(null);
                 }
             });
-        }else{
+        } else {
             String workoutsJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
             application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
             videosSaved = true;
             checkLoginAndRedirect();
         }
-        if(!areCategoriesDownloaded){
+        if (!areCategoriesDownloaded) {
             VolleyHelper volleyHelper = new VolleyHelper(this, false);
             String url = new UrlBuilder(UrlBuilder.API_ALL_CATEGORIES).build();
             volleyHelper.callApi(Request.Method.GET, url, null, new VolleyHelper.VolleyCallback() {
@@ -74,7 +76,7 @@ public class SplashActivity extends BaseRequestActivity {
                     saveCategories(null);
                 }
             });
-        }else{
+        } else {
             String categoriesJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_CATEGORIES_INFO, "[]");
             application.setWorkoutCategories(WorkoutCategory.createMapFromJson(categoriesJson));
             categoriesSaved = true;
@@ -82,80 +84,102 @@ public class SplashActivity extends BaseRequestActivity {
         }
     }
 
-    private void checkLoginAndRedirect(){
+    private void checkLoginAndRedirect() {
 
         // Ensure that the required data is fetched
-        if(!videosSaved || !categoriesSaved) return;
+        if (!videosSaved || !categoriesSaved) return;
 
         String token = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_TOKEN, "");
         WorkoutApplication application = WorkoutApplication.getmInstance();
         application.setSessionToken(token);
-        if(!token.equals("")){
+        if (!token.equals("")) {
             WorkoutApplication.getmInstance().setSessionToken(token);
             fetchUserInfo();
-        }else{
+        } else {
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 1500);
         }
-
     }
 
-    private void fetchUserInfo(){
-
-        String url = new UrlBuilder(UrlBuilder.API_ME).build();
-        HttpTask httpTask = new HttpTask(true,SplashActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true);
-        httpTask.setmCallback(new HttpTask.HttpCallback() {
+    private void initUser(String json) throws JSONException {
+        User user = User.createFromJson(new JSONObject(json));
+        WorkoutApplication application = ((WorkoutApplication) getApplication());
+        application.setUser(user);
+        application.setUserId(user.getId());
+//        SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.getUserLevelKey(SplashActivity.this), user.getUserLevel());
+        Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
+        startActivity(intent);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onResponse(String response) throws JSONException {
-                User user = User.createFromJson(new JSONObject(response));
-                WorkoutApplication application = ((WorkoutApplication)getApplication());
-                application.setUser(user);
-                application.setUserId(user.getId());
-                Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
-                startActivity(intent);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 1500);
+            public void run() {
+                finish();
             }
-
-            @Override
-            public void onException(Exception e) {
-                Toast.makeText(SplashActivity.this, getString(R.string.some_error_occured), Toast.LENGTH_SHORT).show();
-                Utils.clearData(SplashActivity.this);
-                startActivity(new Intent(SplashActivity.this,MainActivity.class));
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 1500);
-            }
-        });
-        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+        }, 1500);
     }
 
-    private void saveLinks(String linksData){
+    private void fetchUserInfo() {
+
+        String userJson = SharedPrefsUtil.getStringPreference(SplashActivity.this, Keys.KEY_USER, "");
+        if (!TextUtils.isEmpty(userJson)) {
+            try {
+                initUser(userJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String url = new UrlBuilder(UrlBuilder.API_ME).build();
+            HttpTask httpTask = new HttpTask(true, SplashActivity.this, HttpTask.METHOD_GET);
+            httpTask.setAuthorizationRequired(true);
+            httpTask.setmCallback(new HttpTask.HttpCallback() {
+                @Override
+                public void onResponse(String response) throws JSONException {
+                    initUser(response);
+                    SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.KEY_USER, response);
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    if (!(e instanceof HttpConnectException && e.getMessage().equals(HttpConnectException.MSG_NO_INTERNET))) {
+                        Toast.makeText(SplashActivity.this, getString(R.string.some_error_occured), Toast.LENGTH_SHORT).show();
+                        Utils.clearUserData(SplashActivity.this);
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                            }
+                        }, 1500);
+                    }
+                }
+            });
+            httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+        }
+    }
+
+    private void saveLinks(String linksData) {
 
         HashMap<String, WorkoutExercise> map = WorkoutExercise.createMapFromJson(linksData);
-        if(map != null && !map.isEmpty()){
+        if (map != null && !map.isEmpty()) {
             application.setWorkouts(map);
-            SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_VIDEOS_INFO, linksData);
-            SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_LINKS_DOWNLOADED, true);
+            SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.KEY_VIDEOS_INFO, linksData);
+            SharedPrefsUtil.setBooleanPreference(SplashActivity.this, Keys.KEY_LINKS_DOWNLOADED, true);
         }
         videosSaved = true;
         checkLoginAndRedirect();
     }
 
-    private void saveCategories(String linksData){
+    private void saveCategories(String linksData) {
 
         HashMap<String, WorkoutCategory> map = WorkoutCategory.createMapFromJson(linksData);
-        if(map != null && !map.isEmpty()){
+        if (map != null && !map.isEmpty()) {
             application.setWorkoutCategories(map);
-            SharedPrefsUtil.setStringPreference(SplashActivity.this,Keys.KEY_CATEGORIES_INFO, linksData);
-            SharedPrefsUtil.setBooleanPreference(SplashActivity.this,Keys.KEY_CATEGORIES_DOWNLOADED, true);
+            SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.KEY_CATEGORIES_INFO, linksData);
+            SharedPrefsUtil.setBooleanPreference(SplashActivity.this, Keys.KEY_CATEGORIES_DOWNLOADED, true);
         }
         categoriesSaved = true;
         checkLoginAndRedirect();

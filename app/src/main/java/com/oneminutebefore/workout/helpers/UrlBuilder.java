@@ -13,12 +13,12 @@ public class UrlBuilder {
     private static final String BASE_URL = "http://1minutebefore.com";
     public static final String API_REGISTER = "/api/users";
     public static final String API_ME = API_REGISTER + "/me";
-    public static final String API_USERS = "/auth/local";
+    public static final String API_AUTH = "/auth/local";
     public static final String API_ALL_VIDEOS = "/api/packages";
     public static final String API_ALL_CATEGORIES = "/api/categories";
-    public static final String API_SAVE_WORKOUT = "/api/products";
-    public static final String API_GET_WORKOUTS = API_SAVE_WORKOUT + "/me";
-    public static final String API_SAVE_REPS = API_SAVE_WORKOUT + "/usertrack";
+    public static final String API_PRODUCTS = "/api/products";
+    public static final String API_GET_WORKOUTS = API_PRODUCTS + "/me";
+    public static final String API_SAVE_REPS = API_PRODUCTS + "/usertrack";
 
     private String uri;
 

@@ -2,6 +2,9 @@ package com.oneminutebefore.workout.helpers;
 
 import android.content.Context;
 
+import com.oneminutebefore.workout.WorkoutApplication;
+import com.oneminutebefore.workout.models.WorkoutExercise;
+
 /**
  * Created by tahir on 13/5/17.
  */
@@ -18,7 +21,7 @@ public class Utils {
         return s.hasNext() ? s.next() : "";
     }
 
-    public static void clearData(Context context){
+    public static void clearUserData(Context context){
         SharedPrefsUtil.deletePreference(context, Keys.KEY_TOKEN);
         SharedPrefsUtil.deletePreference(context, Keys.KEY_USER_ID);
         SharedPrefsUtil.deletePreference(context, Keys.getUserLevelKey(context));
@@ -30,6 +33,8 @@ public class Utils {
         for(String key : videoPrefKeys){
             SharedPrefsUtil.deletePreference(context, key);
         }
+        WorkoutApplication application = WorkoutApplication.getmInstance();
+        application.clearUserData();
     }
 
 

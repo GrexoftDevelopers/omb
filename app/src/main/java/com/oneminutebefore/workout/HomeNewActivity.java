@@ -28,6 +28,7 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -334,8 +335,7 @@ public class HomeNewActivity extends AppCompatActivity
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            WorkoutApplication.getmInstance().setSessionToken("-1");
-                            SharedPrefsUtil.deletePreference(HomeNewActivity.this, Keys.KEY_TOKEN);
+                            Utils.clearUserData(HomeNewActivity.this);
                             Intent intent = new Intent(HomeNewActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
@@ -372,7 +372,6 @@ public class HomeNewActivity extends AppCompatActivity
             boolean flag = true;
             while (flag) {
                 currentTime = System.currentTimeMillis();
-                System.out.println("current time : " + dateFormat.format(new Date(currentTime)));
                 if (currentTime < deadLine) {
                     publishProgress(deadLine - currentTime);
                 } else {

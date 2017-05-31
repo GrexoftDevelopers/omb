@@ -11,6 +11,8 @@ import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
 import com.oneminutebefore.workout.helpers.HttpTask;
+import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
@@ -102,6 +104,8 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
                 WorkoutApplication application = ((WorkoutApplication)getApplication());
                 application.setUser(user);
                 application.setUserId(user.getId());
+                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
+//                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
                 switchToHomeActivity();
             }
 
@@ -145,9 +149,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
     private class ViewPagerAdapter extends FragmentPagerAdapter{
 
-
         private ArrayList<Fragment> fragments = new ArrayList<>();
-
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -167,5 +169,4 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             return fragments != null ? fragments.size() : 0;
         }
     }
-
 }

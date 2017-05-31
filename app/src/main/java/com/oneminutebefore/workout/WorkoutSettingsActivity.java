@@ -1,6 +1,7 @@
 package com.oneminutebefore.workout;
 
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,12 +20,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +67,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         hourKeys = Keys.getHourSelectionKeys(this);
         workoutKeys = Keys.getWorkoutSelectionKeys(this);
         HashMap<String, WorkoutExercise> workouts = application.getWorkouts();
-        categoryName = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this));
+        categoryName = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"Intermediate");
         for(int i  = 0 ; i < hourKeys.length ; i++){
             boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(this, hourKeys[i], false);
             if(isHourSelected){
@@ -218,9 +223,26 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, key);
         }
         if(selectedWorkouts != null && !selectedWorkouts.isEmpty()){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             for(SelectedWorkout selectedWorkout : selectedWorkouts){
                 SharedPrefsUtil.setBooleanPreference(WorkoutSettingsActivity.this, selectedWorkout.getTimeKey(), true);
                 SharedPrefsUtil.setStringPreference(WorkoutSettingsActivity.this, "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
+                Calendar calendar = Calendar.getInstance();
+                String workoutTime = dateFormat.format(calendar.getTime());
+                String createdTime = dateTimeFormat.format(calendar.getTime()).replace(" ","T") + "Z";
+                String url = new UrlBuilder(UrlBuilder.API_PRODUCTS)
+                        .addParameters("workout_time", workoutTime)
+                        .addParameters("category", selectedWorkout.getCategory().getId())
+                        .addParameters("workout", selectedWorkout.getId())
+                        .addParameters("update_at", createdTime)
+                        .addParameters("created_at", createdTime)
+                        .addParameters("user_id", application.getUserId())
+                        .build();
+
+                HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this);
+                httpTask.setAuthorizationRequired(true);
+                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
             }
         }
     }

@@ -192,4 +192,8 @@
     <string name="select_hour">Select hour</string>
     <string name="select_workout">Select workout</string>
     <string name="done">Done</string>
+    <string name="msg_thanks">Thanks for entering</string>
+    <string name="prompt_current_password">Current password</string>
+    <string name="error_no_current_password">Please enter current password</string>
+    <string name="error_invalid_current_password">Invalid current password</string>
 </resources>

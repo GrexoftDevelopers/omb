@@ -15,9 +15,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.util.ArrayList;
@@ -233,7 +235,29 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-//            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            ListPreference preference = (ListPreference) findPreference(Keys.getUserLevelKey(getActivity()));
+//            WorkoutApplication application = WorkoutApplication.getmInstance();
+//            if(application.getWorkoutCategories() != null && !application.getWorkoutCategories().isEmpty()){
+//                String entries[] = new String[application.getWorkoutCategories().size()];
+//                String entryValues[] = new String[application.getWorkoutCategories().size()];
+//                int i = 0;
+//                for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
+//                    entries[i] = ((WorkoutCategory)entry.getValue()).getName();
+//                    entryValues[i] = entry.getKey().toString();
+//                    i++;
+//                }
+//                preference.setEntries(entries);
+//                preference.setEntryValues(entryValues);
+//            }
+
+            bindPreferenceSummaryToValue(preference);
+//            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//                @Override
+//                public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
+//                    return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
+//                }
+//            });
         }
 
         @Override

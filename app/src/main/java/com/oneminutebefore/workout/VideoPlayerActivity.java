@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -157,7 +158,24 @@ public class VideoPlayerActivity extends AppCompatActivity {
         }
     }
 
+    private void initUser(String json) throws JSONException {
+        User user = User.createFromJson(new JSONObject(json));
+        WorkoutApplication application = ((WorkoutApplication) getApplication());
+        application.setUser(user);
+        application.setUserId(user.getId());
+//        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
+    }
+
     private void fetchUserInfo(){
+
+        String userJson = SharedPrefsUtil.getStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, "");
+        if (!TextUtils.isEmpty(userJson)) {
+            try {
+                initUser(userJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         String url = new UrlBuilder(UrlBuilder.API_ME).build();
         HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
@@ -165,9 +183,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
-                User user = User.createFromJson(new JSONObject(response));
-                application.setUser(user);
-                application.setUserId(user.getId());
+                initUser(response);
+                SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, response);
             }
 
             @Override
@@ -283,23 +300,27 @@ public class VideoPlayerActivity extends AppCompatActivity {
                         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                String repsCount = etRepsCount.getText().toString().trim();
-                                if(TextUtils.isEmpty(repsCount)){
-                                    ((TextInputLayout)dialogView.findViewById(R.id.til_reps_count)).setError("Please enter reps");
-                                }else{
-                                    if(repsCount.startsWith(".")){
-                                        repsCount = "0" + repsCount;
-                                    }
-                                    if(repsCount.equals("-")){
-                                        repsCount = "0";
-                                    }
-                                    double count = Double.valueOf(repsCount);
-                                    if(application.getUser() != null){
-                                        saveReps(count);
+                                if(!isDemo){
+                                    String repsCount = etRepsCount.getText().toString().trim();
+                                    if(TextUtils.isEmpty(repsCount)){
+                                        ((TextInputLayout)dialogView.findViewById(R.id.til_reps_count)).setError("Please enter reps");
                                     }else{
-                                        dialog.dismiss();
-                                        finish();
+                                        if(repsCount.startsWith(".")){
+                                            repsCount = "0" + repsCount;
+                                        }
+                                        if(repsCount.equals("-")){
+                                            repsCount = "0";
+                                        }
+                                        double count = Double.valueOf(repsCount);
+                                        if(application.getUser() != null){
+                                            saveReps(count);
+                                        }else{
+                                            dialog.dismiss();
+                                            finish();
+                                        }
                                     }
+                                }else{
+                                    Toast.makeText(VideoPlayerActivity.this, getString(R.string.msg_thanks), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -315,7 +336,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
         String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
                 .addParameters("date","")
-                .addParameters("reps",String.valueOf(count))
+                .addParameters("rep",String.valueOf(count))
                 .addParameters("id",workoutExercise.getId())
                 .addParameters("user_id", application.getUser().getId())
                 .build();
@@ -323,7 +344,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         volleyHelper.callApi(Request.Method.PUT, url, null, new VolleyHelper.VolleyCallback() {
             @Override
             public void onSuccess(String result) throws JSONException {
-                Toast.makeText(VideoPlayerActivity.this, "Thank you for entering", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoPlayerActivity.this, getString(R.string.msg_thanks), Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
                 finish();
             }

@@ -75,4 +75,10 @@ public class WorkoutApplication extends Application {
     public HashMap<String, WorkoutCategory> getWorkoutCategories() {
         return workoutCategories;
     }
+
+    public void clearUserData(){
+        user = null;
+        userId = null;
+        sessionToken = null;
+    }
 }
