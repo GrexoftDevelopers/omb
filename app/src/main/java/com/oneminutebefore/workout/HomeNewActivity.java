@@ -26,6 +26,8 @@ import android.widget.TextView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.Utils;
@@ -87,8 +89,11 @@ public class HomeNewActivity extends AppCompatActivity
             }
         });
 
+
         initNavigationItems();
 
+////        FirebaseCrash.report(new NullPointerException("wdvf"));
+//        throw new NullPointerException("wdvf");
     }
 
     @Override

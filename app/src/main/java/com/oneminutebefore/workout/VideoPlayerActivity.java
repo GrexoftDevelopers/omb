@@ -37,6 +37,8 @@ import com.oneminutebefore.workout.models.WorkoutExercise;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -334,8 +336,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private void saveReps(double count) {
         VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
+        Calendar calendar = Calendar.getInstance();
         String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
-                .addParameters("date","")
+                .addParameters("date",new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()))
                 .addParameters("rep",String.valueOf(count))
                 .addParameters("id",workoutExercise.getId())
                 .addParameters("user_id", application.getUser().getId())

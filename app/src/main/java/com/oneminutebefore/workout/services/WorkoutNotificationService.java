@@ -39,17 +39,16 @@ public class WorkoutNotificationService extends IntentService {
         try {
             checkHourSelection();
         }catch (Exception e ){
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 
     private void checkHourSelection() {
-
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         String hourSelectionKey = Keys.getHourSelectionKeys(getApplicationContext())[hour];
-        boolean isHourSelected = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(hourSelectionKey,false);
+        boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(getApplicationContext(),hourSelectionKey,false);
 
         if(isHourSelected){
 

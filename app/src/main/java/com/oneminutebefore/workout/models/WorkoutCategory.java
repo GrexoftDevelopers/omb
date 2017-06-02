@@ -6,13 +6,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.io.SerializablePermission;
 import java.util.HashMap;
 
 /**
  * Created by tahir on 23/5/17.
  */
 
-public class WorkoutCategory {
+public class WorkoutCategory implements Serializable{
 
 
     private String id;
