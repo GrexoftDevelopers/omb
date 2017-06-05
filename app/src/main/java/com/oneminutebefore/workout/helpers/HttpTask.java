@@ -147,6 +147,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                     @Override
                     public void process(HttpResponse httpResponse, HttpContext httpContext) throws HttpException, IOException {
                         interceptedCode = httpResponse.getStatusLine().getStatusCode();
+                        Log.d(TAG, "status code : " + interceptedCode);
                         if (interceptedCode < 200 || interceptedCode >= 400) {
                             InputStream is = httpResponse.getEntity().getContent();
                             interceptedResponse = Utils.convertStreamToString(is);
@@ -280,7 +281,12 @@ public class HttpTask extends AsyncTask<String, Void, String> {
 
             } catch (Throwable t) {
                 t.printStackTrace();
-                throw new HttpConnectException(t instanceof HttpResponseException ? interceptedResponse : t.getMessage());
+                if (t instanceof HttpResponseException) {
+                    HttpConnectException e = new HttpConnectException(interceptedResponse, interceptedCode);
+                    throw e;
+                } else {
+                    throw new HttpConnectException(t.getMessage());
+                }
             }
         } else {
             throw new HttpConnectException(HttpConnectException.MSG_NO_INTERNET);

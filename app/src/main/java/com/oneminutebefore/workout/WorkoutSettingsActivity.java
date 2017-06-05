@@ -235,12 +235,12 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                         .addParameters("workout_time", workoutTime)
                         .addParameters("category", selectedWorkout.getCategory().getId())
                         .addParameters("workout", selectedWorkout.getId())
-                        .addParameters("update_at", createdTime)
-                        .addParameters("created_at", createdTime)
+//                        .addParameters("update_at", createdTime)
+//                        .addParameters("created_at", createdTime)
                         .addParameters("user_id", application.getUserId())
                         .build();
 
-                HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this);
+                HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this,HttpTask.METHOD_POST);
                 httpTask.setAuthorizationRequired(true);
                 httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
             }
