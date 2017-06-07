@@ -196,4 +196,5 @@
     <string name="prompt_current_password">Current password</string>
     <string name="error_no_current_password">Please enter current password</string>
     <string name="error_invalid_current_password">Invalid current password</string>
+    <string name="msg_saving_please_wait">Saving workouts, please wait...</string>
 </resources>

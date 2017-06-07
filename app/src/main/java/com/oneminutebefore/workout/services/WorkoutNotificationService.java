@@ -12,8 +12,11 @@ import android.support.v7.app.NotificationCompat;
 
 import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.VideoPlayerActivity;
+import com.oneminutebefore.workout.WorkoutApplication;
+import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.util.Calendar;
@@ -59,7 +62,12 @@ public class WorkoutNotificationService extends IntentService {
                 String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[hour], "");
                 WorkoutExercise workoutExercise = workouts.get(workoutId);
                 if(workoutExercise != null){
-                    addNotification(workoutExercise);
+                    WorkoutApplication application = WorkoutApplication.getmInstance();
+                    if(application.getDbHelper() == null){
+                        application.setDbHelper(new DBHelper(getApplicationContext()));
+                    }
+                    String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(hour % 12 + ":59" + (hour/12==0?" A.M":" P.M"));
+                    addNotification(new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId));
                 }
             }
 
@@ -73,7 +81,7 @@ public class WorkoutNotificationService extends IntentService {
 
     }
 
-    private void addNotification(WorkoutExercise workoutExercise) {
+    private void addNotification(SelectedWorkout workoutExercise) {
 
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(this)

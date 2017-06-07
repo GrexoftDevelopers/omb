@@ -2,6 +2,7 @@ package com.oneminutebefore.workout;
 
 import android.app.Application;
 
+import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
@@ -24,6 +25,8 @@ public class WorkoutApplication extends Application {
     private HashMap<String, WorkoutCategory> workoutCategories;
 
     private User user;
+
+    private DBHelper dbHelper;
 
     @Override
     public void onCreate() {
@@ -80,5 +83,13 @@ public class WorkoutApplication extends Application {
         user = null;
         userId = null;
         sessionToken = null;
+    }
+
+    public DBHelper getDbHelper() {
+        return dbHelper;
+    }
+
+    public void setDbHelper(DBHelper dbHelper) {
+        this.dbHelper = dbHelper;
     }
 }

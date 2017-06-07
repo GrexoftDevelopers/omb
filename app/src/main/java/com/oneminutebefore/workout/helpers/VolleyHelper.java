@@ -2,6 +2,7 @@ package com.oneminutebefore.workout.helpers;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class VolleyHelper {
 
+    private static final String TAG = "volley";
     private final Context activity;
     private final boolean showProgress;
 
@@ -105,13 +107,18 @@ public class VolleyHelper {
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 if(paramsIndex > 0){
+                    try{
                     HashMap<String, String> params = new HashMap<>();
                     String paramsArray[] = urlWithParams.substring(paramsIndex + 1).split("&");
                     for(String param : paramsArray){
                         String nameValuePair[] = param.split("=");
                         params.put(nameValuePair[0],nameValuePair[1]);
                     }
+                        Log.d(TAG,params.toString());
                     return params;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
 
                 return super.getParams();

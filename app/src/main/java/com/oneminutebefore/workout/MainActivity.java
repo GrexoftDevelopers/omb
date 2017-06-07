@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
+import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -105,6 +106,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
                 application.setUser(user);
                 application.setUserId(user.getId());
                 SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
+                if(application.getDbHelper() == null){
+                    application.setDbHelper(new DBHelper(MainActivity.this));
+                }
 //                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
                 switchToHomeActivity();
             }

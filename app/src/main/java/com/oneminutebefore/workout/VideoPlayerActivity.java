@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -26,11 +25,14 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
+import com.oneminutebefore.workout.models.CompletedWorkout;
+import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -49,7 +51,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private YouTubePlayerFragment youTubePlayerFragment;
 
-    private WorkoutExercise workoutExercise;
+    private SelectedWorkout selectedWorkoutExercise;
 
     private boolean isDemo;
 
@@ -74,7 +76,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent mIntent = getIntent();
-        workoutExercise = (WorkoutExercise) mIntent.getSerializableExtra(KEY_WORKOUT);
+        selectedWorkoutExercise = (SelectedWorkout) mIntent.getSerializableExtra(KEY_WORKOUT);
 
         application = WorkoutApplication.getmInstance();
         String session = application.getSessionToken();
@@ -90,13 +92,13 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         }
 
-        isDemo = workoutExercise == null;
+        isDemo = selectedWorkoutExercise == null;
         if(isDemo){
             HashMap<String, WorkoutExercise> workouts = WorkoutApplication.getmInstance().getWorkouts();
             if(workouts != null && !workouts.isEmpty()){
                 for(Map.Entry entry : workouts.entrySet()){
                     if(((WorkoutExercise)entry.getValue()).getName().equals("Desk Push ups")){
-                        workoutExercise = (WorkoutExercise)entry.getValue();
+                        selectedWorkoutExercise = new SelectedWorkout((WorkoutExercise)entry.getValue(),"");
                         break;
                     }
                 }
@@ -108,25 +110,25 @@ public class VideoPlayerActivity extends AppCompatActivity {
             if(isDemo){
                 mActionBar.setTitle("Demo");
             }else{
-                mActionBar.setTitle(workoutExercise.getName());
+                mActionBar.setTitle(selectedWorkoutExercise.getName());
             }
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
 
-        if (!TextUtils.isEmpty(workoutExercise.getVideoLink())) {
+        if (!TextUtils.isEmpty(selectedWorkoutExercise.getVideoLink())) {
             findViewById(R.id.youtube_content).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_no_content).setVisibility(View.GONE);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.setShowFullscreenButton(true);
-                    int substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
+                    int substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("/") + 1;
                     if(substringIndex < 0){
-                        substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
+                        substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("=") + 1;
                     }
-                    String url = workoutExercise.getVideoLink().substring(substringIndex);
+                    String url = selectedWorkoutExercise.getVideoLink().substring(substringIndex);
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                     youTubePlayer.cueVideo(url);
                 }
@@ -165,6 +167,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         WorkoutApplication application = ((WorkoutApplication) getApplication());
         application.setUser(user);
         application.setUserId(user.getId());
+        if(application.getDbHelper() != null){
+            application.setDbHelper(new DBHelper(VideoPlayerActivity.this));
+        }
 //        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
     }
 
@@ -335,27 +340,47 @@ public class VideoPlayerActivity extends AppCompatActivity {
     }
 
     private void saveReps(double count) {
-        VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
+//        VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
         Calendar calendar = Calendar.getInstance();
         String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
                 .addParameters("date",new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()))
-                .addParameters("rep",String.valueOf(count))
-                .addParameters("id",workoutExercise.getId())
+                .addParameters("rep",String.valueOf((int)count))
+                .addParameters("id", selectedWorkoutExercise.getSelectedWorkoutId())
                 .addParameters("user_id", application.getUser().getId())
                 .build();
-        volleyHelper.setAuthorizationRequired(true);
-        volleyHelper.callApi(Request.Method.PUT, url, null, new VolleyHelper.VolleyCallback() {
+//        volleyHelper.setAuthorizationRequired(true);
+//        volleyHelper.callApi(Request.Method.POST, url, null, new VolleyHelper.VolleyCallback() {
+//            @Override
+//            public void onSuccess(String result) throws JSONException {
+//                Toast.makeText(VideoPlayerActivity.this, getString(R.string.msg_thanks), Toast.LENGTH_SHORT).show();
+//                alertDialog.dismiss();
+//                finish();
+//            }
+//
+//            @Override
+//            public void onError(String error) {
+//                Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+//            }
+//        });
+
+        HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this, HttpTask.METHOD_POST);
+        httpTask.setAuthorizationRequired(true);
+        httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
-            public void onSuccess(String result) throws JSONException {
+            public void onResponse(String response) throws JSONException {
                 Toast.makeText(VideoPlayerActivity.this, getString(R.string.msg_thanks), Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
                 finish();
             }
 
             @Override
-            public void onError(String error) {
+            public void onException(Exception e) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
             }
         });
+        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+        CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,calendar.getTimeInMillis());
+        completedWorkout.setSelectedWorkoutId(selectedWorkoutExercise.getSelectedWorkoutId());
+        application.getDbHelper().insertUserTrack(completedWorkout);
     }
 }

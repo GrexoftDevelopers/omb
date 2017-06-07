@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpConnectException;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
@@ -120,6 +121,7 @@ public class SplashActivity extends BaseRequestActivity {
                 finish();
             }
         }, 1500);
+        application.setDbHelper(new DBHelper(SplashActivity.this));
     }
 
     private void fetchUserInfo() {

@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -26,6 +28,9 @@ import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -206,7 +211,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
             case R.id.action_done:
                 saveSelectedWorkouts();
-                finish();
+//                finish();
                 break;
         }
 
@@ -223,16 +228,26 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, key);
         }
         if(selectedWorkouts != null && !selectedWorkouts.isEmpty()){
+            final ArrayList<String> timesSaved = new ArrayList<>();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            for(SelectedWorkout selectedWorkout : selectedWorkouts){
+            final ProgressDialog progressDialog = new ProgressDialog(WorkoutSettingsActivity.this);
+            progressDialog.setMessage(getString(R.string.msg_saving_please_wait));
+            progressDialog.show();
+            for(final SelectedWorkout selectedWorkout : selectedWorkouts){
                 SharedPrefsUtil.setBooleanPreference(WorkoutSettingsActivity.this, selectedWorkout.getTimeKey(), true);
                 SharedPrefsUtil.setStringPreference(WorkoutSettingsActivity.this, "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
+
+                SelectedWorkout savedWorkout = application.getDbHelper().getSelectedWorkoutByTime(selectedWorkout.getTimeMeridian());
+                if(savedWorkout != null && savedWorkout.getId().equals(selectedWorkout.getId())){
+                    continue; // Already saved
+                }
+
                 Calendar calendar = Calendar.getInstance();
-                String workoutTime = dateFormat.format(calendar.getTime());
+//                String workoutTime = dateFormat.format(calendar.getTime());
                 String createdTime = dateTimeFormat.format(calendar.getTime()).replace(" ","T") + "Z";
                 String url = new UrlBuilder(UrlBuilder.API_PRODUCTS)
-                        .addParameters("workout_time", workoutTime)
+                        .addParameters("workout_time", selectedWorkout.getTimeMeridian())
                         .addParameters("category", selectedWorkout.getCategory().getId())
                         .addParameters("workout", selectedWorkout.getId())
 //                        .addParameters("update_at", createdTime)
@@ -240,9 +255,33 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                         .addParameters("user_id", application.getUserId())
                         .build();
 
+                timesSaved.add(selectedWorkout.getTimeKey());
                 HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this,HttpTask.METHOD_POST);
                 httpTask.setAuthorizationRequired(true);
+                httpTask.setmCallback(new HttpTask.HttpCallback() {
+                    @Override
+                    public void onResponse(String response) throws JSONException {
+                        JSONObject jsonObject = new JSONObject(response);
+                        application.getDbHelper().insertSelectedWorkout(jsonObject);
+                        timesSaved.remove(selectedWorkout.getTimeKey());
+                        if(timesSaved.isEmpty() && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        if(timesSaved.isEmpty() && progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                    }
+                });
                 httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
+            }
+            if(timesSaved.isEmpty()){
+                progressDialog.dismiss();
+                finish();
             }
         }
     }

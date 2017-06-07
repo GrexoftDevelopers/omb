@@ -115,7 +115,7 @@ public class HomeNewActivity extends AppCompatActivity
         Menu menu = navigationView.getMenu();
         WorkoutApplication application = WorkoutApplication.getmInstance();
         String userId = application.getSessionToken();
-        if (userId.equals("-1")) {
+        if (userId != null && userId.equals("-1")) {
             menu.findItem(R.id.action_sign_up).setVisible(true);
             menu.findItem(R.id.action_setting).setVisible(false);
             menu.findItem(R.id.action_logout).setVisible(false);
@@ -182,7 +182,7 @@ public class HomeNewActivity extends AppCompatActivity
 
         WorkoutApplication application = WorkoutApplication.getmInstance();
         String userId = application.getSessionToken();
-        if (userId.equals("-1")) {
+        if (userId != null && userId.equals("-1")) {
             findViewById(R.id.card_timer).setVisibility(View.GONE);
             findViewById(R.id.card_workout_count).setVisibility(View.GONE);
         } else {
@@ -240,28 +240,27 @@ public class HomeNewActivity extends AppCompatActivity
             layoutUpcomingTask.setVisibility(!timerSet ? View.GONE : View.VISIBLE);
             layoutScheduleTask.setVisibility(!timerSet ? View.VISIBLE : View.GONE);
 
-            // Dummy content showing right now
-            workoutsDone = new ArrayList<>();
+            workoutsDone = application.getDbHelper().getTodayCompletedWorkouts();
 //            workoutsDone.add(new WorkoutExercise("1", "Push Ups", "", "", 18, 7));
 //            workoutsDone.add(new WorkoutExercise("1", "Jump Rope", "", "", 24, 11));
 //            workoutsDone.add(new WorkoutExercise("1", "Stair Run", "", "", 56, 2));
 //            workoutsDone.add(new WorkoutExercise("1", "Squat Jump", "", "", 24, 3));
-            if (application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
-
-                int index = 0;
-                for (String key : application.getWorkouts().keySet()) {
-                    String value = application.getWorkouts().get(key).getName();
-                    ++index;
-
-                    Random rn = new Random();
-                    int range = 56 - 5 + 1;
-                    int randomNum =  rn.nextInt(range) + 5;
-                    workoutsDone.add(new CompletedWorkout(new WorkoutExercise("1", value, "", ""), String.valueOf(7+index), randomNum));
-                    if (index >= 4) {
-                        break;
-                    }
-                }
-            }
+//            if (application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
+//
+//                int index = 0;
+//                for (String key : application.getWorkouts().keySet()) {
+//                    String value = application.getWorkouts().get(key).getName();
+//                    ++index;
+//
+//                    Random rn = new Random();
+//                    int range = 56 - 5 + 1;
+//                    int randomNum =  rn.nextInt(range) + 5;
+//                    workoutsDone.add(new CompletedWorkout(new WorkoutExercise("1", value, "", ""), String.valueOf(7+index), randomNum));
+//                    if (index >= 4) {
+//                        break;
+//                    }
+//                }
+//            }
 
 
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
@@ -344,6 +343,7 @@ public class HomeNewActivity extends AppCompatActivity
                             Intent intent = new Intent(HomeNewActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
+                            finish();
                         }
                     })
                     .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -425,8 +425,8 @@ public class HomeNewActivity extends AppCompatActivity
             CompletedWorkout workoutExercise = workoutsDone.get(i);
             viewHolder.tvName.setText(workoutExercise.getName());
             viewHolder.tvCount.setText(String.valueOf(workoutExercise.getRepsCount()));
-            viewHolder.tvTime.setText(workoutExercise.getTimeKey() + ":59 " + (Integer.parseInt(workoutExercise.getTimeKey()) >= 7 ? "A.M" : "P.M"));
-            switch (Integer.parseInt(workoutExercise.getTimeKey())) {
+            viewHolder.tvTime.setText(workoutExercise.getTimeMeridian());
+            switch (workoutExercise.getRepsCount()) {
                 case 7:
 //                    ((GradientDrawable)viewHolder.tvCount.getBackground()).setColor(ContextCompat.getColor(HomeNewActivity.this,R.color.blue_grey));
                     viewHolder.tvCount.setBackgroundResource(R.drawable.count_bg_blue_grey);
