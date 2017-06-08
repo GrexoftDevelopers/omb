@@ -30,6 +30,7 @@ import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
@@ -183,23 +184,29 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        else{
+            String url = new UrlBuilder(UrlBuilder.API_ME).build();
+            HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
+            httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                @Override
+                public void onSessionTimeout() {
+                    startActivity(Utils.getSessionTimeoutIntent(VideoPlayerActivity.this));
+                }
+            });
+            httpTask.setmCallback(new HttpTask.HttpCallback() {
+                @Override
+                public void onResponse(String response) throws JSONException {
+                    initUser(response);
+                    SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, response);
+                }
 
-        String url = new UrlBuilder(UrlBuilder.API_ME).build();
-        HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true);
-        httpTask.setmCallback(new HttpTask.HttpCallback() {
-            @Override
-            public void onResponse(String response) throws JSONException {
-                initUser(response);
-                SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, response);
-            }
+                @Override
+                public void onException(Exception e) {
 
-            @Override
-            public void onException(Exception e) {
-
-            }
-        });
-        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+                }
+            });
+            httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+        }
     }
 
     private void toggleTimer(){
@@ -364,7 +371,12 @@ public class VideoPlayerActivity extends AppCompatActivity {
 //        });
 
         HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this, HttpTask.METHOD_POST);
-        httpTask.setAuthorizationRequired(true);
+        httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+            @Override
+            public void onSessionTimeout() {
+                startActivity(Utils.getSessionTimeoutIntent(VideoPlayerActivity.this));
+            }
+        });
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {

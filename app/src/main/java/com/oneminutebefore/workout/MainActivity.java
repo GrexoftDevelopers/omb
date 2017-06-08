@@ -62,7 +62,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
         String url = new UrlBuilder(UrlBuilder.API_GET_WORKOUTS).build();
         HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true);
+        httpTask.setAuthorizationRequired(true,null);
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
@@ -116,7 +116,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
         String url = new UrlBuilder(UrlBuilder.API_ME).build();
         HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true);
+        httpTask.setAuthorizationRequired(true,null);
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {

@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.oneminutebefore.workout.helpers.HttpConnectException;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.User;
 
@@ -76,7 +77,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         .build();
 
                 final HttpTask httpTask = new HttpTask(false, ChangePasswordActivity.this, HttpTask.METHOD_PUT);
-                httpTask.setAuthorizationRequired(true);
+                httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                    @Override
+                    public void onSessionTimeout() {
+                        startActivity(Utils.getSessionTimeoutIntent(ChangePasswordActivity.this));
+                    }
+                });
                 httpTask.setmCallback(new HttpTask.HttpCallback() {
                     @Override
                     public void onResponse(String response) throws JSONException {

@@ -136,7 +136,19 @@ public class SplashActivity extends BaseRequestActivity {
         } else {
             String url = new UrlBuilder(UrlBuilder.API_ME).build();
             HttpTask httpTask = new HttpTask(true, SplashActivity.this, HttpTask.METHOD_GET);
-            httpTask.setAuthorizationRequired(true);
+            httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                @Override
+                public void onSessionTimeout() {
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    },1500);
+                }
+            });
             httpTask.setmCallback(new HttpTask.HttpCallback() {
                 @Override
                 public void onResponse(String response) throws JSONException {

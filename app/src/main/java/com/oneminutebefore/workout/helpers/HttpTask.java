@@ -2,10 +2,12 @@ package com.oneminutebefore.workout.helpers;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -54,6 +56,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
 
     private HttpCallback mCallback;
 
+    private SessionTimeOutListener sessionTimeOutListener;
+
     private static final String TAG = "http workout";
 
     private String interceptedResponse;
@@ -89,8 +93,9 @@ public class HttpTask extends AsyncTask<String, Void, String> {
         }
     }
 
-    public void setAuthorizationRequired(boolean authorizationRequired) {
+    public void setAuthorizationRequired(boolean authorizationRequired, SessionTimeOutListener sessionTimeOutListener) {
         isAuthorizationRequired = authorizationRequired;
+        this.sessionTimeOutListener = sessionTimeOutListener;
     }
 
     private static final int mConnectionTimeout = 20000;
@@ -162,7 +167,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedResponse, interceptedCode);
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                            , interceptedCode);
                     throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
@@ -229,7 +235,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedResponse, interceptedCode);
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                            , interceptedCode);
                     throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
@@ -282,7 +289,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedResponse, interceptedCode);
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                            , interceptedCode);
                     throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
@@ -341,8 +349,13 @@ public class HttpTask extends AsyncTask<String, Void, String> {
         }
         if (!isCancelled() && mCallback != null) {
             if (this.exception != null) {
-                if (exception instanceof HttpConnectException && exception.getMessage().equals(HttpConnectException.MSG_NO_INTERNET)) {
-                    Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                if(exception instanceof HttpConnectException){
+                    if (exception.getMessage().equals(HttpConnectException.MSG_NO_INTERNET)) {
+                        Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    }else if(((HttpConnectException) exception).getStatusCode() == 401){
+                        Utils.clearUserData(mContext);
+                        showSessionTimeoutDialog();
+                    }
                 }
                 mCallback.onException(this.exception);
             } else {
@@ -356,11 +369,35 @@ public class HttpTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    private void showSessionTimeoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder
+                .setTitle(mContext.getString(R.string.session_timeout))
+                .setMessage(mContext.getString(R.string.session_timeout_resolution))
+                .setCancelable(false)
+                .setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if(sessionTimeOutListener != null){
+                            sessionTimeOutListener.onSessionTimeout();
+                        }
+                    }
+                })
+                .show();
+    }
+
     public interface HttpCallback {
 
         public void onResponse(String response) throws JSONException;
 
         public void onException(Exception e);
+
+    }
+
+    public interface SessionTimeOutListener{
+
+        public void onSessionTimeout();
 
     }
 }

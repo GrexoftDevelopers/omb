@@ -1,7 +1,9 @@
 package com.oneminutebefore.workout.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 
+import com.oneminutebefore.workout.MainActivity;
 import com.oneminutebefore.workout.WorkoutApplication;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -47,6 +49,12 @@ public class Utils {
             hour += 12;
         }
         return hour + "_59";
+    }
+
+    public static Intent getSessionTimeoutIntent(Context context){
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        return intent;
     }
 
 

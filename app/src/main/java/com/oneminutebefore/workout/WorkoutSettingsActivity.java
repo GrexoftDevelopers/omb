@@ -26,6 +26,7 @@ import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -257,7 +258,12 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
                 timesSaved.add(selectedWorkout.getTimeKey());
                 HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this,HttpTask.METHOD_POST);
-                httpTask.setAuthorizationRequired(true);
+                httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                    @Override
+                    public void onSessionTimeout() {
+                        startActivity(Utils.getSessionTimeoutIntent(WorkoutSettingsActivity.this));
+                    }
+                });
                 httpTask.setmCallback(new HttpTask.HttpCallback() {
                     @Override
                     public void onResponse(String response) throws JSONException {

@@ -197,4 +197,6 @@
     <string name="error_no_current_password">Please enter current password</string>
     <string name="error_invalid_current_password">Invalid current password</string>
     <string name="msg_saving_please_wait">Saving workouts, please wait...</string>
+    <string name="session_timeout">Session timeout</string>
+    <string name="session_timeout_resolution">Please log in to continue</string>
 </resources>
