@@ -1,5 +1,8 @@
 package com.oneminutebefore.workout.models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by tahir on 31/5/17.
  */
@@ -35,6 +38,17 @@ public class CompletedWorkout extends SelectedWorkout {
 
     public long getDate() {
         return date;
+    }
+
+    public static long getDateLong(String dateString){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return dateFormat.parse(dateString).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }

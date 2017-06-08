@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,75 +16,39 @@ import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
 
     private ViewPager vpLogin;
+    private WorkoutApplication application;
+    private int workoutsFetchStatus;
+    private int userInfoFetchStatus;
+
+    private static final int INFO_FETCH_STATUS_SUCCESS = 1;
+    private static final int INFO_FETCH_STATUS_FAILURE = -1;
+    private static final int INFO_FETCH_STATUS_INCOMPLETE = 0;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
-//        ViewPager vpSlide = (ViewPager)findViewById(R.id.vp_slide_show);
-//        ViewPagerAdapter sliderAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_1));
-//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_2));
-//        sliderAdapter.addItem(ImageFragment.newInstance(R.drawable.slide_3));
-//        vpSlide.setAdapter(sliderAdapter);
-
-//        YouTubePlayerView youTubePlayerView = (YouTubePlayerView)findViewById(R.id.youtube_player);
-//        youTubePlayerView.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-//            @Override
-//            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-//                youTubePlayer.setShowFullscreenButton(true);
-//                youTubePlayer.cueVideo("https://youtu.be/WngOnjCVcqU");
-//            }
-//
-//            @Override
-//            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//
-//            }
-//        });
-
-//        YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
-//        youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
-//            @Override
-//            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-//                youTubePlayer.setShowFullscreenButton(true);
-//                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-//                youTubePlayer.cueVideo("WngOnjCVcqU");
-//            }
-//
-//            @Override
-//            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//
-//            }
-//        });
-
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .add(R.id.player_layout, YoutubePlayerFragment.newInstance("https://youtu.be/WngOnjCVcqU"))
-//                .commit();
-
+        application = ((WorkoutApplication)getApplication());
+        if(application.getDbHelper() == null){
+            application.setDbHelper(new DBHelper(MainActivity.this));
+        }
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
         ViewPagerAdapter formsAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         formsAdapter.addItem(new LoginFragment());
@@ -93,29 +58,90 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
     }
 
-    private void fetchUserInfo(){
+    private void fetchSelectedWorkoutsInfo(){
 
-        String url = new UrlBuilder(UrlBuilder.API_ME).build();
-        HttpTask httpTask = new HttpTask(true,MainActivity.this,HttpTask.METHOD_GET);
+        String url = new UrlBuilder(UrlBuilder.API_GET_WORKOUTS).build();
+        HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
         httpTask.setAuthorizationRequired(true);
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
-                User user = User.createFromJson(new JSONObject(response));
-                WorkoutApplication application = ((WorkoutApplication)getApplication());
-                application.setUser(user);
-                application.setUserId(user.getId());
-                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
-                if(application.getDbHelper() == null){
-                    application.setDbHelper(new DBHelper(MainActivity.this));
+                JSONArray workoutsArray = new JSONArray(response);
+                if(workoutsArray != null && workoutsArray.length() > 0){
+                    for(int i = 0; i < workoutsArray.length() ; i++){
+                        application.getDbHelper().insertSelectedWorkout(workoutsArray.getJSONObject(i), true);
+                    }
                 }
-//                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
-                switchToHomeActivity();
+                HashMap<String, SelectedWorkout> selectedWorkoutHashMap = application.getDbHelper().getSelectedWorkouts();
+                for(Map.Entry entry : selectedWorkoutHashMap.entrySet()){
+                    SharedPrefsUtil.setBooleanPreference(MainActivity.this,entry.getKey().toString(),true);
+                    SharedPrefsUtil.setStringPreference(MainActivity.this, "list_" + entry.getKey().toString(), ((SelectedWorkout)entry.getValue()).getId());
+                }
+                workoutsFetchStatus = INFO_FETCH_STATUS_SUCCESS;
+                if(userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                    showProgress(false);
+                    switchToHomeActivity();
+                }
             }
 
             @Override
             public void onException(Exception e) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+                workoutsFetchStatus = INFO_FETCH_STATUS_FAILURE;
+                if(userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                    showProgress(false);
+                    if(userInfoFetchStatus == INFO_FETCH_STATUS_SUCCESS){
+                        switchToHomeActivity();
+                    }
+                }
+            }
+        });
+        httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+    }
+
+    private void showProgress(boolean show) {
+        if(show){
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }else{
+            if(progressDialog != null && progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
+        }
+    }
+
+    private void fetchUserInfo(){
+
+        String url = new UrlBuilder(UrlBuilder.API_ME).build();
+        HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true);
+        httpTask.setmCallback(new HttpTask.HttpCallback() {
+            @Override
+            public void onResponse(String response) throws JSONException {
+                User user = User.createFromJson(new JSONObject(response));
+                application.setUser(user);
+                application.setUserId(user.getId());
+                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
+//                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
+                userInfoFetchStatus = INFO_FETCH_STATUS_SUCCESS;
+                if(workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                    showProgress(false);
+                    switchToHomeActivity();
+                }
+            }
+
+            @Override
+            public void onException(Exception e) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
+                userInfoFetchStatus = INFO_FETCH_STATUS_FAILURE;
+                if(workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                    showProgress(false);
+                    if(workoutsFetchStatus == INFO_FETCH_STATUS_SUCCESS){
+                        switchToHomeActivity();
+                    }
+                }
             }
         });
         httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
@@ -124,7 +150,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onLoginSuccessFul() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_successful), Snackbar.LENGTH_SHORT).show();
-        fetchUserInfo();
+        fetchInfo();
     }
 
     @Override
@@ -135,6 +161,11 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onRegisterSuccessFul() {
         Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
+    }
+
+    private void fetchInfo(){
+        showProgress(true);
+        fetchSelectedWorkoutsInfo();
         fetchUserInfo();
     }
 

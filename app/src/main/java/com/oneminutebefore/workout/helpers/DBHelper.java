@@ -10,21 +10,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 
 import com.oneminutebefore.workout.WorkoutApplication;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
-import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -51,9 +47,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "workout varchar(50),"
                 + "user_id varchar(50),"
                 + "uid varchar(50),"
-                + "created_at varchar(50),"
-                + "updated varchar(50),"
-                + "updated_at varchar(50),"
+                + "created_at bigint,"
+                + "updated bigint,"
+                + "updated_at bigint,"
                 + "active integer)");
 
         db.execSQL("create table if not exists "
@@ -82,6 +78,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertSelectedWorkout(JSONObject jsonObject){
 
+        insertSelectedWorkout(jsonObject, false);
+    }
+
+    public void insertSelectedWorkout(JSONObject jsonObject, boolean insertTrack){
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id", jsonObject.optString("_id"));
         contentValues.put("workout_time", jsonObject.optString("workout_time"));
@@ -89,9 +90,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("workout", jsonObject.optString("workout"));
         contentValues.put("user_id", jsonObject.optString("user_id"));
         contentValues.put("uid", jsonObject.optString("uid"));
-        contentValues.put("created_at", jsonObject.optString("created_at"));
-        contentValues.put("updated_at", jsonObject.optString("updated_at"));
-        contentValues.put("updated", jsonObject.optString("updated"));
+        contentValues.put("created_at", SelectedWorkout.getDateTimeLong(jsonObject.optString("created_at")));
+        contentValues.put("updated_at", SelectedWorkout.getDateTimeLong(jsonObject.optString("updated_at")));
+        contentValues.put("updated", SelectedWorkout.getDateTimeLong(jsonObject.optString("updated")));
         contentValues.put("active", jsonObject.optString("active"));
 
         SQLiteDatabase db = getWritableDatabase();
@@ -100,6 +101,21 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.execSQL(sql);
 
         db.insert(SELECTED_WORKOUT, null, contentValues);
+
+        if(insertTrack){
+            JSONArray track = jsonObject.optJSONArray("user_track");
+            if(track != null && track.length() > 0){
+                for(int i = 0 ; i < track.length() ; i++){
+                    ContentValues values = new ContentValues();
+                    values.put("workout_id", jsonObject.optString("_id"));
+                    JSONObject trackItem = track.optJSONObject(i);
+                    values.put("date", CompletedWorkout.getDateLong(trackItem.optString("date")));
+                    values.put("rep", trackItem.optInt("rep"));
+
+                    db.insert(USER_TRACK,null,values);
+                }
+            }
+        }
     }
 
     public void insertUserTrack(CompletedWorkout completedWorkout){
@@ -116,7 +132,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public String getSelectedWorkoutIdByTime(String workoutTime){
 
-        String sql = "select _id from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "'";
+        String sql = "select _id from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "' order by created_at desc";
         SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery(sql,null);
         if(result.moveToFirst()){
@@ -129,7 +145,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public SelectedWorkout getSelectedWorkoutByTime(String workoutTime){
 
-        String sql = "select * from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "'";
+        String sql = "select * from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "' order by created_at desc";
         SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery(sql,null);
         if(result.moveToFirst()){
@@ -139,6 +155,29 @@ public class DBHelper extends SQLiteOpenHelper {
             SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId),Utils.getTimeKey(timeMeridian));
             selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
             return selectedWorkout;
+        }
+        return null;
+    }
+
+    public HashMap<String, SelectedWorkout> getSelectedWorkouts(){
+
+        String sql = "select * from " + SELECTED_WORKOUT + " order by created_at desc";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor result = db.rawQuery(sql,null);
+        if(result.moveToFirst()){
+            HashMap<String, SelectedWorkout> selectedWorkouts = new HashMap<>();
+            do{
+                String workoutId = result.getString(result.getColumnIndex("workout"));
+                WorkoutApplication application = WorkoutApplication.getmInstance();
+                String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
+                SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId),Utils.getTimeKey(timeMeridian));
+                selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
+                selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
+                if(!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())){
+                    selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
+                }
+            }while (result.moveToNext());
+            return selectedWorkouts;
         }
         return null;
     }
@@ -171,8 +210,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
-//    public ArrayList<SelectedWorkout> getSelectedWorkouts(){
-//
-//    }
+    public void clearData() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(SELECTED_WORKOUT,null,null);
+        db.delete(USER_TRACK,null,null);
+    }
 
 }

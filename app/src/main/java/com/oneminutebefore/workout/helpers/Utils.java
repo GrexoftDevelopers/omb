@@ -35,6 +35,7 @@ public class Utils {
         }
         WorkoutApplication application = WorkoutApplication.getmInstance();
         application.clearUserData();
+        application.getDbHelper().clearData();
     }
 
 

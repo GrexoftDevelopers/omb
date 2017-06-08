@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="key_00_59">00_59</string>
-    <string name="key_01_59">01_59</string>
-    <string name="key_02_59">02_59</string>
-    <string name="key_03_59">03_59</string>
-    <string name="key_04_59">04_59</string>
-    <string name="key_05_59">05_59</string>
-    <string name="key_06_59">06_59</string>
-    <string name="key_07_59">07_59</string>
-    <string name="key_08_59">08_59</string>
-    <string name="key_09_59">09_59</string>
+    <string name="key_00_59">0_59</string>
+    <string name="key_01_59">1_59</string>
+    <string name="key_02_59">2_59</string>
+    <string name="key_03_59">3_59</string>
+    <string name="key_04_59">4_59</string>
+    <string name="key_05_59">5_59</string>
+    <string name="key_06_59">6_59</string>
+    <string name="key_07_59">7_59</string>
+    <string name="key_08_59">8_59</string>
+    <string name="key_09_59">9_59</string>
     <string name="key_10_59">10_59</string>
     <string name="key_11_59">11_59</string>
     <string name="key_12_59">12_59</string>
@@ -26,16 +26,16 @@
     <string name="key_23_59">23_59</string>
 
 
-    <string name="list_key_00_59">list_00_59</string>
-    <string name="list_key_01_59">list_01_59</string>
-    <string name="list_key_02_59">list_02_59</string>
-    <string name="list_key_03_59">list_03_59</string>
-    <string name="list_key_04_59">list_04_59</string>
-    <string name="list_key_05_59">list_05_59</string>
-    <string name="list_key_06_59">list_06_59</string>
-    <string name="list_key_07_59">list_07_59</string>
-    <string name="list_key_08_59">list_08_59</string>
-    <string name="list_key_09_59">list_09_59</string>
+    <string name="list_key_00_59">list_0_59</string>
+    <string name="list_key_01_59">list_1_59</string>
+    <string name="list_key_02_59">list_2_59</string>
+    <string name="list_key_03_59">list_3_59</string>
+    <string name="list_key_04_59">list_4_59</string>
+    <string name="list_key_05_59">list_5_59</string>
+    <string name="list_key_06_59">list_6_59</string>
+    <string name="list_key_07_59">list_7_59</string>
+    <string name="list_key_08_59">list_8_59</string>
+    <string name="list_key_09_59">list_9_59</string>
     <string name="list_key_10_59">list_10_59</string>
     <string name="list_key_11_59">list_11_59</string>
     <string name="list_key_12_59">list_12_59</string>

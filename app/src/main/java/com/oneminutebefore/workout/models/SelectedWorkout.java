@@ -1,5 +1,9 @@
 package com.oneminutebefore.workout.models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by tahir on 31/5/17.
  */
@@ -7,9 +11,9 @@ package com.oneminutebefore.workout.models;
 public class SelectedWorkout extends WorkoutExercise {
 
     private String selectedWorkoutId;
-    private String updated;
-    private String createdAt;
-    private String updatedAt;
+    private long updated;
+    private long createdAt;
+    private long updatedAt;
     private String uid;
 
     private String timeKey;
@@ -69,15 +73,15 @@ public class SelectedWorkout extends WorkoutExercise {
         return workoutTime;
     }
 
-    public String getUpdated() {
+    public long getUpdated() {
         return updated;
     }
 
-    public String getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public String getUpdatedAt() {
+    public long getUpdatedAt() {
         return updatedAt;
     }
 
@@ -85,15 +89,15 @@ public class SelectedWorkout extends WorkoutExercise {
         return uid;
     }
 
-    public void setUpdated(String updated) {
+    public void setUpdated(long updated) {
         this.updated = updated;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(long updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -103,5 +107,21 @@ public class SelectedWorkout extends WorkoutExercise {
 
     public void setTimeKey(String timeKey) {
         this.timeKey = timeKey;
+    }
+
+    public static long getDateTimeLong(String dateString){
+
+        dateString = dateString.substring(0, dateString.length()-1).replace("T"," ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        try {
+            return dateFormat.parse(dateString).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static String getFormattedDateTime(long millis){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS_").format(new Date(millis)).replace(" ","T").replace("_","Z");
     }
 }
