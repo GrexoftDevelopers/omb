@@ -124,7 +124,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
                 application.setUser(user);
                 application.setUserId(user.getId());
                 SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
-//                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
+                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
                 userInfoFetchStatus = INFO_FETCH_STATUS_SUCCESS;
                 if(workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
                     showProgress(false);

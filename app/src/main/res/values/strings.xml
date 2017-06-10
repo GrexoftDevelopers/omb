@@ -199,4 +199,5 @@
     <string name="msg_saving_please_wait">Saving workouts, please wait...</string>
     <string name="session_timeout">Session timeout</string>
     <string name="session_timeout_resolution">Please log in to continue</string>
+    <string name="last_name">Last name</string>
 </resources>

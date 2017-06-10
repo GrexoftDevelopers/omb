@@ -70,6 +70,10 @@ public class User {
         return userLevel;
     }
 
+    public void setUserLevel(String userLevel) {
+        this.userLevel = userLevel;
+    }
+
     public String getGroupCode() {
         return groupCode;
     }

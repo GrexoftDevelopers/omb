@@ -3,6 +3,9 @@ package com.oneminutebefore.workout;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -16,19 +19,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.models.User;
+import com.oneminutebefore.workout.models.WorkoutCategory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 public class RegisterFragment extends Fragment {
-    private EditText etName, etEmail, etPassword, etReferenceCode, etPhone;
+    private EditText etFirstName, etEmail, etPassword, etReferenceCode, etPhone, etLastName;
     private Button btnRegister, btnSignIn;
     private Spinner spinnerLevel, spinnerTimeZone;
     private RegisterInteractionListener mListener;
@@ -36,6 +45,7 @@ public class RegisterFragment extends Fragment {
 
     private ProgressBar progressBar;
     private View fragmentView;
+    private WorkoutApplication application;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -59,60 +69,38 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
-        etName = (EditText) fragmentView.findViewById(R.id.et_first_name);
+        etFirstName = (EditText) fragmentView.findViewById(R.id.et_first_name);
+        etLastName = (EditText) fragmentView.findViewById(R.id.et_last_name);
         etEmail = (EditText) fragmentView.findViewById(R.id.et_email);
         etPassword = (EditText) fragmentView.findViewById(R.id.et_password);
-//        etTimeZone = (EditText) fragmentView.findViewById(R.id.et_time_zone);
         etReferenceCode = (EditText) fragmentView.findViewById(R.id.et_reference_code);
         etPhone = (EditText) fragmentView.findViewById(R.id.et_phone);
-//        etLevel = (EditText) fragmentView.findViewById(R.id.et_level);
         btnRegister = (Button) fragmentView.findViewById(R.id.btn_register);
         spinnerLevel = (Spinner) fragmentView.findViewById(R.id.spinner_level);
         spinnerTimeZone = (Spinner) fragmentView.findViewById(R.id.spinner_time_zone);
         btnSignIn = (Button) fragmentView.findViewById(R.id.btn_login);
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-//        etLevel.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.register || id == EditorInfo.IME_NULL) {
-//                    Toast.makeText(getActivity(), "Registered", Toast.LENGTH_LONG).show();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
 
-        // Creating adapter for spinner
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.level_array, android.R.layout.simple_spinner_item);
+        application = WorkoutApplication.getmInstance();
 
+        ArrayList<WorkoutCategory> categories = new ArrayList<>();
+        for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
+            categories.add((WorkoutCategory) entry.getValue());
+        }
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<WorkoutCategory> userLevelAdapter = new UserLevelAdapter(getActivity(), android.R.layout.simple_spinner_item, categories);
 
-        spinnerLevel.setAdapter(adapter);
-
+        spinnerLevel.setAdapter(userLevelAdapter);
 
         // Creating adapter for spinner
         ArrayAdapter<CharSequence> timezoneArrayAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.time_zone_array, android.R.layout.simple_spinner_item);
 
-
         timezoneArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerTimeZone.setAdapter(timezoneArrayAdapter);
 
-        spinnerLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                level=spinnerLevel.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         spinnerTimeZone.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -146,11 +134,12 @@ public class RegisterFragment extends Fragment {
     private void attemptRegister() {
         setErrorFalse();
         if (isFeldNotEmpty()) {
-            final String firstName = etName.getText().toString().trim();
-            final String lastName = etEmail.getText().toString().trim();
+            final String firstName = etFirstName.getText().toString().trim();
+            final String lastName = etLastName.getText().toString().trim();
+            final String email = etEmail.getText().toString().trim();
             String mobileNo = etPassword.getText().toString().trim();
-//            String timeZone = etTimeZone.getText().toString().trim();
-//            String level = etLevel.getText().toString().trim();
+            timeZone = spinnerTimeZone.getSelectedItem().toString();
+            level = ((WorkoutCategory)spinnerLevel.getSelectedItem()).getId();
             String referenceCode = etReferenceCode.getText().toString().trim();
             final String phone = etPhone.getText().toString().trim();
 
@@ -158,8 +147,8 @@ public class RegisterFragment extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
 
             UrlBuilder builder = new UrlBuilder(UrlBuilder.API_REGISTER)
-                    .addParameters("name", firstName)
-                    .addParameters("email", lastName)
+                    .addParameters("name", firstName + (!TextUtils.isEmpty(lastName) ? " " + lastName : ""))
+                    .addParameters("email", email)
                     .addParameters("password", mobileNo)
                     .addParameters("time_zone", timeZone)
                     .addParameters("user_level", level)
@@ -198,7 +187,7 @@ public class RegisterFragment extends Fragment {
                             mListener.onRegisterSuccessFul();
                         }
 
-                        User user=new User(lastName,firstName,phone,level,"","","",timeZone);
+                        User user=new User(email,firstName,phone,level,"","","",timeZone);
                         WorkoutApplication.getmInstance().setUser(user);
 
                     }
@@ -301,9 +290,9 @@ public class RegisterFragment extends Fragment {
         ((TextInputLayout) fragmentView.findViewById(R.id.til_email)).setError(null);
         ((TextInputLayout) fragmentView.findViewById(R.id.til_password)).setError(null);
 
-        if (TextUtils.isEmpty(etName.getText().toString())) {
+        if (TextUtils.isEmpty(etFirstName.getText().toString())) {
             ((TextInputLayout) fragmentView.findViewById(R.id.til_first_name)).setError(getString(R.string.error_field_required));
-            etName.requestFocus();
+            etFirstName.requestFocus();
             return false;
         }
         if (TextUtils.isEmpty(etEmail.getText().toString())) {
@@ -342,6 +331,43 @@ public class RegisterFragment extends Fragment {
 //        ((TextInputLayout) fragmentView.findViewById(R.id.til_level)).setError(null);
 //        ((TextInputLayout) fragmentView.findViewById(R.id.til_time_zone)).setError(null);
         ((TextInputLayout) fragmentView.findViewById(R.id.til_phone)).setError(null);
+    }
+
+    private class UserLevelAdapter extends ArrayAdapter<WorkoutCategory>{
+
+
+        public UserLevelAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<WorkoutCategory> objects) {
+            super(context, resource, objects);
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            if(convertView == null){
+                convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_item, parent, false);
+            }
+
+            WorkoutCategory category = getItem(position);
+
+            ((TextView)convertView).setText(category.getName());
+
+            return convertView;
+        }
+
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            if(convertView == null){
+                convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+            }
+
+            WorkoutCategory category = getItem(position);
+
+            ((TextView)convertView).setText(category.getName());
+
+            return convertView;
+        }
     }
 
 }

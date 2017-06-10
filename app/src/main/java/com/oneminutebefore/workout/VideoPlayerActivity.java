@@ -171,7 +171,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         if(application.getDbHelper() != null){
             application.setDbHelper(new DBHelper(VideoPlayerActivity.this));
         }
-//        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
+        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
     }
 
     private void fetchUserInfo(){
@@ -341,7 +341,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
                     }
                 });
                 alertDialog.show();
-                ivPlayPause.setVisibility(View.GONE);
+                ivPlayPause.setOnClickListener(null);
+                ivPlayPause.setVisibility(View.INVISIBLE);
             }
         }
     }

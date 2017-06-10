@@ -236,28 +236,30 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             ListPreference preference = (ListPreference) findPreference(Keys.getUserLevelKey(getActivity()));
-//            WorkoutApplication application = WorkoutApplication.getmInstance();
-//            if(application.getWorkoutCategories() != null && !application.getWorkoutCategories().isEmpty()){
-//                String entries[] = new String[application.getWorkoutCategories().size()];
-//                String entryValues[] = new String[application.getWorkoutCategories().size()];
-//                int i = 0;
-//                for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
-//                    entries[i] = ((WorkoutCategory)entry.getValue()).getName();
-//                    entryValues[i] = entry.getKey().toString();
-//                    i++;
-//                }
-//                preference.setEntries(entries);
-//                preference.setEntryValues(entryValues);
-//            }
+            final WorkoutApplication application = WorkoutApplication.getmInstance();
+            if(application.getWorkoutCategories() != null && !application.getWorkoutCategories().isEmpty()){
+                String entries[] = new String[application.getWorkoutCategories().size()];
+                String entryValues[] = new String[application.getWorkoutCategories().size()];
+                int i = 0;
+                for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
+                    entries[i] = ((WorkoutCategory)entry.getValue()).getName();
+                    entryValues[i] = entry.getKey().toString();
+                    i++;
+                }
+                preference.setEntries(entries);
+                preference.setEntryValues(entryValues);
+                preference.setValue(application.getUser().getUserLevel());
+            }
 
             bindPreferenceSummaryToValue(preference);
-//            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//                @Override
-//                public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
-//                    return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
-//                }
-//            });
+            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
+                    application.getUser().setUserLevel(String.valueOf(newValue));
+                    return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
+                }
+            });
         }
 
         @Override

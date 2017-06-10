@@ -112,7 +112,7 @@ public class SplashActivity extends BaseRequestActivity {
         WorkoutApplication application = ((WorkoutApplication) getApplication());
         application.setUser(user);
         application.setUserId(user.getId());
-//        SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.getUserLevelKey(SplashActivity.this), user.getUserLevel());
+        SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.getUserLevelKey(SplashActivity.this), user.getUserLevel());
         Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
         startActivity(intent);
         new Handler().postDelayed(new Runnable() {
