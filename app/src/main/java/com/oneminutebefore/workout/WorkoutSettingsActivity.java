@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,7 +42,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
     private ArrayList<SelectedWorkout> selectedWorkouts;
     private WorkoutApplication application;
-    private String categoryName;
+    private String categoryId;
     private String[] hourKeys;
     private String[] workoutKeys;
     private RecyclerView rclWorkouts;
@@ -73,12 +72,12 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         hourKeys = Keys.getHourSelectionKeys(this);
         workoutKeys = Keys.getWorkoutSelectionKeys(this);
         HashMap<String, WorkoutExercise> workouts = application.getWorkouts();
-        categoryName = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"Intermediate");
+        categoryId = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"");
         for(int i  = 0 ; i < hourKeys.length ; i++){
             boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(this, hourKeys[i], false);
             if(isHourSelected){
                 String hourWorkout = SharedPrefsUtil.getStringPreference(this, workoutKeys[i]);
-                if(workouts.containsKey(hourWorkout) && workouts.get(hourWorkout).getCategory().getName().equals(categoryName)){
+                if(workouts.containsKey(hourWorkout) && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
                     selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
                 }
             }
@@ -118,8 +117,10 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                 final ArrayList<WorkoutExercise> workoutExercises = new ArrayList<>();
                 for(Map.Entry entry : application.getWorkouts().entrySet()){
                     WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
-                    if(workoutExercise.getCategory().getName().equals(categoryName)){
-                        workoutExercises.add(workoutExercise);
+                    if(!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))){
+                        if(workoutExercise.getCategory().getId().equals(categoryId)){
+                            workoutExercises.add(workoutExercise);
+                        }
                     }
                 }
                 ArrayAdapter<WorkoutExercise> arrayAdapter = new ArrayAdapter<WorkoutExercise>(WorkoutSettingsActivity.this
@@ -184,8 +185,10 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                             selectedWorkouts.set(index,new SelectedWorkout(workoutExercise,hour));
                             rclWorkouts.getAdapter().notifyItemChanged(index);
                         }else{
-                            selectedWorkouts.add(new SelectedWorkout(workoutExercise,hour));
-                            rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size()-1);
+                            if(workoutExercise != null){
+                                selectedWorkouts.add(new SelectedWorkout(workoutExercise,hour));
+                                rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size()-1);
+                            }
                         }
                         refreshUI();
                         alertDialog.dismiss();

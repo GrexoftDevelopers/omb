@@ -200,4 +200,5 @@
     <string name="session_timeout">Session timeout</string>
     <string name="session_timeout_resolution">Please log in to continue</string>
     <string name="last_name">Last name</string>
+    <string name="no_workout_for_today">No workouts done today yet</string>
 </resources>

@@ -30,15 +30,15 @@
             android:targetPackage="com.oneminutebefore.workout" />
     </header>
 
-    <!--&lt;!&ndash;<header&ndash;&gt;-->
-        <!--&lt;!&ndash;android:icon="@drawable/ic_access_alarm_24dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:title="@string/pref_header_timer_demo"&ndash;&gt;-->
-        <!--&lt;!&ndash;&gt;&ndash;&gt;-->
-        <!--&lt;!&ndash;<intent&ndash;&gt;-->
-            <!--&lt;!&ndash;android:targetClass="com.oneminutebefore.workout.VideoPlayerActivity"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:targetPackage="com.oneminutebefore.workout"&ndash;&gt;-->
-            <!--&lt;!&ndash;&gt;&ndash;&gt;-->
-        <!--&lt;!&ndash;</intent>&ndash;&gt;-->
+    <!--<header-->
+        <!--android:icon="@drawable/ic_access_alarm_24dp"-->
+        <!--android:title="@string/pref_header_timer_demo"-->
+        <!--&gt;-->
+        <!--<intent-->
+            <!--android:targetClass="com.oneminutebefore.workout.VideoPlayerActivity"-->
+            <!--android:targetPackage="com.oneminutebefore.workout"-->
+            <!--&gt;-->
+        <!--</intent>-->
     <!--</header>-->
 
     <!--android:fragment="com.oneminutebefore.workout.SettingsActivityNew$DataSyncPreferenceFragment"-->

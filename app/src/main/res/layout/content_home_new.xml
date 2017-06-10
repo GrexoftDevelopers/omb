@@ -267,14 +267,28 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
                     android:text="@string/today_count"
-                    android:layout_margin="8dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_no_workout"
+                    android:text="@string/no_workout_for_today"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/list_workout_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     app:layoutManager="LinearLayoutManager"/>
 
             </LinearLayout>

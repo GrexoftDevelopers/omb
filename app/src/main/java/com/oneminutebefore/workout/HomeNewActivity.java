@@ -207,7 +207,10 @@ public class HomeNewActivity extends AppCompatActivity
                 }
                 if (preferences.getBoolean(hours[i], false)) {
                     String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
-                    if (!TextUtils.isEmpty(workoutId) && application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
+                    String categoryId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getUserLevelKey(HomeNewActivity.this), "");
+                    if (!TextUtils.isEmpty(workoutId)
+                            && application.getWorkouts() != null && !application.getWorkouts().isEmpty()
+                            && application.getWorkouts().get(workoutId).getCategory().getId().equals(categoryId)) {
                         WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
                         calendar.set(Calendar.HOUR_OF_DAY, i);
                         calendar.set(Calendar.MINUTE, 59);
@@ -235,8 +238,6 @@ public class HomeNewActivity extends AppCompatActivity
                     break;
                 }
             }
-//            if (!timerSet) {
-//            }
             layoutUpcomingTask.setVisibility(!timerSet ? View.GONE : View.VISIBLE);
             layoutScheduleTask.setVisibility(!timerSet ? View.VISIBLE : View.GONE);
 
@@ -265,7 +266,13 @@ public class HomeNewActivity extends AppCompatActivity
 
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
             recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setAdapter(new WorkoutCountAdapter());
+            if(workoutsDone != null && !workoutsDone.isEmpty()){
+                findViewById(R.id.txt_no_workout).setVisibility(View.GONE);
+                recyclerView.setAdapter(new WorkoutCountAdapter());
+            }else{
+                recyclerView.setVisibility(View.GONE);
+                findViewById(R.id.txt_no_workout).setVisibility(View.VISIBLE);
+            }
 
         }
 
@@ -461,7 +468,7 @@ public class HomeNewActivity extends AppCompatActivity
             }
 
             if (i == getItemCount() - 1) {
-                viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.GONE);
+                viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
             } else {
                 viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
             }

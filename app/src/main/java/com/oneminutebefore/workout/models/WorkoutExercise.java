@@ -106,4 +106,9 @@ public class WorkoutExercise implements Serializable{
 
         return null;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return id.equals(((WorkoutExercise)obj).getId());
+    }
 }

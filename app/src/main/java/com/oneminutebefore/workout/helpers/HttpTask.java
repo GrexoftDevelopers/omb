@@ -167,7 +167,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
                     throw e;
                 } else {
@@ -235,7 +235,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
                     throw e;
                 } else {
@@ -289,7 +289,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             } catch (Throwable t) {
                 t.printStackTrace();
                 if (t instanceof HttpResponseException) {
-                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
+                    HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
                     throw e;
                 } else {
@@ -352,7 +352,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                 if(exception instanceof HttpConnectException){
                     if (exception.getMessage().equals(HttpConnectException.MSG_NO_INTERNET)) {
                         Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                    }else if(((HttpConnectException) exception).getStatusCode() == 401){
+                    }else if(((HttpConnectException) exception).getStatusCode() == 401 && isAuthorizationRequired){
                         Utils.clearUserData(mContext);
                         showSessionTimeoutDialog();
                     }

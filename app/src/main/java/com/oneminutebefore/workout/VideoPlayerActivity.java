@@ -125,9 +125,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.setShowFullscreenButton(true);
-                    int substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("/") + 1;
+                    int substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("=") + 1;
                     if(substringIndex < 0){
-                        substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("=") + 1;
+                        substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("/") + 1;
                     }
                     String url = selectedWorkoutExercise.getVideoLink().substring(substringIndex);
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
@@ -338,11 +338,19 @@ public class VideoPlayerActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                                finish();
+                            }
+                        });
                     }
                 });
                 alertDialog.show();
                 ivPlayPause.setOnClickListener(null);
                 ivPlayPause.setVisibility(View.INVISIBLE);
+                txtMsgTimerAction.setVisibility(View.GONE);
             }
         }
     }

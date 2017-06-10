@@ -67,7 +67,7 @@ public class SampleWorkoutActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int position) {
 
             final WorkoutExercise workoutExercise = workouts.get(position);
             int substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
@@ -92,6 +92,12 @@ public class SampleWorkoutActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(SampleWorkoutActivity.this, YoutubePlayerActivity.class);
+                    final WorkoutExercise workoutExercise = workouts.get(holder.getAdapterPosition());
+                    int substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
+                    if(substringIndex < 0){
+                        substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
+                    }
+                    final String link = workoutExercise.getVideoLink().substring(substringIndex);
                     intent.putExtra(YoutubePlayerActivity.KEY_LINK, link);
                     startActivity(intent);
                 }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -174,7 +175,7 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
                 String userLevel = sharedPreferences.getString(Keys.getUserLevelKey(getActivity()),getString(R.string.default_fitness));
                 for (Map.Entry entry : workouts.entrySet()) {
                     WorkoutExercise workoutExercise = ((WorkoutExercise) entry.getValue());
-                    if (workoutExercise.getCategory().getName().equals(userLevel) || userLevel.equals("All star")) {
+                    if (workoutExercise.getCategory().getId().equals(userLevel) || userLevel.equals("All star")) {
                         entries.add(workoutExercise.getName());
                         entriesValues.add(workoutExercise.getId());
                         i++;
@@ -255,8 +256,9 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
                     application.getUser().setUserLevel(String.valueOf(newValue));
+                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER, application.getUser().getJson().toString());
                     return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
                 }
             });

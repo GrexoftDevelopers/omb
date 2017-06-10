@@ -161,6 +161,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onRegisterSuccessFul() {
         Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
+        fetchInfo();
     }
 
     private void fetchInfo(){

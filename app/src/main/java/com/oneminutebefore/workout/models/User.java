@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout.models;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -115,6 +116,26 @@ public class User {
             return user;
         }
         return null;
+    }
+
+    public JSONObject getJson(){
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("_id", id);
+            jsonObject.put("user_level", userLevel);
+            jsonObject.put("active", isActive);
+            jsonObject.put("role", role);
+            jsonObject.put("__v", _v);
+            jsonObject.put("name", name);
+            jsonObject.put("provider", provider);
+            jsonObject.put("group_code", groupCode);
+            jsonObject.put("email", email);
+            jsonObject.put("phone", phone);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 
 }
