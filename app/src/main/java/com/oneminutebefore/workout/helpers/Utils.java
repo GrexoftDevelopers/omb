@@ -26,7 +26,7 @@ public class Utils {
     public static void clearUserData(Context context){
         SharedPrefsUtil.deletePreference(context, Keys.KEY_TOKEN);
         SharedPrefsUtil.deletePreference(context, Keys.KEY_USER_ID);
-        SharedPrefsUtil.deletePreference(context, Keys.getUserLevelKey(context));
+//        SharedPrefsUtil.deletePreference(context, Keys.getUserLevelKey(context));
         String hourPrefKeys[] = Keys.getHourSelectionKeys(context);
         for(String key : hourPrefKeys){
             SharedPrefsUtil.deletePreference(context, key);

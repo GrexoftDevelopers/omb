@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener,RegisterFragment.RegisterInteractionListener{
+public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener, RegisterFragment.RegisterInteractionListener {
 
     private ViewPager vpLogin;
     private WorkoutApplication application;
@@ -45,8 +45,8 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        application = ((WorkoutApplication)getApplication());
-        if(application.getDbHelper() == null){
+        application = ((WorkoutApplication) getApplication());
+        if (application.getDbHelper() == null) {
             application.setDbHelper(new DBHelper(MainActivity.this));
         }
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
@@ -54,31 +54,33 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         formsAdapter.addItem(new LoginFragment());
         formsAdapter.addItem(new RegisterFragment());
         vpLogin.setAdapter(formsAdapter);
-        ((SwipeDisabledViewPager)vpLogin).setPagingEnabled(false);
+        ((SwipeDisabledViewPager) vpLogin).setPagingEnabled(false);
 
     }
 
-    private void fetchSelectedWorkoutsInfo(){
+    private void fetchSelectedWorkoutsInfo() {
 
         String url = new UrlBuilder(UrlBuilder.API_GET_WORKOUTS).build();
-        HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true,null);
+        HttpTask httpTask = new HttpTask(false, MainActivity.this, HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true, null);
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
                 JSONArray workoutsArray = new JSONArray(response);
-                if(workoutsArray != null && workoutsArray.length() > 0){
-                    for(int i = 0; i < workoutsArray.length() ; i++){
+                if (workoutsArray != null && workoutsArray.length() > 0) {
+                    for (int i = 0; i < workoutsArray.length(); i++) {
                         application.getDbHelper().insertSelectedWorkout(workoutsArray.getJSONObject(i), true);
                     }
                 }
                 HashMap<String, SelectedWorkout> selectedWorkoutHashMap = application.getDbHelper().getSelectedWorkouts();
-                for(Map.Entry entry : selectedWorkoutHashMap.entrySet()){
-                    SharedPrefsUtil.setBooleanPreference(MainActivity.this,entry.getKey().toString(),true);
-                    SharedPrefsUtil.setStringPreference(MainActivity.this, "list_" + entry.getKey().toString(), ((SelectedWorkout)entry.getValue()).getId());
+                if (selectedWorkoutHashMap != null && !selectedWorkoutHashMap.isEmpty()) {
+                    for (Map.Entry entry : selectedWorkoutHashMap.entrySet()) {
+                        SharedPrefsUtil.setBooleanPreference(MainActivity.this, entry.getKey().toString(), true);
+                        SharedPrefsUtil.setStringPreference(MainActivity.this, "list_" + entry.getKey().toString(), ((SelectedWorkout) entry.getValue()).getId());
+                    }
                 }
                 workoutsFetchStatus = INFO_FETCH_STATUS_SUCCESS;
-                if(userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                if (userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE) {
                     showProgress(false);
                     switchToHomeActivity();
                 }
@@ -88,9 +90,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             public void onException(Exception e) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
                 workoutsFetchStatus = INFO_FETCH_STATUS_FAILURE;
-                if(userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                if (userInfoFetchStatus != INFO_FETCH_STATUS_INCOMPLETE) {
                     showProgress(false);
-                    if(userInfoFetchStatus == INFO_FETCH_STATUS_SUCCESS){
+                    if (userInfoFetchStatus == INFO_FETCH_STATUS_SUCCESS) {
                         switchToHomeActivity();
                     }
                 }
@@ -100,23 +102,23 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     }
 
     private void showProgress(boolean show) {
-        if(show){
+        if (show) {
             progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setMessage(getString(R.string.please_wait));
             progressDialog.setCancelable(false);
             progressDialog.show();
-        }else{
-            if(progressDialog != null && progressDialog.isShowing()){
+        } else {
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
     }
 
-    private void fetchUserInfo(){
+    private void fetchUserInfo() {
 
         String url = new UrlBuilder(UrlBuilder.API_ME).build();
-        HttpTask httpTask = new HttpTask(false,MainActivity.this,HttpTask.METHOD_GET);
-        httpTask.setAuthorizationRequired(true,null);
+        HttpTask httpTask = new HttpTask(false, MainActivity.this, HttpTask.METHOD_GET);
+        httpTask.setAuthorizationRequired(true, null);
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
@@ -124,9 +126,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
                 application.setUser(user);
                 application.setUserId(user.getId());
                 SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_USER, response);
-                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
+//                SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.getUserLevelKey(MainActivity.this), user.getUserLevel());
                 userInfoFetchStatus = INFO_FETCH_STATUS_SUCCESS;
-                if(workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                if (workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE) {
                     showProgress(false);
                     switchToHomeActivity();
                 }
@@ -136,9 +138,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             public void onException(Exception e) {
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
                 userInfoFetchStatus = INFO_FETCH_STATUS_FAILURE;
-                if(workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE){
+                if (workoutsFetchStatus != INFO_FETCH_STATUS_INCOMPLETE) {
                     showProgress(false);
-                    if(workoutsFetchStatus == INFO_FETCH_STATUS_SUCCESS){
+                    if (workoutsFetchStatus == INFO_FETCH_STATUS_SUCCESS) {
                         switchToHomeActivity();
                     }
                 }
@@ -164,13 +166,13 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         fetchInfo();
     }
 
-    private void fetchInfo(){
+    private void fetchInfo() {
         showProgress(true);
         fetchSelectedWorkoutsInfo();
         fetchUserInfo();
     }
 
-    private void switchToHomeActivity(){
+    private void switchToHomeActivity() {
         Intent intent = new Intent(this, HomeNewActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -183,7 +185,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     }
 
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter{
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragments = new ArrayList<>();
 
@@ -191,7 +193,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             super(fm);
         }
 
-        private void addItem(Fragment fragment){
+        private void addItem(Fragment fragment) {
             fragments.add(fragment);
         }
 

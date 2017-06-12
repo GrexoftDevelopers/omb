@@ -126,4 +126,10 @@ public class WorkoutCategory implements Serializable{
         return null;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof WorkoutCategory)
+        return id.equals(((WorkoutCategory) obj).getId());
+        return false;
+    }
 }

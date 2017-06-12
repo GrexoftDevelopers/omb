@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.oneminutebefore.workout.ReportsActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -16,11 +17,31 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:tabGravity="center"
+            app:tabTextColor="@color/divider_color"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabMode="scrollable"
+            app:tabIndicatorHeight="2dp"></android.support.design.widget.TabLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_contact" />
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/view_pager"></android.support.v4.view.ViewPager
+        >
+
+    <!--<include layout="@layout/content_contact"-->
+        <!--/>-->
 
 
 </android.support.design.widget.CoordinatorLayout>

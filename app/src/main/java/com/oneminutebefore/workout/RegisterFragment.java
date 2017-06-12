@@ -39,7 +39,7 @@ import java.util.Map;
 public class RegisterFragment extends Fragment {
     private EditText etFirstName, etEmail, etPassword, etReferenceCode, etPhone, etLastName;
     private Button btnRegister, btnSignIn;
-    private Spinner spinnerLevel, spinnerTimeZone;
+    private Spinner spinnerLevcel, spinnerTimeZone;
     private RegisterInteractionListener mListener;
     private String level,timeZone;
 
@@ -76,7 +76,7 @@ public class RegisterFragment extends Fragment {
         etReferenceCode = (EditText) fragmentView.findViewById(R.id.et_reference_code);
         etPhone = (EditText) fragmentView.findViewById(R.id.et_phone);
         btnRegister = (Button) fragmentView.findViewById(R.id.btn_register);
-        spinnerLevel = (Spinner) fragmentView.findViewById(R.id.spinner_level);
+//        spinnerLevel = (Spinner) fragmentView.findViewById(R.id.spinner_level);
         spinnerTimeZone = (Spinner) fragmentView.findViewById(R.id.spinner_time_zone);
         btnSignIn = (Button) fragmentView.findViewById(R.id.btn_login);
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar);
@@ -84,14 +84,14 @@ public class RegisterFragment extends Fragment {
 
         application = WorkoutApplication.getmInstance();
 
-        ArrayList<WorkoutCategory> categories = new ArrayList<>();
-        for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
-            categories.add((WorkoutCategory) entry.getValue());
-        }
-
-        ArrayAdapter<WorkoutCategory> userLevelAdapter = new UserLevelAdapter(getActivity(), android.R.layout.simple_spinner_item, categories);
-
-        spinnerLevel.setAdapter(userLevelAdapter);
+//        ArrayList<WorkoutCategory> categories = new ArrayList<>();
+//        for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
+//            categories.add((WorkoutCategory) entry.getValue());
+//        }
+//
+//        ArrayAdapter<WorkoutCategory> userLevelAdapter = new UserLevelAdapter(getActivity(), android.R.layout.simple_spinner_item, categories);
+//
+//        spinnerLevel.setAdapter(userLevelAdapter);
 
         // Creating adapter for spinner
         ArrayAdapter<CharSequence> timezoneArrayAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -139,7 +139,7 @@ public class RegisterFragment extends Fragment {
             final String email = etEmail.getText().toString().trim();
             String mobileNo = etPassword.getText().toString().trim();
             timeZone = spinnerTimeZone.getSelectedItem().toString();
-            level = ((WorkoutCategory)spinnerLevel.getSelectedItem()).getId();
+//            level = ((WorkoutCategory)spinnerLevel.getSelectedItem()).getId();
             String referenceCode = etReferenceCode.getText().toString().trim();
             final String phone = etPhone.getText().toString().trim();
 
@@ -151,7 +151,7 @@ public class RegisterFragment extends Fragment {
                     .addParameters("email", email)
                     .addParameters("password", mobileNo)
                     .addParameters("time_zone", timeZone)
-                    .addParameters("user_level", level)
+//                    .addParameters("user_level", level)
                     .addParameters("phone", phone);
 
             if (!TextUtils.isEmpty(referenceCode)) {

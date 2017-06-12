@@ -59,18 +59,19 @@ public class SelectedWorkout extends WorkoutExercise {
 //        String timeParts[] = timeKey.split("_");
 //        if(timeParts.length > 1){
 //            int hour = Integer.valueOf(timeParts[0]) % 12;
-//            String timeUnit = Integer.valueOf(timeParts[0]) / 12 == 0 ? " A.M" : " P.M";
+//            String timeUnit = Integer.valueOf(timeParts[0]) / 12 == 0 ? " am" : " pm";
 //            return hour + ":" + timeParts[1] + timeUnit;
 //        }
         return timeKey.replace('_',':');
     }
 
     public String getTimeMeridian(){
-        int workoutHour = Integer.parseInt(getTimeKey().split("_")[0]);
-        String meridian = workoutHour / 12 == 0 ? "A.M" : "P.M";
-        workoutHour = workoutHour % 12;
-        String workoutTime = workoutHour + ":59 " + meridian;
-        return workoutTime;
+        return getTimeMeridian(getTimeKey());
+//        int workoutHour = Integer.parseInt(getTimeKey().split("_")[0]);
+//        String meridian = workoutHour / 12 == 0 ? "am" : "pm";
+//        workoutHour = workoutHour % 12;
+//        String workoutTime = workoutHour + ":59 " + meridian;
+//        return workoutTime;
     }
 
     public long getUpdated() {
@@ -123,5 +124,36 @@ public class SelectedWorkout extends WorkoutExercise {
 
     public static String getFormattedDateTime(long millis){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS_").format(new Date(millis)).replace(" ","T").replace("_","Z");
+    }
+
+    public static String getTimeMeridian(String timeKey){
+        int workoutHour = Integer.parseInt(timeKey.split("_")[0]);
+        String meridian = workoutHour / 12 == 0 ? "am" : "pm";
+        workoutHour = workoutHour % 12;
+        if(workoutHour == 0){
+            workoutHour = 12;
+        }
+        String workoutTime = workoutHour + ":59 " + meridian;
+        return workoutTime;
+    }
+
+    public static String getTimeKey(String timeMeridian){
+        int hour = Integer.parseInt(timeMeridian.split(":")[0]);
+        if(hour == 12){
+            hour = 0;
+        }
+        String meridian = timeMeridian.split(" ")[1];
+        if(meridian.equals("pm")){
+            hour += 12;
+        }
+        return hour + "_59";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof SelectedWorkout){
+            return id.equals(((SelectedWorkout) obj).getId()) && timeKey.equals(((SelectedWorkout) obj).getTimeKey());
+        }
+        return super.equals(obj);
     }
 }

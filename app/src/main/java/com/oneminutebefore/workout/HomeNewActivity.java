@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
@@ -207,10 +208,10 @@ public class HomeNewActivity extends AppCompatActivity
                 }
                 if (preferences.getBoolean(hours[i], false)) {
                     String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
-                    String categoryId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getUserLevelKey(HomeNewActivity.this), "");
+//                    String categoryId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getUserLevelKey(HomeNewActivity.this), "");
                     if (!TextUtils.isEmpty(workoutId)
-                            && application.getWorkouts() != null && !application.getWorkouts().isEmpty()
-                            && application.getWorkouts().get(workoutId).getCategory().getId().equals(categoryId)) {
+                            && application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
+//                            && application.getWorkouts().get(workoutId).getCategory().getId().equals(categoryId)) {
                         WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
                         calendar.set(Calendar.HOUR_OF_DAY, i);
                         calendar.set(Calendar.MINUTE, 59);
@@ -366,7 +367,7 @@ public class HomeNewActivity extends AppCompatActivity
         return true;
     }
 
-    public class TimerTask extends AsyncTask<Void, Long, Void> {
+    public class TimerTask extends AsyncTask<Void, Long, Boolean> {
 
         private long deadLine;
 
@@ -378,16 +379,18 @@ public class HomeNewActivity extends AppCompatActivity
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
             long currentTime;
             boolean flag = true;
+            boolean resetTimer = false;
             while (flag) {
                 currentTime = System.currentTimeMillis();
                 if (currentTime < deadLine) {
                     publishProgress(deadLine - currentTime);
                 } else {
                     flag = false;
+                    resetTimer = true;
                 }
                 try {
                     Thread.sleep(1000);
@@ -397,7 +400,7 @@ public class HomeNewActivity extends AppCompatActivity
                 }
             }
 
-            return null;
+            return resetTimer;
         }
 
         @Override
@@ -415,6 +418,14 @@ public class HomeNewActivity extends AppCompatActivity
                 tvTimer.setVisibility(View.GONE);
             }
             tvTimerMinutes.setText(String.format(getString(R.string.time_left_minutes), minutes, String.valueOf(values[0])));
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if(result){
+                resetTimer();
+            }
         }
     }
 

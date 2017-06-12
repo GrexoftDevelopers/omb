@@ -14,6 +14,7 @@ import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.VideoPlayerActivity;
 import com.oneminutebefore.workout.WorkoutApplication;
 import com.oneminutebefore.workout.helpers.DBHelper;
+import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.models.SelectedWorkout;
@@ -41,6 +42,7 @@ public class WorkoutNotificationService extends IntentService {
         System.out.println("workout notification check");
         try {
             checkHourSelection();
+            IntentUtils.scheduleWorkoutNotifications(getApplicationContext());
         }catch (Exception e ){
             e.printStackTrace();
         }
@@ -66,7 +68,7 @@ public class WorkoutNotificationService extends IntentService {
                     if(application.getDbHelper() == null){
                         application.setDbHelper(new DBHelper(getApplicationContext()));
                     }
-                    String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(hour % 12 + ":59" + (hour/12==0?" A.M":" P.M"));
+                    String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(hour % 12 + ":59" + (hour/12==0?" am":" pm"));
                     addNotification(new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId));
                 }
             }
@@ -96,6 +98,7 @@ public class WorkoutNotificationService extends IntentService {
 
         Intent intent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
         intent.putExtra(VideoPlayerActivity.KEY_WORKOUT, workoutExercise);
+        intent.putExtra(VideoPlayerActivity.KEY_TIME_MILLIS, Calendar.getInstance().getTimeInMillis());
 
         PendingIntent contentIntent =
                 PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -14,7 +14,9 @@
         android:id="@+id/list_workouts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+        app:layoutManager="LinearLayoutManager"
+        android:paddingBottom="72dp"
+        android:clipToPadding="false"></android.support.v7.widget.RecyclerView>
 
 
     <TextView

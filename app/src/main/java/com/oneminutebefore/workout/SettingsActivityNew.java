@@ -172,10 +172,10 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
                 ArrayList<String> entriesValues = new ArrayList<>();
                 int i = 0;
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String userLevel = sharedPreferences.getString(Keys.getUserLevelKey(getActivity()),getString(R.string.default_fitness));
+//                String userLevel = sharedPreferences.getString(Keys.getUserLevelKey(getActivity()),getString(R.string.default_fitness));
                 for (Map.Entry entry : workouts.entrySet()) {
                     WorkoutExercise workoutExercise = ((WorkoutExercise) entry.getValue());
-                    if (workoutExercise.getCategory().getId().equals(userLevel) || userLevel.equals("All star")) {
+                    if (true) { //workoutExercise.getCategory().getId().equals(userLevel) || userLevel.equals("All star")) {
                         entries.add(workoutExercise.getName());
                         entriesValues.add(workoutExercise.getId());
                         i++;
@@ -236,32 +236,32 @@ public class SettingsActivityNew extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            ListPreference preference = (ListPreference) findPreference(Keys.getUserLevelKey(getActivity()));
-            final WorkoutApplication application = WorkoutApplication.getmInstance();
-            if(application.getWorkoutCategories() != null && !application.getWorkoutCategories().isEmpty()){
-                String entries[] = new String[application.getWorkoutCategories().size()];
-                String entryValues[] = new String[application.getWorkoutCategories().size()];
-                int i = 0;
-                for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
-                    entries[i] = ((WorkoutCategory)entry.getValue()).getName();
-                    entryValues[i] = entry.getKey().toString();
-                    i++;
-                }
-                preference.setEntries(entries);
-                preference.setEntryValues(entryValues);
-                preference.setValue(application.getUser().getUserLevel());
-            }
+//            ListPreference preference = (ListPreference) findPreference(Keys.getUserLevelKey(getActivity()));
+//            final WorkoutApplication application = WorkoutApplication.getmInstance();
+//            if(application.getWorkoutCategories() != null && !application.getWorkoutCategories().isEmpty()){
+//                String entries[] = new String[application.getWorkoutCategories().size()];
+//                String entryValues[] = new String[application.getWorkoutCategories().size()];
+//                int i = 0;
+//                for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
+//                    entries[i] = ((WorkoutCategory)entry.getValue()).getName();
+//                    entryValues[i] = entry.getKey().toString();
+//                    i++;
+//                }
+//                preference.setEntries(entries);
+//                preference.setEntryValues(entryValues);
+//                preference.setValue(application.getUser().getUserLevel());
+//            }
 
-            bindPreferenceSummaryToValue(preference);
-            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
-                    application.getUser().setUserLevel(String.valueOf(newValue));
-                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER, application.getUser().getJson().toString());
-                    return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
-                }
-            });
+//            bindPreferenceSummaryToValue(preference);
+//            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//                @Override
+//                public boolean onPreferenceChange(Preference preference, Object newValue) {
+////                    Toast.makeText(getActivity(), newValue.toString(), Toast.LENGTH_SHORT).show();
+//                    application.getUser().setUserLevel(String.valueOf(newValue));
+//                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER, application.getUser().getJson().toString());
+//                    return sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,newValue);
+//                }
+//            });
         }
 
         @Override

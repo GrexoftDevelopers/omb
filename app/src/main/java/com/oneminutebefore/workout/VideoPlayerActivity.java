@@ -42,6 +42,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     public static final String KEY_URL = "url";
     public static final String KEY_WORKOUT = "workout";
+    public static final String KEY_TIME_MILLIS = "time_millis";
 
     private YouTubePlayerFragment youTubePlayerFragment;
 
@@ -68,6 +70,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     private TimerTask timerTask;
     private WorkoutApplication application;
     private AlertDialog alertDialog;
+    private Date workoutDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         Intent mIntent = getIntent();
         selectedWorkoutExercise = (SelectedWorkout) mIntent.getSerializableExtra(KEY_WORKOUT);
+        long timeMillis = mIntent.getLongExtra(KEY_TIME_MILLIS, 0);
+        workoutDate = new Date(timeMillis);
 
         application = WorkoutApplication.getmInstance();
         String session = application.getSessionToken();
@@ -168,10 +173,10 @@ public class VideoPlayerActivity extends AppCompatActivity {
         WorkoutApplication application = ((WorkoutApplication) getApplication());
         application.setUser(user);
         application.setUserId(user.getId());
-        if(application.getDbHelper() != null){
+        if(application.getDbHelper() == null){
             application.setDbHelper(new DBHelper(VideoPlayerActivity.this));
         }
-        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
+//        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
     }
 
     private void fetchUserInfo(){
@@ -357,9 +362,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private void saveReps(double count) {
 //        VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
-        Calendar calendar = Calendar.getInstance();
+
         String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
-                .addParameters("date",new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()))
+                .addParameters("date",new SimpleDateFormat("yyyy-MM-dd").format(workoutDate))
                 .addParameters("rep",String.valueOf((int)count))
                 .addParameters("id", selectedWorkoutExercise.getSelectedWorkoutId())
                 .addParameters("user_id", application.getUser().getId())
@@ -400,7 +405,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         });
         httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-        CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,calendar.getTimeInMillis());
+        CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,workoutDate.getTime());
         completedWorkout.setSelectedWorkoutId(selectedWorkoutExercise.getSelectedWorkoutId());
         application.getDbHelper().insertUserTrack(completedWorkout);
     }

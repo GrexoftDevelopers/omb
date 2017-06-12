@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +43,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
     private ArrayList<SelectedWorkout> selectedWorkouts;
     private WorkoutApplication application;
-    private String categoryId;
+//    private String categoryId;
     private String[] hourKeys;
     private String[] workoutKeys;
     private RecyclerView rclWorkouts;
@@ -64,7 +65,17 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddWorkoutDialog(null);
+//                showAddWorkoutDialog(null);
+
+                WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2,selectedWorkouts,null);
+                fragment.setDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size() - 1);
+                        refreshUI();
+                    }
+                });
+                fragment.show(getSupportFragmentManager(),"tag");
             }
         });
         application = (WorkoutApplication) getApplication();
@@ -72,12 +83,13 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         hourKeys = Keys.getHourSelectionKeys(this);
         workoutKeys = Keys.getWorkoutSelectionKeys(this);
         HashMap<String, WorkoutExercise> workouts = application.getWorkouts();
-        categoryId = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"");
+//        categoryId = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"");
         for(int i  = 0 ; i < hourKeys.length ; i++){
             boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(this, hourKeys[i], false);
             if(isHourSelected){
                 String hourWorkout = SharedPrefsUtil.getStringPreference(this, workoutKeys[i]);
-                if(workouts.containsKey(hourWorkout) && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
+                if(workouts.containsKey(hourWorkout)){
+//                        && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
                     selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
                 }
             }
@@ -118,7 +130,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                 for(Map.Entry entry : application.getWorkouts().entrySet()){
                     WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
                     if(!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))){
-                        if(workoutExercise.getCategory().getId().equals(categoryId)){
+                        if(true){ //workoutExercise.getCategory().getId().equals(categoryId)){
                             workoutExercises.add(workoutExercise);
                         }
                     }
@@ -238,6 +250,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             final ProgressDialog progressDialog = new ProgressDialog(WorkoutSettingsActivity.this);
             progressDialog.setMessage(getString(R.string.msg_saving_please_wait));
             progressDialog.show();
+            int i = 0;
             for(final SelectedWorkout selectedWorkout : selectedWorkouts){
                 SharedPrefsUtil.setBooleanPreference(WorkoutSettingsActivity.this, selectedWorkout.getTimeKey(), true);
                 SharedPrefsUtil.setStringPreference(WorkoutSettingsActivity.this, "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
@@ -261,7 +274,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
                 timesSaved.add(selectedWorkout.getTimeKey());
                 HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this,HttpTask.METHOD_POST);
-                httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                httpTask.setAuthorizationRequired(true, i != 0 ? null : new HttpTask.SessionTimeOutListener() {
                     @Override
                     public void onSessionTimeout() {
                         startActivity(Utils.getSessionTimeoutIntent(WorkoutSettingsActivity.this));
@@ -287,11 +300,14 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                     }
                 });
                 httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
+                i++;
             }
             if(timesSaved.isEmpty()){
                 progressDialog.dismiss();
                 finish();
             }
+        }else{
+            finish();
         }
     }
 
@@ -310,7 +326,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             final SelectedWorkout selectedWorkout = selectedWorkouts.get(i);
 
             viewHolder.tvWorkoutName.setText(selectedWorkout.getName());
-            viewHolder.tvHour.setText(selectedWorkout.getTime());
+            viewHolder.tvHour.setText(selectedWorkout.getTimeMeridian());
             viewHolder.ivDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -322,7 +338,17 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showAddWorkoutDialog(selectedWorkout);
+//                    showAddWorkoutDialog(selectedWorkout);
+
+                    WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2,selectedWorkouts,selectedWorkout);
+                    fragment.setDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            notifyItemChanged(viewHolder.getAdapterPosition());
+                        }
+                    });
+                    fragment.show(getSupportFragmentManager(),"tag");
+
                 }
             });
         }
