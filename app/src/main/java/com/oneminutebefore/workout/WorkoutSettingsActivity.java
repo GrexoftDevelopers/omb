@@ -2,18 +2,18 @@ package com.oneminutebefore.workout;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +43,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
     private ArrayList<SelectedWorkout> selectedWorkouts;
     private WorkoutApplication application;
-//    private String categoryId;
+    //    private String categoryId;
     private String[] hourKeys;
     private String[] workoutKeys;
     private RecyclerView rclWorkouts;
@@ -56,7 +56,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
@@ -67,7 +67,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                showAddWorkoutDialog(null);
 
-                WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2,selectedWorkouts,null);
+                WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2, selectedWorkouts, null);
                 fragment.setDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
@@ -75,7 +75,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                         refreshUI();
                     }
                 });
-                fragment.show(getSupportFragmentManager(),"tag");
+                fragment.show(getSupportFragmentManager(), "tag");
             }
         });
         application = (WorkoutApplication) getApplication();
@@ -84,41 +84,44 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         workoutKeys = Keys.getWorkoutSelectionKeys(this);
         HashMap<String, WorkoutExercise> workouts = application.getWorkouts();
 //        categoryId = SharedPrefsUtil.getStringPreference(this,Keys.getUserLevelKey(this),"");
-        for(int i  = 0 ; i < hourKeys.length ; i++){
+        for (int i = 0; i < hourKeys.length; i++) {
             boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(this, hourKeys[i], false);
-            if(isHourSelected){
+            if (isHourSelected) {
                 String hourWorkout = SharedPrefsUtil.getStringPreference(this, workoutKeys[i]);
-                if(workouts.containsKey(hourWorkout)){
+                if (workouts.containsKey(hourWorkout)) {
+                    SelectedWorkout selectedWorkout = application
+                            .getDbHelper()
+                            .getSelectedWorkoutByTime(SelectedWorkout.getTimeMeridian(hourKeys[i]));
 //                        && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
-                    selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
+//                    selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
+                    selectedWorkouts.add(selectedWorkout);
                 }
             }
         }
 
         rclWorkouts = (RecyclerView) findViewById(R.id.list_workouts);
         rclWorkouts.setAdapter(new WorkoutsAdapter());
-
         refreshUI();
 
     }
 
     private void refreshUI() {
-        if(selectedWorkouts != null && !selectedWorkouts.isEmpty()){
+        if (selectedWorkouts != null && !selectedWorkouts.isEmpty()) {
             rclWorkouts.setVisibility(View.VISIBLE);
             findViewById(R.id.tv_no_workout).setVisibility(View.GONE);
-        }else{
+        } else {
             rclWorkouts.setVisibility(View.GONE);
             findViewById(R.id.tv_no_workout).setVisibility(View.VISIBLE);
         }
     }
 
-    private void showAddWorkoutDialog(final SelectedWorkout selectedWorkout){
+    private void showAddWorkoutDialog(final SelectedWorkout selectedWorkout) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutSettingsActivity.this);
-        builder.setNegativeButton(getString(R.string.cancel),null);
-        builder.setPositiveButton(getString(R.string.ok),null);
+        builder.setNegativeButton(getString(R.string.cancel), null);
+        builder.setPositiveButton(getString(R.string.ok), null);
 
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_workout,null);
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_workout, null);
         final AlertDialog alertDialog = builder.create();
         alertDialog.setView(dialogView);
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -127,41 +130,41 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                 final Spinner spHour = (Spinner) dialogView.findViewById(R.id.sp_hour);
                 final Spinner spWorkout = (Spinner) dialogView.findViewById(R.id.sp_workout);
                 final ArrayList<WorkoutExercise> workoutExercises = new ArrayList<>();
-                for(Map.Entry entry : application.getWorkouts().entrySet()){
+                for (Map.Entry entry : application.getWorkouts().entrySet()) {
                     WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
-                    if(!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))){
-                        if(true){ //workoutExercise.getCategory().getId().equals(categoryId)){
+                    if (!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))) {
+                        if (true) { //workoutExercise.getCategory().getId().equals(categoryId)){
                             workoutExercises.add(workoutExercise);
                         }
                     }
                 }
                 ArrayAdapter<WorkoutExercise> arrayAdapter = new ArrayAdapter<WorkoutExercise>(WorkoutSettingsActivity.this
-                        ,android.R.layout.simple_spinner_item,workoutExercises){
+                        , android.R.layout.simple_spinner_item, workoutExercises) {
 
                     @NonNull
                     @Override
                     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if(convertView == null){
-                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_item,parent,false);
+                        if (convertView == null) {
+                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_item, parent, false);
                         }
-                        ((TextView)convertView).setText(workoutExercises.get(position).getName());
+                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
 //                        return super.getView(position, convertView, parent);
                         return convertView;
                     }
 
                     @Override
                     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if(convertView == null){
-                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item,parent,false);
+                        if (convertView == null) {
+                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
                         }
-                        ((TextView)convertView).setText(workoutExercises.get(position).getName());
+                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
                         return convertView;
                     }
                 };
                 spWorkout.setAdapter(arrayAdapter);
-                if(selectedWorkout != null){
-                    for(int i = 0 ; i < workoutExercises.size() ; i++){
-                        if(selectedWorkout.getId().equals(workoutExercises.get(i).getId())){
+                if (selectedWorkout != null) {
+                    for (int i = 0; i < workoutExercises.size(); i++) {
+                        if (selectedWorkout.getId().equals(workoutExercises.get(i).getId())) {
                             spWorkout.setSelection(i);
                             break;
                         }
@@ -169,37 +172,37 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                 }
 //
                 final ArrayList<String> selectableHours = new ArrayList<>();
-                for(String hour : hourKeys){
+                for (String hour : hourKeys) {
                     boolean exists = false;
-                    for(SelectedWorkout selectedWorkout1 : selectedWorkouts){
-                        if(selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout){
+                    for (SelectedWorkout selectedWorkout1 : selectedWorkouts) {
+                        if (selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout) {
                             exists = true;
                             break;
                         }
                     }
-                    if(!exists){
-                        selectableHours.add(hour.replace('_',':'));
+                    if (!exists) {
+                        selectableHours.add(hour.replace('_', ':'));
                     }
                 }
-                if(selectableHours.isEmpty()){
+                if (selectableHours.isEmpty()) {
                     alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setVisibility(View.GONE);
                 }
-                ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(WorkoutSettingsActivity.this,android.R.layout.simple_spinner_item,selectableHours);
+                ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(WorkoutSettingsActivity.this, android.R.layout.simple_spinner_item, selectableHours);
                 hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spHour.setAdapter(hourAdapter);
                 alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         WorkoutExercise workoutExercise = (WorkoutExercise) spWorkout.getSelectedItem();
-                        String hour = ((String) spHour.getSelectedItem()).replace(':','_');
-                        if(selectedWorkout != null){
+                        String hour = ((String) spHour.getSelectedItem()).replace(':', '_');
+                        if (selectedWorkout != null) {
                             int index = selectedWorkouts.lastIndexOf(selectedWorkout);
-                            selectedWorkouts.set(index,new SelectedWorkout(workoutExercise,hour));
+                            selectedWorkouts.set(index, new SelectedWorkout(workoutExercise, hour));
                             rclWorkouts.getAdapter().notifyItemChanged(index);
-                        }else{
-                            if(workoutExercise != null){
-                                selectedWorkouts.add(new SelectedWorkout(workoutExercise,hour));
-                                rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size()-1);
+                        } else {
+                            if (workoutExercise != null) {
+                                selectedWorkouts.add(new SelectedWorkout(workoutExercise, hour));
+                                rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size() - 1);
                             }
                         }
                         refreshUI();
@@ -211,16 +214,16 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.form_menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.form_menu,menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -237,13 +240,13 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
     private void saveSelectedWorkouts() {
 
         // Remove old data from preferences
-        for(String key : hourKeys){
+        for (String key : hourKeys) {
             SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, key);
         }
-        for(String key : workoutKeys){
+        for (String key : workoutKeys) {
             SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, key);
         }
-        if(selectedWorkouts != null && !selectedWorkouts.isEmpty()){
+        if (selectedWorkouts != null && !selectedWorkouts.isEmpty()) {
             final ArrayList<String> timesSaved = new ArrayList<>();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -251,18 +254,18 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             progressDialog.setMessage(getString(R.string.msg_saving_please_wait));
             progressDialog.show();
             int i = 0;
-            for(final SelectedWorkout selectedWorkout : selectedWorkouts){
+            for (final SelectedWorkout selectedWorkout : selectedWorkouts) {
                 SharedPrefsUtil.setBooleanPreference(WorkoutSettingsActivity.this, selectedWorkout.getTimeKey(), true);
                 SharedPrefsUtil.setStringPreference(WorkoutSettingsActivity.this, "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
 
                 SelectedWorkout savedWorkout = application.getDbHelper().getSelectedWorkoutByTime(selectedWorkout.getTimeMeridian());
-                if(savedWorkout != null && savedWorkout.getId().equals(selectedWorkout.getId())){
+                if (savedWorkout != null && savedWorkout.getId().equals(selectedWorkout.getId())) {
                     continue; // Already saved
                 }
 
                 Calendar calendar = Calendar.getInstance();
 //                String workoutTime = dateFormat.format(calendar.getTime());
-                String createdTime = dateTimeFormat.format(calendar.getTime()).replace(" ","T") + "Z";
+                String createdTime = dateTimeFormat.format(calendar.getTime()).replace(" ", "T") + "Z";
                 String url = new UrlBuilder(UrlBuilder.API_PRODUCTS)
                         .addParameters("workout_time", selectedWorkout.getTimeMeridian())
                         .addParameters("category", selectedWorkout.getCategory().getId())
@@ -273,7 +276,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                         .build();
 
                 timesSaved.add(selectedWorkout.getTimeKey());
-                HttpTask httpTask = new HttpTask(false,WorkoutSettingsActivity.this,HttpTask.METHOD_POST);
+                HttpTask httpTask = new HttpTask(false, WorkoutSettingsActivity.this, HttpTask.METHOD_POST);
                 httpTask.setAuthorizationRequired(true, i != 0 ? null : new HttpTask.SessionTimeOutListener() {
                     @Override
                     public void onSessionTimeout() {
@@ -286,7 +289,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         application.getDbHelper().insertSelectedWorkout(jsonObject);
                         timesSaved.remove(selectedWorkout.getTimeKey());
-                        if(timesSaved.isEmpty() && progressDialog.isShowing()){
+                        if (timesSaved.isEmpty() && progressDialog.isShowing()) {
                             progressDialog.dismiss();
                             finish();
                         }
@@ -294,24 +297,24 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
                     @Override
                     public void onException(Exception e) {
-                        if(timesSaved.isEmpty() && progressDialog.isShowing()){
+                        if (timesSaved.isEmpty() && progressDialog.isShowing()) {
                             progressDialog.dismiss();
                         }
                     }
                 });
-                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
+                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
                 i++;
             }
-            if(timesSaved.isEmpty()){
+            if (timesSaved.isEmpty()) {
                 progressDialog.dismiss();
                 finish();
             }
-        }else{
+        } else {
             finish();
         }
     }
 
-    private class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.ViewHolder>{
+    private class WorkoutsAdapter extends RecyclerView.Adapter<WorkoutsAdapter.ViewHolder> {
 
 
         @Override
@@ -327,28 +330,45 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
 
             viewHolder.tvWorkoutName.setText(selectedWorkout.getName());
             viewHolder.tvHour.setText(selectedWorkout.getTimeMeridian());
-            viewHolder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            viewHolder.ivMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selectedWorkouts.remove(selectedWorkout);
-                    notifyItemRemoved(viewHolder.getAdapterPosition());
-                    refreshUI();
-                }
-            });
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    showAddWorkoutDialog(selectedWorkout);
 
-                    WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2,selectedWorkouts,selectedWorkout);
-                    fragment.setDismissListener(new DialogInterface.OnDismissListener() {
+                    PopupMenu popupMenu = new PopupMenu(WorkoutSettingsActivity.this, v);
+                    popupMenu.getMenuInflater().inflate(R.menu.workout_more_menu, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            notifyItemChanged(viewHolder.getAdapterPosition());
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_view:
+                                    Intent intent = new Intent(WorkoutSettingsActivity.this, VideoPlayerActivity.class);
+                                    intent.putExtra(VideoPlayerActivity.KEY_SHOW_TIMER, false);
+                                    intent.putExtra(VideoPlayerActivity.KEY_WORKOUT, selectedWorkout);
+                                    startActivity(intent);
+                                    break;
+                                case R.id.action_delete:
+                                    SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, selectedWorkout.getTimeKey());
+                                    SharedPrefsUtil.deletePreference(WorkoutSettingsActivity.this, "list_" + selectedWorkout.getTimeKey());
+                                    application.getDbHelper().deleteSelectedWorkoutByTime(selectedWorkout.getTimeMeridian());
+                                    selectedWorkouts.remove(selectedWorkout);
+                                    notifyItemRemoved(viewHolder.getAdapterPosition());
+                                    refreshUI();
+                                    break;
+                                case R.id.action_edit:
+                                    WorkoutSelectionFragment fragment = WorkoutSelectionFragment.newInstance(2, selectedWorkouts, selectedWorkout);
+                                    fragment.setDismissListener(new DialogInterface.OnDismissListener() {
+                                        @Override
+                                        public void onDismiss(DialogInterface dialog) {
+                                            notifyItemChanged(viewHolder.getAdapterPosition());
+                                        }
+                                    });
+                                    fragment.show(getSupportFragmentManager(), "tag");
+                                    break;
+                            }
+                            return true;
                         }
                     });
-                    fragment.show(getSupportFragmentManager(),"tag");
-
+                    popupMenu.show();
                 }
             });
         }
@@ -358,18 +378,18 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             return selectedWorkouts != null ? selectedWorkouts.size() : 0;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder{
+        class ViewHolder extends RecyclerView.ViewHolder {
 
             private TextView tvHour, tvWorkoutName;
-            private ImageView ivDelete;
+            private ImageView ivMore;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                tvHour = (TextView)itemView.findViewById(R.id.tv_workout_time);
-                tvWorkoutName = (TextView)itemView.findViewById(R.id.tv_workout_name);
-                ivDelete = (ImageView)itemView.findViewById(R.id.iv_delete);
-                ivDelete.setVisibility(View.VISIBLE);
+                tvHour = (TextView) itemView.findViewById(R.id.tv_workout_time);
+                tvWorkoutName = (TextView) itemView.findViewById(R.id.tv_workout_name);
+                ivMore = (ImageView) itemView.findViewById(R.id.iv_more);
+                ivMore.setVisibility(View.VISIBLE);
                 itemView.findViewById(R.id.tv_count).setVisibility(View.GONE);
             }
         }

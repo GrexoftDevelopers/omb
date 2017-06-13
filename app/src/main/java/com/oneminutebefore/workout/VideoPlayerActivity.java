@@ -10,6 +10,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -51,6 +52,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     public static final String KEY_URL = "url";
     public static final String KEY_WORKOUT = "workout";
     public static final String KEY_TIME_MILLIS = "time_millis";
+    public static final String KEY_SHOW_TIMER = "show_timer";
 
     private YouTubePlayerFragment youTubePlayerFragment;
 
@@ -71,6 +73,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     private WorkoutApplication application;
     private AlertDialog alertDialog;
     private Date workoutDate;
+    private boolean showTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,22 +84,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         Intent mIntent = getIntent();
         selectedWorkoutExercise = (SelectedWorkout) mIntent.getSerializableExtra(KEY_WORKOUT);
+        showTimer = mIntent.getBooleanExtra(KEY_SHOW_TIMER, true);
         long timeMillis = mIntent.getLongExtra(KEY_TIME_MILLIS, 0);
         workoutDate = new Date(timeMillis);
 
         application = WorkoutApplication.getmInstance();
-        String session = application.getSessionToken();
-        if(TextUtils.isEmpty(session)){
-            session = SharedPrefsUtil.getStringPreference(this, Keys.KEY_TOKEN);
-            if(!TextUtils.isEmpty(session)){
-                application.setSessionToken(session);
-            }
-        }
-        if(!TextUtils.isEmpty(session)){
-            if(application.getUser() == null){
-                fetchUserInfo();
-            }
-        }
 
         isDemo = selectedWorkoutExercise == null;
         if(isDemo){
@@ -145,21 +137,40 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 }
             });
 
-            timerSecond = 0;
-            ivPlayPause = (ImageView)findViewById(R.id.iv_play_pause);
-            progressBar = (ProgressBar) findViewById(R.id.progressBar);
-            txtMsgTimerAction = (TextView)findViewById(R.id.txt_timer_action_msg);
-
-            progressBar.setMax(60);
-            progressBar.setProgress(0);
-            progressBar.setMax(60);
-            ((CircleProgressBar)progressBar).setProgressBackgroundColor(getResources().getColor(R.color.divider_color));
-            ivPlayPause.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    toggleTimer();
+            if(showTimer){
+                String session = application.getSessionToken();
+                if(TextUtils.isEmpty(session)){
+                    session = SharedPrefsUtil.getStringPreference(this, Keys.KEY_TOKEN);
+                    if(!TextUtils.isEmpty(session)){
+                        application.setSessionToken(session);
+                    }
                 }
-            });
+                if(!TextUtils.isEmpty(session)){
+                    if(application.getUser() == null){
+                        fetchUserInfo();
+                    }
+                }
+                timerSecond = 0;
+                ivPlayPause = (ImageView)findViewById(R.id.iv_play_pause);
+                progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                txtMsgTimerAction = (TextView)findViewById(R.id.txt_timer_action_msg);
+
+                progressBar.setMax(60);
+                progressBar.setProgress(0);
+                progressBar.setMax(60);
+                ((CircleProgressBar)progressBar).setProgressBackgroundColor(getResources().getColor(R.color.divider_color));
+                ivPlayPause.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toggleTimer();
+                    }
+                });
+            }else{
+                findViewById(R.id.tv_title).setVisibility(View.GONE);
+                findViewById(R.id.timer_box).setVisibility(View.GONE);
+                findViewById(R.id.card_workout_count).setVisibility(View.VISIBLE);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
+            }
 
 
         } else {

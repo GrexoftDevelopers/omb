@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">workout</string>
+    <string name="app_name">1MB</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -206,4 +206,12 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select_category">Select category</string>
     <string name="select_level">Select level</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="about_detail">Simple and fun to use - whether or not your a fitness expert or just a beginner 1MB makes it so simple to follow our program.\n\nJust sign up and follow the alert from the app every one minute before the hour - the app will guide you through a day of 1 minute exercises you can do in your office at your desk or in your kitchen - the program makes movement and working out a habit that will make you more alert and active throughout your day</string>
+    <string name="about_omb">About 1MB</string>
+    <string name="detail">Detail</string>
+    <string name="history">History</string>
+    <string name="no_data_for_workout">No data for this exercise</string>
+    <string name="view">View</string>
 </resources>

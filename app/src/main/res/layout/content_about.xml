@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.oneminutebefore.workout.ContactActivity"
-    tools:showIn="@layout/activity_contact">
+    android:padding="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    >
+
     <ImageView
-        android:id="@+id/iv_comming"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
+        android:layout_width="144dp"
         android:layout_height="wrap_content"
-        android:contentDescription="comming soon"
-        android:src="@drawable/ic_comming_soon"/>
+        android:layout_gravity="left"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:src="@drawable/logo_cropped"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorAccent"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_comming"
-        android:textColor="@color/colorAccent"
-        android:gravity="center"
-        android:textAllCaps="true"
-        android:textSize="30sp"
-        android:textStyle="bold|italic"
-        android:fontFamily="monospace"
-        android:text="Stay tuned"/>
+        android:text="@string/about_detail"
+        android:gravity="left"
+        android:textAppearance="?attr/textAppearanceListItem"/>
 
 
 
-</RelativeLayout>
+</LinearLayout>

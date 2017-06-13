@@ -163,8 +163,12 @@ public class WorkoutSelectionFragment extends DialogFragment {
                 alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean result = ((WorkoutSelectionFormFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(viewPager.getCurrentItem())).save();
-                        alertDialog.dismiss();
+                        ((WorkoutSelectionFormFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(viewPager.getCurrentItem())).save(new WorkoutSelectionFormFragment.WorkoutSaveCallback() {
+                            @Override
+                            public void onSave() {
+                                alertDialog.dismiss();
+                            }
+                        });
                     }
                 });
 

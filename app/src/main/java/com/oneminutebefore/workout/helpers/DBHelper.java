@@ -159,6 +159,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public boolean deleteSelectedWorkoutByTime(String workoutTime){
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete(SELECTED_WORKOUT,"workout_time = '" + workoutTime + "'",null) > 0;
+    }
+
     public HashMap<String, SelectedWorkout> getSelectedWorkouts(){
 
         String sql = "select * from " + SELECTED_WORKOUT + " order by created_at desc";

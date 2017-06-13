@@ -2,6 +2,7 @@ package com.oneminutebefore.workout;
 
 
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,11 +15,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.oneminutebefore.workout.helpers.HttpTask;
+import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutCategory;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 
 
@@ -220,24 +229,70 @@ public class WorkoutSelectionFormFragment extends Fragment {
         this.parentFragment = parentFragment;
     }
 
-    public boolean save(){
+    public void save(final WorkoutSaveCallback callback){
         WorkoutExercise workoutExercise = (WorkoutExercise) spWorkout.getSelectedItem();
         if(workoutExercise != null){
-//            String hour = ((String) spHour.getSelectedItem()).replace(':','_');
             String hour = ((String) spHour.getSelectedItem());
             if(hour != null){
                 hour = SelectedWorkout.getTimeKey(hour);
             }
             if(selectedWorkout != null){
                 int index = selectedWorkouts.lastIndexOf(selectedWorkout);
-                selectedWorkouts.set(index,new SelectedWorkout(workoutExercise,hour));
+                selectedWorkout = new SelectedWorkout(workoutExercise,hour);
+                selectedWorkouts.set(index,selectedWorkout);
             }else{
                 if(workoutExercise != null){
-                    selectedWorkouts.add(new SelectedWorkout(workoutExercise,hour));
+                    selectedWorkout = new SelectedWorkout(workoutExercise,hour);
+                    selectedWorkouts.add(selectedWorkout);
                 }
             }
-            return true;
+            SharedPrefsUtil.setBooleanPreference(getActivity(), selectedWorkout.getTimeKey(), true);
+            SharedPrefsUtil.setStringPreference(getActivity(), "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
+
+            SelectedWorkout savedWorkout = application.getDbHelper().getSelectedWorkoutByTime(selectedWorkout.getTimeMeridian());
+            if(savedWorkout == null || !savedWorkout.getId().equals(selectedWorkout.getId())){
+                String url = new UrlBuilder(UrlBuilder.API_PRODUCTS)
+                        .addParameters("workout_time", selectedWorkout.getTimeMeridian())
+                        .addParameters("category", selectedWorkout.getCategory().getId())
+                        .addParameters("workout", selectedWorkout.getId())
+                        .addParameters("user_id", application.getUserId())
+                        .build();
+
+                HttpTask httpTask = new HttpTask(true,getActivity(),HttpTask.METHOD_POST);
+                httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                    @Override
+                    public void onSessionTimeout() {
+                        startActivity(Utils.getSessionTimeoutIntent(getActivity()));
+                    }
+                });
+                httpTask.setmCallback(new HttpTask.HttpCallback() {
+                    @Override
+                    public void onResponse(String response) throws JSONException {
+                        JSONObject jsonObject = new JSONObject(response);
+                        application.getDbHelper().insertSelectedWorkout(jsonObject);
+                        if(callback != null){
+                            callback.onSave();
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+
+                    }
+                });
+                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,url);
+            }else{
+                if(callback != null){
+                    callback.onSave();
+                }
+            }
         }
-        return true;
     }
+
+    public interface WorkoutSaveCallback{
+
+        public void onSave();
+
+    }
+
 }
