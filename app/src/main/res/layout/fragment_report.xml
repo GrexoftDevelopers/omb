@@ -11,26 +11,37 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
 
+            <ImageButton
+                android:id="@+id/btn_date_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_date_range_24dp"
+                android:padding="6dp"
+                android:background="?attr/selectableItemBackground"/>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/til_date">
+                android:id="@+id/til_date"
+                android:layout_toRightOf="@+id/btn_date_range">
 
                 <EditText
                     android:id="@+id/et_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter date"/>
+                    android:hint="Date range"
+                    android:focusable="false"
+                    android:enabled="false"/>
 
             </android.support.design.widget.TextInputLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

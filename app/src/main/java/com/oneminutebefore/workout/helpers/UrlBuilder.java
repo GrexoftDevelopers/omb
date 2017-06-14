@@ -19,6 +19,7 @@ public class UrlBuilder {
     public static final String API_PRODUCTS = "/api/products";
     public static final String API_GET_WORKOUTS = API_PRODUCTS + "/me";
     public static final String API_SAVE_REPS = API_PRODUCTS + "/usertrack";
+    public static final String API_GET_RECORD = API_PRODUCTS + "/search";
 
     private String uri;
 

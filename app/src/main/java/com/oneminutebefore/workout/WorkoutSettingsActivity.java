@@ -94,6 +94,9 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                             .getSelectedWorkoutByTime(SelectedWorkout.getTimeMeridian(hourKeys[i]));
 //                        && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
 //                    selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
+                    if(selectedWorkout == null){
+                        selectedWorkout = new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]);
+                    }
                     selectedWorkouts.add(selectedWorkout);
                 }
             }

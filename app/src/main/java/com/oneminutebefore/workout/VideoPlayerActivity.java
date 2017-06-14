@@ -375,7 +375,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 //        VolleyHelper volleyHelper = new VolleyHelper(VideoPlayerActivity.this, true);
 
         String url = new UrlBuilder(UrlBuilder.API_SAVE_REPS)
-                .addParameters("date",new SimpleDateFormat("yyyy-MM-dd").format(workoutDate))
+                .addParameters("date",new SimpleDateFormat("MM-dd-yyyy").format(workoutDate))
                 .addParameters("rep",String.valueOf((int)count))
                 .addParameters("id", selectedWorkoutExercise.getSelectedWorkoutId())
                 .addParameters("user_id", application.getUser().getId())
