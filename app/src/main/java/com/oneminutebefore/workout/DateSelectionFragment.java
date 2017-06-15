@@ -91,18 +91,19 @@ public class DateSelectionFragment extends DialogFragment {
         final View fragmentView = getActivity().getLayoutInflater().inflate(R.layout.fragment_date_selection, null);
         builder.setView(fragmentView);
 
+        TextView tvTitle = (TextView) fragmentView.findViewById(R.id.tv_title);
+        tvTitle.setText(dateType + " date");
+
+        final DatePicker datePicker = (DatePicker) fragmentView.findViewById(R.id.date_picker);
+        datePicker.setCalendarViewShown(false);
+        datePicker.updateDate(inputDate.getYear() + 1900,inputDate.getMonth(),inputDate.getDate());
+//                datePicker.getCalendarView().setDate(inputDate.getTime());
+        datePicker.setMaxDate(System.currentTimeMillis());
+
         final AlertDialog alertDialog = builder.create();
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                TextView tvTitle = (TextView) fragmentView.findViewById(R.id.tv_title);
-                tvTitle.setText(dateType + " date");
-
-                final DatePicker datePicker = (DatePicker) fragmentView.findViewById(R.id.date_picker);
-//                datePicker.init(inputDate.getYear(),inputDate.getMonth(),inputDate.getDate(), null);
-//                datePicker.setCalendarViewShown(false);
-//                datePicker.getCalendarView().setDate(inputDate.getTime());
-                datePicker.setMaxDate(System.currentTimeMillis());
 
                 alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override

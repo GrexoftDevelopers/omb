@@ -4,6 +4,7 @@ package com.oneminutebefore.workout;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,15 @@ import android.widget.TextView;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.Utils;
+import com.oneminutebefore.workout.models.CompletedWorkout;
+import com.oneminutebefore.workout.models.UserTrack;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -45,9 +51,13 @@ public class ReportFragment extends Fragment {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
     private String unavailabilityText;
     private String title;
-    private TextView tvTitle,tvNoWorkout;
+    private TextView tvNoWorkout;
     private EditText etdateRange;
     private ImageButton btnDateRange;
+
+    private ArrayList<CompletedWorkout> completedWorkouts;
+
+    private RecyclerView recyclerView;
 
 
     public ReportFragment() {
@@ -84,10 +94,10 @@ public class ReportFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_report, container, false);
 
-        tvTitle = (TextView) fragmentView.findViewById(R.id.txt_title);
         tvNoWorkout = (TextView) fragmentView.findViewById(R.id.txt_no_workout);
         etdateRange = (EditText)fragmentView.findViewById(R.id.et_date);
         btnDateRange = (ImageButton) fragmentView.findViewById(R.id.btn_date_range);
+        recyclerView = (RecyclerView) fragmentView.findViewById(R.id.list_workout_count);
 
         btnDateRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,19 +110,16 @@ public class ReportFragment extends Fragment {
 
         switch (reportFilter){
             case REPORT_WEEKLY :
-                title = "This week";
                 unavailabilityText = "No workouts in this week";
                 fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
                 break;
 
             case REPORT_MONTHLY:
-                title = "This month";
                 unavailabilityText = "No workouts in this month";
                 fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
                 break;
 
             case REPORT_CUSTOM:
-                title = "Custom search";
                 unavailabilityText = "No results found";
                 startDate = new Date(Calendar.getInstance().getTimeInMillis());
                 endDate = startDate;
@@ -120,13 +127,16 @@ public class ReportFragment extends Fragment {
                 break;
         }
 
-        tvTitle.setText(title);
         tvNoWorkout.setText(unavailabilityText);
 
         return fragmentView;
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        setData();
+    }
 
     private void setData(){
 
@@ -145,6 +155,9 @@ public class ReportFragment extends Fragment {
         httpTask.setmCallback(new HttpTask.HttpCallback() {
             @Override
             public void onResponse(String response) throws JSONException {
+
+                completedWorkouts = CompletedWorkout.createListFromJson(new JSONArray(response));
+                recyclerView.setAdapter(new CompletedWorkoutsAdapter());
 
             }
 
@@ -172,5 +185,93 @@ public class ReportFragment extends Fragment {
             }
         }
     };
+
+    private class CompletedWorkoutsAdapter extends RecyclerView.Adapter<CompletedWorkoutViewHolder>{
+
+
+        @Override
+        public CompletedWorkoutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new CompletedWorkoutViewHolder(
+                    getActivity().getLayoutInflater().inflate(
+                            R.layout.item_completed_workout
+                            ,parent
+                            ,false)
+            );
+        }
+
+        @Override
+        public void onBindViewHolder(CompletedWorkoutViewHolder holder, int position) {
+
+            final CompletedWorkout completedWorkout = completedWorkouts.get(position);
+            holder.tvTitle.setText(completedWorkout.getName());
+            holder.rclUserTrack.setAdapter(new UserTrackAdapter(completedWorkout.getUserTracks()));
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return completedWorkouts != null ? completedWorkouts.size() : 0;
+        }
+    }
+
+    private class UserTrackAdapter extends RecyclerView.Adapter<UserTrackViewHolder>{
+
+        private ArrayList<UserTrack> userTracks;
+
+        UserTrackAdapter(ArrayList<UserTrack> userTracks){
+            this.userTracks = userTracks;
+        }
+
+        @Override
+        public UserTrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new UserTrackViewHolder(
+                    getActivity().getLayoutInflater().inflate(
+                            R.layout.item_workout_count
+                            ,parent
+                            ,false
+                    )
+            );
+        }
+
+        @Override
+        public void onBindViewHolder(UserTrackViewHolder holder, int position) {
+
+            UserTrack userTrack = userTracks.get(position);
+            holder.tvDate.setText(userTrack.getDate());
+            holder.tvCount.setText(String.valueOf(userTrack.getReps()));
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return userTracks == null ? 0 : userTracks.size();
+        }
+    }
+
+    private static class UserTrackViewHolder extends RecyclerView.ViewHolder{
+
+
+        private TextView tvCount;
+        private TextView tvDate;
+
+        public UserTrackViewHolder(View itemView) {
+            super(itemView);
+            tvCount = (TextView)itemView.findViewById(R.id.tv_count);
+            tvDate = (TextView)itemView.findViewById(R.id.tv_workout_name);
+            itemView.findViewById(R.id.tv_workout_time).setVisibility(View.GONE);
+        }
+    }
+
+    private static class CompletedWorkoutViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView tvTitle;
+        private RecyclerView rclUserTrack;
+
+        public CompletedWorkoutViewHolder(View itemView) {
+            super(itemView);
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            rclUserTrack = (RecyclerView)itemView.findViewById(R.id.list_user_track);
+        }
+    }
 
 }

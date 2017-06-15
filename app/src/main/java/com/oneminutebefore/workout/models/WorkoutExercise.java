@@ -83,18 +83,8 @@ public class WorkoutExercise implements Serializable{
                     WorkoutExercise workoutExercise;
                     for(int i = 0 ; i < dataArray.length() ; i++){
                         JSONObject jsonObject = dataArray.getJSONObject(i);
-                        String id = jsonObject.optString("_id");
-                        String name = jsonObject.optString("name");
-                        String link = jsonObject.optString("info");
-//                        String link = "https://youtu.be/pOLppIAhgr0";
-                        boolean orders = jsonObject.optBoolean("orders",true);
-                        int v = jsonObject.optInt("__v",0);
-                        workoutExercise = new WorkoutExercise(id,name,null,link);
-                        workoutExercise.orders = orders;
-                        workoutExercise.v = v;
-                        workoutExercise.categoryId = jsonObject.optString("brand_id");
-                        workoutExercise.category = WorkoutCategory.createFromJson(jsonObject.optJSONObject("brand"));
-                        map.put(id, workoutExercise);
+                        workoutExercise = createFromJson(jsonObject);
+                        map.put(workoutExercise.id, workoutExercise);
                     }
                     return map;
                 }
@@ -105,6 +95,21 @@ public class WorkoutExercise implements Serializable{
         }
 
         return null;
+    }
+
+    public static WorkoutExercise createFromJson(JSONObject jsonObject){
+        String id = jsonObject.optString("_id");
+        String name = jsonObject.optString("name");
+        String link = jsonObject.optString("info");
+        boolean orders = jsonObject.optBoolean("orders",true);
+        int v = jsonObject.optInt("__v",0);
+        WorkoutExercise workoutExercise = new WorkoutExercise();
+        workoutExercise = new WorkoutExercise(id,name,null,link);
+        workoutExercise.orders = orders;
+        workoutExercise.v = v;
+        workoutExercise.categoryId = jsonObject.optString("brand_id");
+        workoutExercise.category = WorkoutCategory.createFromJson(jsonObject.optJSONObject("brand"));
+        return workoutExercise;
     }
 
     @Override

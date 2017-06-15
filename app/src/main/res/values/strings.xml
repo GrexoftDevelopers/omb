@@ -214,4 +214,5 @@
     <string name="history">History</string>
     <string name="no_data_for_workout">No data for this exercise</string>
     <string name="view">View</string>
+    <string name="workout_name">Workout name</string>
 </resources>

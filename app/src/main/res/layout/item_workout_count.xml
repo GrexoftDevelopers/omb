@@ -28,7 +28,7 @@
         android:text="@string/upcoming_exercise"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textAllCaps="true"
-        android:layout_toLeftOf="@+id/iv_delete"
+        android:layout_toLeftOf="@+id/iv_more"
         />
 
     <TextView
@@ -40,7 +40,7 @@
         android:text="@string/push_ups"
         android:layout_marginBottom="12dp"
         android:textStyle="italic"
-        android:layout_toLeftOf="@+id/iv_delete"
+        android:layout_toLeftOf="@+id/iv_more"
         />
 
     <View

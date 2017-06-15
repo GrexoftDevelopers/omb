@@ -28,6 +28,7 @@ public class ReportsActivity extends AppCompatActivity {
         }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager.setOffscreenPageLimit(3);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(ReportFragment.newInstance(ReportFragment.REPORT_WEEKLY), "weekly");
         adapter.addFragment(ReportFragment.newInstance(ReportFragment.REPORT_MONTHLY), "Monthly");
