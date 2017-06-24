@@ -2,6 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center_horizontal"/>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/one_minute_before"
+        android:inputType="textCapWords"
+        android:textAppearance="?android:attr/textAppearanceSearchResultTitle"
+        android:textColor="@android:color/white"
+        android:fontFamily="Roboto"
+        android:textStyle="bold"/>
 
 </LinearLayout>

@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.models.CompletedWorkout;
+import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.UserTrack;
 
 import org.json.JSONArray;
@@ -42,7 +44,7 @@ public class ReportFragment extends Fragment {
     private String reportFilter;
 
     public static final String REPORT_WEEKLY = "week";
-    public static final String REPORT_MONTHLY = "monthly";
+    public static final String REPORT_MONTHLY = "month";
     public static final String REPORT_CUSTOM = "advanced";
 
     private Date startDate;
@@ -58,6 +60,7 @@ public class ReportFragment extends Fragment {
     private ArrayList<CompletedWorkout> completedWorkouts;
 
     private RecyclerView recyclerView;
+    private ProgressBar proogressBar;
 
 
     public ReportFragment() {
@@ -98,6 +101,8 @@ public class ReportFragment extends Fragment {
         etdateRange = (EditText)fragmentView.findViewById(R.id.et_date);
         btnDateRange = (ImageButton) fragmentView.findViewById(R.id.btn_date_range);
         recyclerView = (RecyclerView) fragmentView.findViewById(R.id.list_workout_count);
+        proogressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar);
+
 
         btnDateRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,15 +137,12 @@ public class ReportFragment extends Fragment {
         return fragmentView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setData();
-    }
+    public void setData(){
 
-    private void setData(){
-
-        HttpTask httpTask = new HttpTask(true,getActivity(), HttpTask.METHOD_POST);
+        tvNoWorkout.setVisibility(View.GONE);
+        proogressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        HttpTask httpTask = new HttpTask(false,getActivity(), HttpTask.METHOD_POST);
         UrlBuilder builder = new UrlBuilder(UrlBuilder.API_GET_RECORD).addParameters("type", reportFilter);
         if(reportFilter.equals(REPORT_CUSTOM)){
             builder.addParameters("from", dateFormat.format(startDate));
@@ -156,14 +158,26 @@ public class ReportFragment extends Fragment {
             @Override
             public void onResponse(String response) throws JSONException {
 
+                proogressBar.setVisibility(View.GONE);
+
                 completedWorkouts = CompletedWorkout.createListFromJson(new JSONArray(response));
                 recyclerView.setAdapter(new CompletedWorkoutsAdapter());
+                if(completedWorkouts != null && !completedWorkouts.isEmpty()){
+                    recyclerView.setVisibility(View.VISIBLE);
+                    tvNoWorkout.setVisibility(View.GONE);
+                }else{
+                    recyclerView.setVisibility(View.GONE);
+                    tvNoWorkout.setVisibility(View.VISIBLE);
+                }
+
 
             }
 
             @Override
             public void onException(Exception e) {
-
+                proogressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                tvNoWorkout.setVisibility(View.VISIBLE);
             }
         });
         httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, builder.build());
@@ -218,6 +232,8 @@ public class ReportFragment extends Fragment {
 
         private ArrayList<UserTrack> userTracks;
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
         UserTrackAdapter(ArrayList<UserTrack> userTracks){
             this.userTracks = userTracks;
         }
@@ -237,8 +253,12 @@ public class ReportFragment extends Fragment {
         public void onBindViewHolder(UserTrackViewHolder holder, int position) {
 
             UserTrack userTrack = userTracks.get(position);
-            holder.tvDate.setText(userTrack.getDate());
+            long millis = SelectedWorkout.getDateTimeLong(userTrack.getDate());
+            holder.tvDate.setText(dateFormat.format(new Date(millis)));
             holder.tvCount.setText(String.valueOf(userTrack.getReps()));
+            if(position == userTracks.size() - 1){
+                holder.itemView.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+            }
 
         }
 

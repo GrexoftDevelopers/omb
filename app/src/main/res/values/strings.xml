@@ -69,7 +69,7 @@
     <string name="no">No</string>
     <string name="title_activity_about">About us</string>
     <string name="title_activity_contact">Contact us</string>
-    <string name="one_minute_before">One minute Before</string>
+    <string name="one_minute_before">One Minute Before</string>
     <string name="one_minute_before_desc"><![CDATA[Provides Exercise Alerts Via Your Cell And Social Media At Your Desk, Home & More! Every Hour For One Minute Before The Hour Ends]]></string>
     <string name="desc_home_1">EXERCISES from Entrepreneur Greg Reid. Greg is an entrepreneur, and the CEO of several successful corporations. His other projects include The Millionaire Mentor, Positive Impact, Three Feet from Gold and Napoleon Hill’s Road to Riches.</string>
     <string name="desc_home_2">EXERCISES from Star Athletes like James Lawrence the Iron Cowboy. These are some of the same workouts that helped the Iron Cowboy achieve 2 Guiness World Records. Also in 2015 he completed 50 Ironman Courses, in 50 consecutive days through all 50 States.</string>
@@ -215,4 +215,8 @@
     <string name="no_data_for_workout">No data for this exercise</string>
     <string name="view">View</string>
     <string name="workout_name">Workout name</string>
+    <plurals name="days_hours">
+        <item quantity="one">%dDay</item>
+        <item quantity="other">%dDays</item>
+    </plurals>
 </resources>

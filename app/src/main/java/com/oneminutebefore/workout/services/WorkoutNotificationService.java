@@ -41,8 +41,12 @@ public class WorkoutNotificationService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         System.out.println("workout notification check");
         try {
-            checkHourSelection();
-            IntentUtils.scheduleWorkoutNotifications(getApplicationContext());
+            Calendar calendar = Calendar.getInstance();
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            if(dayOfWeek >= 2 && dayOfWeek <= 6){
+                checkHourSelection();
+                IntentUtils.scheduleWorkoutNotifications(getApplicationContext());
+            }
         }catch (Exception e ){
             e.printStackTrace();
         }

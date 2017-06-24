@@ -73,22 +73,28 @@ public class CompletedWorkout extends SelectedWorkout {
             for(int i = 0 ; i < jsonArray.length() ; i++){
                 JSONObject jsonObject = jsonArray.optJSONObject(i);
                 if(jsonObject != null){
-                    try {
-                        JSONObject workoutObject = jsonObject.optJSONObject("workout");
-                        workoutObject.put("brand", jsonObject.optJSONObject("category"));
-                        WorkoutExercise workoutExercise = WorkoutExercise.createFromJson(workoutObject);
-                        String id = jsonObject.optString("_id");
-                        CompletedWorkout completedWorkout = new CompletedWorkout(new SelectedWorkout(workoutExercise,"00_00",id));
-                        completedWorkout.userTracks = UserTrack.createListFromJson(jsonObject.getJSONArray("user_track"));
-                        completedWorkouts.add(completedWorkout);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    CompletedWorkout completedWorkout = createFromJson(jsonObject);
+                    completedWorkouts.add(completedWorkout);
                 }
             }
             return completedWorkouts;
         }
 
+        return null;
+    }
+
+    public static CompletedWorkout createFromJson(JSONObject jsonObject){
+        try{
+            JSONObject workoutObject = jsonObject.optJSONObject("workout");
+            workoutObject.put("brand", jsonObject.optJSONObject("category"));
+            WorkoutExercise workoutExercise = WorkoutExercise.createFromJson(workoutObject);
+            String id = jsonObject.optString("_id");
+            CompletedWorkout completedWorkout = new CompletedWorkout(new SelectedWorkout(workoutExercise,"00_00",id));
+            completedWorkout.userTracks = UserTrack.createListFromJson(jsonObject.getJSONArray("user_track"));
+            return completedWorkout;
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
         return null;
     }
 

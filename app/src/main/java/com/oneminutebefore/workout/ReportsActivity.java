@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout;
 
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,8 +28,7 @@ public class ReportsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setOffscreenPageLimit(3);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(ReportFragment.newInstance(ReportFragment.REPORT_WEEKLY), "weekly");
         adapter.addFragment(ReportFragment.newInstance(ReportFragment.REPORT_MONTHLY), "Monthly");
@@ -36,6 +36,32 @@ public class ReportsActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                ((ReportFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(position)).setData();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ((ReportFragment)((ViewPagerAdapter)viewPager.getAdapter()).getItem(0)).setData();
+            }
+        }, 300);
 
     }
     @Override

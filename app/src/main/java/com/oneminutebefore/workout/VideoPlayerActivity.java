@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -36,12 +37,15 @@ import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.User;
+import com.oneminutebefore.workout.models.UserTrack;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -166,16 +170,108 @@ public class VideoPlayerActivity extends AppCompatActivity {
                     }
                 });
             }else{
-                findViewById(R.id.tv_title).setVisibility(View.GONE);
                 findViewById(R.id.timer_box).setVisibility(View.GONE);
                 findViewById(R.id.card_workout_count).setVisibility(View.VISIBLE);
-                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
+                final TextView tvNoWorkout = (TextView) findViewById(R.id.txt_no_workout);
+                tvNoWorkout.setVisibility(View.GONE);
+                final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
+                recyclerView.setVisibility(View.GONE);
+                final ProgressBar progressBar = (ProgressBar) findViewById(R.id.history_progress);
+                progressBar.setVisibility(View.VISIBLE);
+                HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this, HttpTask.METHOD_GET);
+                UrlBuilder builder = new UrlBuilder(UrlBuilder.API_PRODUCTS).addSection(selectedWorkoutExercise.getSelectedWorkoutId());
+                httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
+                    @Override
+                    public void onSessionTimeout() {
+                        startActivity(Utils.getSessionTimeoutIntent(VideoPlayerActivity.this));
+                    }
+                });
+                httpTask.setmCallback(new HttpTask.HttpCallback() {
+                    @Override
+                    public void onResponse(String response) throws JSONException {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        CompletedWorkout completedWorkout = CompletedWorkout.createFromJson(new JSONObject(response));
+                        recyclerView.setAdapter(new UserTrackAdapter(completedWorkout.getUserTracks()));
+                        if(completedWorkout != null && completedWorkout.getUserTracks() != null && !completedWorkout.getUserTracks().isEmpty()){
+                            recyclerView.setVisibility(View.VISIBLE);
+                            tvNoWorkout.setVisibility(View.GONE);
+                        }else{
+                            recyclerView.setVisibility(View.GONE);
+                            tvNoWorkout.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.GONE);
+                        tvNoWorkout.setVisibility(View.VISIBLE);
+                    }
+                });
+                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, builder.build());
+
             }
 
 
         } else {
             findViewById(R.id.youtube_content).setVisibility(View.GONE);
             findViewById(R.id.layout_no_content).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class UserTrackAdapter extends RecyclerView.Adapter<UserTrackViewHolder>{
+
+        private ArrayList<UserTrack> userTracks;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+        UserTrackAdapter(ArrayList<UserTrack> userTracks){
+            this.userTracks = userTracks;
+        }
+
+        @Override
+        public UserTrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new UserTrackViewHolder(
+                    getLayoutInflater().inflate(
+                            R.layout.item_workout_count
+                            ,parent
+                            ,false
+                    )
+            );
+        }
+
+        @Override
+        public void onBindViewHolder(UserTrackViewHolder holder, int position) {
+
+            UserTrack userTrack = userTracks.get(position);
+            long millis = SelectedWorkout.getDateTimeLong(userTrack.getDate());
+            holder.tvDate.setText(dateFormat.format(new Date(millis)));
+            holder.tvCount.setText(String.valueOf(userTrack.getReps()));
+            if(position == userTracks.size() - 1){
+                holder.itemView.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return userTracks == null ? 0 : userTracks.size();
+        }
+    }
+
+    private static class UserTrackViewHolder extends RecyclerView.ViewHolder{
+
+
+        private TextView tvCount;
+        private TextView tvDate;
+
+        public UserTrackViewHolder(View itemView) {
+            super(itemView);
+            tvCount = (TextView)itemView.findViewById(R.id.tv_count);
+            tvDate = (TextView)itemView.findViewById(R.id.tv_workout_name);
+            itemView.findViewById(R.id.tv_workout_time).setVisibility(View.GONE);
         }
     }
 
@@ -331,6 +427,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 if(!isDemo){
+                                    v.setEnabled(false);
                                     String repsCount = etRepsCount.getText().toString().trim();
                                     if(TextUtils.isEmpty(repsCount)){
                                         ((TextInputLayout)dialogView.findViewById(R.id.til_reps_count)).setError("Please enter reps");
@@ -351,6 +448,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
                                     }
                                 }else{
                                     Toast.makeText(VideoPlayerActivity.this, getString(R.string.msg_thanks), Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    finish();
                                 }
                             }
                         });
@@ -395,7 +494,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 //            }
 //        });
 
-        HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this, HttpTask.METHOD_POST);
+        HttpTask httpTask = new HttpTask(true,VideoPlayerActivity.this, HttpTask.METHOD_POST);
         httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
             @Override
             public void onSessionTimeout() {
@@ -412,6 +511,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
             @Override
             public void onException(Exception e) {
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.some_error_occured), Snackbar.LENGTH_SHORT).show();
             }
         });

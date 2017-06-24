@@ -199,12 +199,27 @@ public class HomeNewActivity extends AppCompatActivity
 
             boolean restarted = false;
             boolean timerSet = false;
+
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            if(dayOfWeek == 1 || dayOfWeek == 7){
+                if(dayOfWeek == 1) {
+                    calendar.add(Calendar.DATE, 1);
+                }
+                else{
+                    calendar.add(Calendar.DATE,2);
+                }
+            }
+
             for (int i = hour; ; i++) {
 
                 if (i == hours.length) {
                     restarted = true;
                     i = 0;
-                    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+                    calendar.add(Calendar.DATE, 1);
+                    dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                    if(dayOfWeek == 7){
+                        calendar.add(Calendar.DATE,2);
+                    }
                 }
                 if (preferences.getBoolean(hours[i], false)) {
                     String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
@@ -407,12 +422,19 @@ public class HomeNewActivity extends AppCompatActivity
         protected void onProgressUpdate(Long... values) {
             super.onProgressUpdate(values);
             values[0] /= 1000;
-            String hours = String.valueOf(values[0] / 3600);
+            int hoursInt = (int) (values[0] / 3600);
+            String hours = String.valueOf(hoursInt);
             values[0] %= 3600;
             String minutes = String.valueOf(values[0] / 60);
             values[0] %= 60;
             if (!hours.equals("0")) {
-                tvTimer.setText(String.format(getString(R.string.time_left_hour), hours));
+                if(hoursInt >= 24){
+                    int days = hoursInt / 24;
+                    hoursInt = hoursInt % 24;
+                    tvTimer.setText(getResources().getQuantityString(R.plurals.days_hours,days,days) + (hoursInt > 0 ? " " + String.format(getString(R.string.time_left_hour), String.valueOf(hoursInt)) : ""));
+                }else{
+                    tvTimer.setText(String.format(getString(R.string.time_left_hour), hours));
+                }
                 tvTimer.setVisibility(View.VISIBLE);
             } else {
                 tvTimer.setVisibility(View.GONE);

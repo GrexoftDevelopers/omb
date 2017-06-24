@@ -17,38 +17,46 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#ffffffff"
         android:background="@drawable/count_bg_red"
-        android:layout_marginRight="@dimen/margin_padding_12dp"/>
+        android:layout_marginRight="@dimen/margin_padding_12dp"
+        android:layout_marginBottom="@dimen/margin_padding_12dp"/>
 
-    <TextView
-        android:id="@+id/tv_workout_name"
+    <LinearLayout
+        android:id="@+id/text_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_toRightOf="@+id/tv_count"
         android:layout_alignTop="@+id/tv_count"
-        android:text="@string/upcoming_exercise"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textAllCaps="true"
         android:layout_toLeftOf="@+id/iv_more"
-        />
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:minHeight="48dp">
 
-    <TextView
-        android:id="@+id/tv_workout_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_count"
-        android:layout_below="@+id/tv_workout_name"
-        android:text="@string/push_ups"
-        android:layout_marginBottom="12dp"
-        android:textStyle="italic"
-        android:layout_toLeftOf="@+id/iv_more"
-        />
+        <TextView
+            android:id="@+id/tv_workout_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/upcoming_exercise"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textAllCaps="true"
+            />
+
+        <TextView
+            android:id="@+id/tv_workout_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/push_ups"
+            android:textStyle="italic"
+            />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_alignLeft="@+id/tv_workout_name"
-        android:layout_below="@+id/tv_workout_time"
+        android:layout_alignLeft="@+id/text_box"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/margin_padding_12dp"
         android:background="#cccccc"
         />
