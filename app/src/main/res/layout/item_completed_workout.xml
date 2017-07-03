@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -23,7 +23,12 @@
         android:id="@+id/list_user_track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false"
         app:layoutManager="LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/list_user_track"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"></LinearLayout>-->
 
 </LinearLayout>

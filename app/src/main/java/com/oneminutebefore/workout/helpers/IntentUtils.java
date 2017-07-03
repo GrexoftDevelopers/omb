@@ -50,22 +50,22 @@ public class IntentUtils {
 
         Calendar calendar = Calendar.getInstance();
         long currentTime = calendar.getTimeInMillis();
-//        calendar.set(Calendar.MINUTE, 59);
-//        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 0);
         if(currentTime > calendar.getTimeInMillis()){
             calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1 % 24);
         }
 
         AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            alarm.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
-//        }else{
-//            alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                    AlarmManager.INTERVAL_HOUR , pIntent);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarm.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        }else{
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_HOUR , pIntent);
+        }
 
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                120000 , pIntent);
+//        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                120000 , pIntent);
 
     }
 

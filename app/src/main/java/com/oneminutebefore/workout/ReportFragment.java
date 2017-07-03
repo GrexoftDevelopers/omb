@@ -5,11 +5,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -218,6 +220,23 @@ public class ReportFragment extends Fragment {
 
             final CompletedWorkout completedWorkout = completedWorkouts.get(position);
             holder.tvTitle.setText(completedWorkout.getName());
+//            if(completedWorkout.getUserTracks() != null && !completedWorkout.getUserTracks().isEmpty()){
+//                int i = 0;
+//                for(UserTrack userTrack : completedWorkout.getUserTracks()){
+//                    View view = getActivity().getLayoutInflater().inflate(R.layout.item_workout_count
+//                            ,holder.rclUserTrack
+//                            ,true);
+//                    view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,dpToPx(72)));
+//                    long millis = SelectedWorkout.getDateTimeLong(userTrack.getDate());
+//                    ((TextView)view.findViewById(R.id.tv_workout_name)).setText(dateFormat.format(new Date(millis)));
+//                    ((TextView)view.findViewById(R.id.tv_count)).setText(String.valueOf(userTrack.getReps()));
+//                    if(i == completedWorkout.getUserTracks().size() - 1){
+//                        view.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
+//                    }
+//                    view.findViewById(R.id.tv_workout_time).setVisibility(View.GONE);
+////                    holder.rclUserTrack.addView(view);
+//                }
+//            }
             holder.rclUserTrack.setAdapter(new UserTrackAdapter(completedWorkout.getUserTracks()));
 
         }
@@ -285,13 +304,20 @@ public class ReportFragment extends Fragment {
     private static class CompletedWorkoutViewHolder extends RecyclerView.ViewHolder{
 
         private TextView tvTitle;
+//        private LinearLayout rclUserTrack;
         private RecyclerView rclUserTrack;
 
         public CompletedWorkoutViewHolder(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            rclUserTrack = (RecyclerView)itemView.findViewById(R.id.list_user_track);
+//            rclUserTrack = (LinearLayout)itemView.findViewById(R.id.list_user_track);
+            rclUserTrack = (RecyclerView) itemView.findViewById(R.id.list_user_track);
         }
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
 }
