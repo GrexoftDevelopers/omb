@@ -68,7 +68,7 @@ public class SelectedWorkout extends WorkoutExercise {
     public String getTimeMeridian(){
         return getTimeMeridian(getTimeKey());
 //        int workoutHour = Integer.parseInt(getTimeKey().split("_")[0]);
-//        String meridian = workoutHour / 12 == 0 ? "am" : "pm";
+//        String meridian = workoutHour / 12 == 0 ? "A.M" : "P.M";
 //        workoutHour = workoutHour % 12;
 //        String workoutTime = workoutHour + ":59 " + meridian;
 //        return workoutTime;
@@ -128,7 +128,7 @@ public class SelectedWorkout extends WorkoutExercise {
 
     public static String getTimeMeridian(String timeKey){
         int workoutHour = Integer.parseInt(timeKey.split("_")[0]);
-        String meridian = workoutHour / 12 == 0 ? "am" : "pm";
+        String meridian = workoutHour / 12 == 0 ? "A.M" : "P.M";
         workoutHour = workoutHour % 12;
         if(workoutHour == 0){
             workoutHour = 12;
@@ -143,7 +143,7 @@ public class SelectedWorkout extends WorkoutExercise {
             hour = 0;
         }
         String meridian = timeMeridian.split(" ")[1];
-        if(meridian.equals("pm")){
+        if(meridian.equals("A.M")){
             hour += 12;
         }
         return hour + "_59";

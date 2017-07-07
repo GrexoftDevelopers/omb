@@ -275,7 +275,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                 client.addResponseInterceptor(new HttpResponseInterceptor() {
                     @Override
                     public void process(HttpResponse httpResponse, HttpContext httpContext) throws HttpException, IOException {
-                        if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                        interceptedCode = httpResponse.getStatusLine().getStatusCode();
+                        if (interceptedCode < 200 || interceptedCode >= 400) {
                             InputStream is = httpResponse.getEntity().getContent();
                             interceptedResponse = Utils.convertStreamToString(is);
                             Log.d(TAG, "content length : " + httpResponse.getEntity().getContentLength());

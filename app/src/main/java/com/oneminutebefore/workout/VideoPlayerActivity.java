@@ -202,7 +202,6 @@ public class VideoPlayerActivity extends AppCompatActivity {
                             tvNoWorkout.setVisibility(View.VISIBLE);
                         }
                     }
-
                     @Override
                     public void onException(Exception e) {
                         progressBar.setVisibility(View.GONE);
@@ -211,7 +210,6 @@ public class VideoPlayerActivity extends AppCompatActivity {
                     }
                 });
                 httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, builder.build());
-
             }
 
 
