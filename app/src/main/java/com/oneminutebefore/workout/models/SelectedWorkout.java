@@ -143,7 +143,7 @@ public class SelectedWorkout extends WorkoutExercise {
             hour = 0;
         }
         String meridian = timeMeridian.split(" ")[1];
-        if(meridian.equals("A.M")){
+        if(meridian.equals("P.M")){
             hour += 12;
         }
         return hour + "_59";

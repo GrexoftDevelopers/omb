@@ -37,6 +37,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -257,7 +258,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
                 Log.d(TAG, "url :  " + urlWithParams);
-                HttpGet getMethod = new HttpGet(urlWithParams);
+                HttpGet getMethod = new HttpGet(urlWithParams.replace(' ', '+'));
                 HttpParams httpParams = new BasicHttpParams();
                 HttpConnectionParams.setConnectionTimeout(httpParams, mConnectionTimeout);
                 HttpConnectionParams.setSoTimeout(httpParams, mSocketTimeout);
