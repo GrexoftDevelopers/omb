@@ -78,17 +78,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertSelectedWorkout(JSONObject jsonObject){
 
-        insertSelectedWorkout(jsonObject, false);
+        insertSelectedWorkout(jsonObject, false, false);
     }
 
-    public void insertSelectedWorkout(JSONObject jsonObject, boolean insertTrack){
+    public void insertSelectedWorkout(JSONObject jsonObject, boolean insertTrack, boolean completeData){
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id", jsonObject.optString("_id"));
         contentValues.put("workout_time", jsonObject.optString("workout_time"));
-        contentValues.put("category", jsonObject.optJSONObject("category").optString("_id"));
-        contentValues.put("workout", jsonObject.optJSONObject("workout").optString("_id"));
-        contentValues.put("user_id", jsonObject.optJSONObject("user_id").optString("_id"));
+        if(completeData){
+            contentValues.put("category", jsonObject.optJSONObject("category").optString("_id"));
+            contentValues.put("workout", jsonObject.optJSONObject("workout").optString("_id"));
+            contentValues.put("user_id", jsonObject.optJSONObject("user_id").optString("_id"));
+        }else{
+            contentValues.put("category", jsonObject.optString("category"));
+            contentValues.put("workout", jsonObject.optString("workout"));
+            contentValues.put("user_id", jsonObject.optString("user_id"));
+        }
         contentValues.put("uid", jsonObject.optString("uid"));
         contentValues.put("created_at", SelectedWorkout.getDateTimeLong(jsonObject.optString("created_at")));
         contentValues.put("updated_at", SelectedWorkout.getDateTimeLong(jsonObject.optString("updated_at")));

@@ -69,7 +69,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
                 JSONArray workoutsArray = new JSONArray(response);
                 if (workoutsArray != null && workoutsArray.length() > 0) {
                     for (int i = 0; i < workoutsArray.length(); i++) {
-                        application.getDbHelper().insertSelectedWorkout(workoutsArray.getJSONObject(i), true);
+                        application.getDbHelper().insertSelectedWorkout(workoutsArray.getJSONObject(i), true,true);
                     }
                 }
                 HashMap<String, SelectedWorkout> selectedWorkoutHashMap = application.getDbHelper().getSelectedWorkouts();
