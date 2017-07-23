@@ -269,7 +269,7 @@ public class WorkoutSelectionFormFragment extends Fragment {
                     @Override
                     public void onResponse(String response) throws JSONException {
                         JSONObject jsonObject = new JSONObject(response);
-                        application.getDbHelper().insertSelectedWorkout(jsonObject);
+                        application.getDbHelper().insertSelectedWorkout(jsonObject, false, true);
                         if(callback != null){
                             callback.onSave();
                         }

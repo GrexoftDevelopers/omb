@@ -87,9 +87,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("_id", jsonObject.optString("_id"));
         contentValues.put("workout_time", jsonObject.optString("workout_time"));
         if(completeData){
-            contentValues.put("category", jsonObject.optJSONObject("category").optString("_id"));
-            contentValues.put("workout", jsonObject.optJSONObject("workout").optString("_id"));
-            contentValues.put("user_id", jsonObject.optJSONObject("user_id").optString("_id"));
+            contentValues.put("category", jsonObject.optJSONObject("category") != null ? jsonObject.optJSONObject("category").optString("_id") : jsonObject.optString("category"));
+            contentValues.put("workout", jsonObject.optJSONObject("workout") != null ? jsonObject.optJSONObject("workout").optString("_id") : jsonObject.optString("workout"));
+            contentValues.put("user_id", jsonObject.optJSONObject("user_id") != null ? jsonObject.optJSONObject("user_id").optString("_id") : jsonObject.optString("user_id"));
         }else{
             contentValues.put("category", jsonObject.optString("category"));
             contentValues.put("workout", jsonObject.optString("workout"));

@@ -45,6 +45,9 @@ public class Utils {
         String time = timeMeridian.split(" ")[0];
         String meridian = timeMeridian.split(" ")[1];
         int hour = Integer.parseInt(time.split(":")[0]);
+        if(hour == 12){
+            hour = 0;
+        }
         if(meridian.equals("P.M")){
             hour += 12;
         }
