@@ -246,9 +246,6 @@ public class WorkoutSelectionFormFragment extends Fragment {
                     selectedWorkouts.add(selectedWorkout);
                 }
             }
-            SharedPrefsUtil.setBooleanPreference(getActivity(), selectedWorkout.getTimeKey(), true);
-            SharedPrefsUtil.setStringPreference(getActivity(), "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
-
             SelectedWorkout savedWorkout = application.getDbHelper().getSelectedWorkoutByTime(selectedWorkout.getTimeMeridian());
             if(savedWorkout == null || !savedWorkout.getId().equals(selectedWorkout.getId())){
                 String url = new UrlBuilder(UrlBuilder.API_PRODUCTS)
@@ -270,6 +267,8 @@ public class WorkoutSelectionFormFragment extends Fragment {
                     public void onResponse(String response) throws JSONException {
                         JSONObject jsonObject = new JSONObject(response);
                         application.getDbHelper().insertSelectedWorkout(jsonObject, false, true);
+                        SharedPrefsUtil.setBooleanPreference(getActivity(), selectedWorkout.getTimeKey(), true);
+                        SharedPrefsUtil.setStringPreference(getActivity(), "list_" + selectedWorkout.getTimeKey(), selectedWorkout.getId());
                         if(callback != null){
                             callback.onSave();
                         }
