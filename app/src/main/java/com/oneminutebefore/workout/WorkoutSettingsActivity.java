@@ -105,6 +105,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         rclWorkouts = (RecyclerView) findViewById(R.id.list_workouts);
         rclWorkouts.setAdapter(new WorkoutsAdapter());
         refreshUI();
+        
 
     }
 

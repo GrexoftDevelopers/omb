@@ -64,8 +64,8 @@ public class IntentUtils {
                     AlarmManager.INTERVAL_HOUR , pIntent);
         }
 
-//        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                120000 , pIntent);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                120000 , pIntent);
 
     }
 

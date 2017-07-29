@@ -113,6 +113,7 @@ public class SplashActivity extends BaseRequestActivity {
         application.setUser(user);
         application.setUserId(user.getId());
 //        SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.getUserLevelKey(SplashActivity.this), user.getUserLevel());
+        application.setDbHelper(new DBHelper(SplashActivity.this));
         Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
         startActivity(intent);
         new Handler().postDelayed(new Runnable() {
@@ -121,7 +122,6 @@ public class SplashActivity extends BaseRequestActivity {
                 finish();
             }
         }, 1500);
-        application.setDbHelper(new DBHelper(SplashActivity.this));
     }
 
     private void fetchUserInfo() {

@@ -208,6 +208,7 @@ public class HomeNewActivity extends AppCompatActivity
                 else{
                     calendar.add(Calendar.DATE,2);
                 }
+                hour = 0;
             }
 
             for (int i = hour; ; i++) {
