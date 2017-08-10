@@ -29,6 +29,7 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.Utils;
@@ -92,6 +93,8 @@ public class HomeNewActivity extends AppCompatActivity
 
 
         initNavigationItems();
+
+        IntentUtils.scheduleWorkoutNotifications(this);
 
 ////        FirebaseCrash.report(new NullPointerException("wdvf"));
 //        throw new NullPointerException("wdvf");

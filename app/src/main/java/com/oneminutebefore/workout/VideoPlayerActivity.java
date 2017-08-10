@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -464,7 +466,15 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 ivPlayPause.setOnClickListener(null);
                 ivPlayPause.setVisibility(View.INVISIBLE);
                 txtMsgTimerAction.setVisibility(View.GONE);
+
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
 
