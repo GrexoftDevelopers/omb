@@ -1,5 +1,6 @@
 package com.oneminutebefore.workout.helpers;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +39,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,6 +173,9 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                     HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
                     throw e;
+                } else if (t instanceof UnknownHostException) {
+                    HttpConnectException e = new HttpConnectException(HttpConnectException.MSG_NO_INTERNET);
+                    throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
                 }
@@ -239,6 +244,9 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                     HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
                     throw e;
+                } else if (t instanceof UnknownHostException) {
+                    HttpConnectException e = new HttpConnectException(HttpConnectException.MSG_NO_INTERNET);
+                    throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
                 }
@@ -293,6 +301,9 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                 if (t instanceof HttpResponseException) {
                     HttpConnectException e = new HttpConnectException(interceptedCode == 401 && isAuthorizationRequired ? HttpConnectException.MSG_SESSION_EXPIRED : interceptedResponse
                             , interceptedCode);
+                    throw e;
+                } else if (t instanceof UnknownHostException) {
+                    HttpConnectException e = new HttpConnectException(HttpConnectException.MSG_NO_INTERNET);
                     throw e;
                 } else {
                     throw new HttpConnectException(t.getMessage());
@@ -353,7 +364,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
             if (this.exception != null) {
                 if(exception instanceof HttpConnectException){
                     if (exception.getMessage().equals(HttpConnectException.MSG_NO_INTERNET)) {
-                        Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), exception.getMessage(), Snackbar.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }else if(((HttpConnectException) exception).getStatusCode() == 401 && isAuthorizationRequired){
                         Utils.clearUserData(mContext);
                         showSessionTimeoutDialog();

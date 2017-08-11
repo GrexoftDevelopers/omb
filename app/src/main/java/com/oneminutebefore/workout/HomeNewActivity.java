@@ -57,6 +57,7 @@ public class HomeNewActivity extends AppCompatActivity
     private Button btnScheduleTask;
 
     private ArrayList<CompletedWorkout> workoutsDone;
+    private TextView tvRepCountHead;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class HomeNewActivity extends AppCompatActivity
         layoutScheduleTask = findViewById(R.id.layout_schedule_task);
         layoutUpcomingTask = findViewById(R.id.layout_upcoming_task);
         btnScheduleTask = (Button) findViewById(R.id.btn_schedule_workout);
+        tvRepCountHead = (TextView) findViewById(R.id.tv_rep_count_head);
 
         btnScheduleTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,9 +290,15 @@ public class HomeNewActivity extends AppCompatActivity
             recyclerView.setNestedScrollingEnabled(false);
             if(workoutsDone != null && !workoutsDone.isEmpty()){
                 findViewById(R.id.txt_no_workout).setVisibility(View.GONE);
+                int repCountTotal = 0;
+                for(CompletedWorkout workout : workoutsDone){
+                    repCountTotal += workout.getRepsCount();
+                }
+                tvRepCountHead.setText(getString(R.string.today_count) + " (" + repCountTotal + ")");
                 recyclerView.setAdapter(new WorkoutCountAdapter());
             }else{
                 recyclerView.setVisibility(View.GONE);
+                tvRepCountHead.setText(getString(R.string.today_count));
                 findViewById(R.id.txt_no_workout).setVisibility(View.VISIBLE);
             }
 

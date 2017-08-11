@@ -58,11 +58,14 @@ public class ReportFragment extends Fragment {
     private TextView tvNoWorkout;
     private EditText etdateRange;
     private ImageButton btnDateRange;
+    private ImageButton btnNext;
+    private ImageButton btnPrev;
 
     private ArrayList<CompletedWorkout> completedWorkouts;
 
     private RecyclerView recyclerView;
     private ProgressBar proogressBar;
+    private HttpTask httpTask;
 
 
     public ReportFragment() {
@@ -102,6 +105,8 @@ public class ReportFragment extends Fragment {
         tvNoWorkout = (TextView) fragmentView.findViewById(R.id.txt_no_workout);
         etdateRange = (EditText)fragmentView.findViewById(R.id.et_date);
         btnDateRange = (ImageButton) fragmentView.findViewById(R.id.btn_date_range);
+        btnNext = (ImageButton) fragmentView.findViewById(R.id.btn_next);
+        btnPrev = (ImageButton) fragmentView.findViewById(R.id.btn_prev);
         recyclerView = (RecyclerView) fragmentView.findViewById(R.id.list_workout_count);
         proogressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar);
 
@@ -115,28 +120,110 @@ public class ReportFragment extends Fragment {
             }
         });
 
+        Calendar calendar = Calendar.getInstance();
         switch (reportFilter){
             case REPORT_WEEKLY :
                 unavailabilityText = "No workouts in this week";
-                fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
+//                fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
+                btnDateRange.setVisibility(View.GONE);
+                btnNext.setVisibility(View.VISIBLE);
+//                btnNext.setEnabled(false);
+                btnPrev.setVisibility(View.VISIBLE);
+                endDate = new Date(calendar.getTimeInMillis());
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                calendar.set(Calendar.HOUR_OF_DAY,0);
+                calendar.set(Calendar.MINUTE,0);
+                calendar.set(Calendar.SECOND,0);
+                startDate = new Date(calendar.getTimeInMillis());
                 break;
 
             case REPORT_MONTHLY:
                 unavailabilityText = "No workouts in this month";
-                fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
+//                fragmentView.findViewById(R.id.card_filter).setVisibility(View.GONE);
+                btnDateRange.setVisibility(View.GONE);
+                btnNext.setVisibility(View.VISIBLE);
+//                btnNext.setEnabled(false);
+                btnPrev.setVisibility(View.VISIBLE);
+                endDate = new Date(calendar.getTimeInMillis());
+                calendar.set(Calendar.DAY_OF_MONTH, 1);
+                calendar.set(Calendar.HOUR_OF_DAY,0);
+                calendar.set(Calendar.MINUTE,0);
+                calendar.set(Calendar.SECOND,0);
+                startDate = new Date(calendar.getTimeInMillis());
                 break;
 
             case REPORT_CUSTOM:
                 unavailabilityText = "No results found";
-                startDate = new Date(Calendar.getInstance().getTimeInMillis());
+                startDate = new Date(calendar.getTimeInMillis());
                 endDate = startDate;
-                etdateRange.setText(dateFormat.format(startDate) + " to " + dateFormat.format(endDate));
+                btnDateRange.setVisibility(View.VISIBLE);
+                btnNext.setVisibility(View.GONE);
+                btnPrev.setVisibility(View.GONE);
                 break;
         }
-
+        updateDateField();
         tvNoWorkout.setText(unavailabilityText);
 
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(startDate);
+                if(reportFilter == REPORT_WEEKLY){
+                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                    int firstDayOfWeek = calendar.getFirstDayOfWeek();
+                    if(day != firstDayOfWeek){
+                        calendar.add(calendar.DAY_OF_YEAR,1);
+                    }
+                    calendar.add(Calendar.DAY_OF_YEAR, 7);
+                    startDate = calendar.getTime();
+                    calendar.add(Calendar.DAY_OF_YEAR, 6);
+                    endDate = calendar.getTime();
+                }else if(reportFilter == REPORT_MONTHLY){
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    calendar.add(Calendar.MONTH, 1);
+                    calendar.set(Calendar.DAY_OF_MONTH,1);
+                    startDate = calendar.getTime();
+                    calendar.add(Calendar.MONTH, 1);
+                    calendar.add(Calendar.DAY_OF_YEAR, -1);
+                    endDate = calendar.getTime();
+                }
+                updateDateField();
+                setData();
+            }
+        });
+
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(endDate);
+                if(reportFilter == REPORT_WEEKLY){
+                    calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                    calendar.add(Calendar.DAY_OF_YEAR, -1);
+                    endDate = calendar.getTime();
+                    calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                    startDate = calendar.getTime();
+                }else if(reportFilter == REPORT_MONTHLY){
+//                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+//                    if(day != 1){
+//                    }else{
+//                    }
+                    calendar.set(Calendar.DAY_OF_MONTH,1);
+                    calendar.add(Calendar.DAY_OF_YEAR,-1);
+                    endDate = calendar.getTime();
+                    calendar.set(Calendar.DAY_OF_MONTH, 1);
+                    startDate = calendar.getTime();
+                }
+                updateDateField();
+                setData();
+            }
+        });
         return fragmentView;
+    }
+
+    private void updateDateField() {
+        etdateRange.setText(dateFormat.format(startDate) + " to " + dateFormat.format(endDate));
     }
 
     public void setData(){
@@ -144,9 +231,13 @@ public class ReportFragment extends Fragment {
         tvNoWorkout.setVisibility(View.GONE);
         proogressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
-        HttpTask httpTask = new HttpTask(false,getActivity(), HttpTask.METHOD_POST);
-        UrlBuilder builder = new UrlBuilder(UrlBuilder.API_GET_RECORD).addParameters("type", reportFilter);
-        if(reportFilter.equals(REPORT_CUSTOM)){
+        if(httpTask != null){
+            httpTask.cancel(true);
+        }
+        httpTask = new HttpTask(false,getActivity(), HttpTask.METHOD_POST);
+//        UrlBuilder builder = new UrlBuilder(UrlBuilder.API_GET_RECORD).addParameters("type", reportFilter);
+        UrlBuilder builder = new UrlBuilder(UrlBuilder.API_GET_RECORD).addParameters("type", REPORT_CUSTOM);
+        if(true || reportFilter.equals(REPORT_CUSTOM)){
             builder.addParameters("from", dateFormat.format(startDate));
             builder.addParameters("to", dateFormat.format(endDate));
         }
@@ -171,8 +262,6 @@ public class ReportFragment extends Fragment {
                     recyclerView.setVisibility(View.GONE);
                     tvNoWorkout.setVisibility(View.VISIBLE);
                 }
-
-
             }
 
             @Override
@@ -219,7 +308,13 @@ public class ReportFragment extends Fragment {
         public void onBindViewHolder(CompletedWorkoutViewHolder holder, int position) {
 
             final CompletedWorkout completedWorkout = completedWorkouts.get(position);
-            holder.tvTitle.setText(completedWorkout.getName());
+            int repCountTotal = 0;
+            if(completedWorkout.getUserTracks() != null && !completedWorkout.getUserTracks().isEmpty()){
+                for(UserTrack userTrack : completedWorkout.getUserTracks()){
+                    repCountTotal += userTrack.getReps();
+                }
+            }
+            holder.tvTitle.setText(completedWorkout.getName() + " (" + repCountTotal + ")");
 //            if(completedWorkout.getUserTracks() != null && !completedWorkout.getUserTracks().isEmpty()){
 //                int i = 0;
 //                for(UserTrack userTrack : completedWorkout.getUserTracks()){
