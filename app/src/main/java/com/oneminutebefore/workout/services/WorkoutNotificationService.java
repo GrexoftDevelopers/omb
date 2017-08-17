@@ -77,7 +77,7 @@ public class WorkoutNotificationService extends IntentService {
                     String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(timeMeridian);
 
                     // TODO : Remove temp Code
-                    application.setSessionToken(null);
+                    //application.setSessionToken(null);
 
                     addNotification(new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId));
                 }
