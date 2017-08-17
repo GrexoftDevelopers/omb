@@ -120,7 +120,7 @@ public class HomeNewActivity extends AppCompatActivity
     private void initNavigationItems() {
         Menu menu = navigationView.getMenu();
         WorkoutApplication application = WorkoutApplication.getmInstance();
-        String userId = application.getSessionToken();
+        String userId = application.getUserId();
         if (userId != null && userId.equals("-1")) {
             menu.findItem(R.id.action_sign_up).setVisible(true);
             menu.findItem(R.id.action_setting).setVisible(false);
@@ -187,7 +187,7 @@ public class HomeNewActivity extends AppCompatActivity
     private void resetTimer() {
 
         WorkoutApplication application = WorkoutApplication.getmInstance();
-        String userId = application.getSessionToken();
+        String userId = application.getUserId();
         if (userId != null && userId.equals("-1")) {
             findViewById(R.id.card_timer).setVisibility(View.GONE);
             findViewById(R.id.card_workout_count).setVisibility(View.GONE);
@@ -363,7 +363,8 @@ public class HomeNewActivity extends AppCompatActivity
         } else if (id == R.id.action_contact) {
             startActivity(new Intent(this, ContactActivity.class));
         } else if (id == R.id.action_report) {
-            startActivity(new Intent(this, ReportsActivity.class));
+//            startActivity(new Intent(this, ReportsActivity.class));
+            startActivity(new Intent(this, ReportNewActivity.class));
         } else if (id == R.id.action_about) {
             startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.action_logout) {

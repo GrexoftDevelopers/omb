@@ -219,4 +219,6 @@
         <item quantity="one">%dDay</item>
         <item quantity="other">%dDays</item>
     </plurals>
+    <string name="title_activity_report_new">Reports</string>
+    <string name="title_activity_reps_break_up">Reps break up</string>
 </resources>

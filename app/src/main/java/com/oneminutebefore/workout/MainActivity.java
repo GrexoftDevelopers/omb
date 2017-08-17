@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.oneminutebefore.workout.helpers.DBHelper;
@@ -24,12 +25,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener, RegisterFragment.RegisterInteractionListener {
 
+    public static final String KEY_REDIRECTION_ACTIVITY = "redirection_activity";
+    public static final String KEY_REDIRECTION_EXTRA = "redirection_extra";
+    public static final String KEY_PREVIOUS_USER_ID = "user_id";
     private ViewPager vpLogin;
     private WorkoutApplication application;
     private int workoutsFetchStatus;
@@ -39,6 +45,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     private static final int INFO_FETCH_STATUS_FAILURE = -1;
     private static final int INFO_FETCH_STATUS_INCOMPLETE = 0;
     private ProgressDialog progressDialog;
+
+    public static final int REDIRECTION_HOME = -1;
+    public static final int REDIRECTION_VIDEO_ACTIVITY = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,10 +182,38 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     }
 
     private void switchToHomeActivity() {
-        Intent intent = new Intent(this, HomeNewActivity.class);
+        Intent inputIntent = getIntent();
+        int redirectionFlag = inputIntent.getIntExtra(KEY_REDIRECTION_ACTIVITY, REDIRECTION_HOME);
+        String previousUserId = inputIntent.getStringExtra(KEY_PREVIOUS_USER_ID);
+        String newUserId = application.getUserId();
+        Intent intent = new Intent(MainActivity.this, getRedirectionClass(redirectionFlag));
+        if(redirectionFlag != REDIRECTION_HOME && !TextUtils.isEmpty(previousUserId) && previousUserId.equals(newUserId)){
+//            intent.putExtra(KEY_REDIRECTION_EXTRA,inputIntent.getExtras());
+            Bundle redirectionExtra = inputIntent.getBundleExtra(KEY_REDIRECTION_EXTRA);
+            if(redirectionExtra != null && redirectionExtra.size() > 0){
+                for(String key : redirectionExtra.keySet()){
+                    Object object = redirectionExtra.get(key);
+                    intent.putExtra(key, (Serializable) object);
+                }
+            }
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private Class<?> getRedirectionClass(int redirectionFlag) {
+        Class<?> classObj = null;
+        switch (redirectionFlag){
+            case REDIRECTION_VIDEO_ACTIVITY:
+                classObj = VideoPlayerActivity.class;
+                break;
+
+            case REDIRECTION_HOME:
+                classObj = HomeNewActivity.class;
+                break;
+        }
+        return classObj;
     }
 
     @Override

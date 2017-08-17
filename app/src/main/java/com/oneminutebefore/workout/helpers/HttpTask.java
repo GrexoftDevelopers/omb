@@ -367,7 +367,6 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                         Snackbar.make(((Activity)mContext).findViewById(android.R.id.content), exception.getMessage(), Snackbar.LENGTH_SHORT).show();
 //                        Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }else if(((HttpConnectException) exception).getStatusCode() == 401 && isAuthorizationRequired){
-                        Utils.clearUserData(mContext);
                         showSessionTimeoutDialog();
                     }
                 }
@@ -396,6 +395,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
                         if(sessionTimeOutListener != null){
                             sessionTimeOutListener.onSessionTimeout();
                         }
+                        Utils.clearUserData(mContext);
+
                     }
                 })
                 .show();

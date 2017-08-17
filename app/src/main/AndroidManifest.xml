@@ -88,6 +88,14 @@
         <activity
             android:name=".WorkoutSettingsActivity"
             android:label="@string/title_activity_workout_settings"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ReportNewActivity"
+            android:label="@string/title_activity_report_new"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".RepsBreakUpActivity"
+            android:label="@string/title_activity_reps_break_up"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

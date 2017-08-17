@@ -238,7 +238,7 @@ public class RegisterFragment extends Fragment {
 //                    String userId = responseJson.optString("status", "-1");
 //                    if (!userId.equals("-1")) {
 //                        WorkoutApplication.getmInstance().setSessionToken(userId);
-//                        SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, userId);
+//                        SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_PREVIOUS_USER_ID, userId);
 //                        if (mListener != null) {
 //                            mListener.onRegisterSuccessFul();
 //                        }
@@ -250,7 +250,7 @@ public class RegisterFragment extends Fragment {
 //                    progressBar.setVisibility(View.GONE);
 //                    btnRegister.setEnabled(true);
 //                    WorkoutApplication.getmInstance().setSessionToken("1234");
-//                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_USER_ID, "1234");
+//                    SharedPrefsUtil.setStringPreference(getActivity(), Keys.KEY_PREVIOUS_USER_ID, "1234");
 //                    if (mListener != null) {
 //                        mListener.onRegisterSuccessFul();
 //                    }

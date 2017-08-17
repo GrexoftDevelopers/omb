@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -24,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -35,20 +33,17 @@ import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.Utils;
-import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.UserTrack;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,6 +117,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
 
         if (!TextUtils.isEmpty(selectedWorkoutExercise.getVideoLink())) {
+            fetchUserInfo();
             findViewById(R.id.youtube_content).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_no_content).setVisibility(View.GONE);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -151,11 +147,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
                         application.setSessionToken(session);
                     }
                 }
-                if(!TextUtils.isEmpty(session)){
-                    if(application.getUser() == null){
-                        fetchUserInfo();
-                    }
-                }
+//                if(!TextUtils.isEmpty(session)){
+//                    if(application.getUser() == null){
+//                        fetchUserInfo();
+//                    }
+//                }
                 timerSecond = 0;
                 ivPlayPause = (ImageView)findViewById(R.id.iv_play_pause);
                 progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -289,7 +285,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     private void fetchUserInfo(){
 
         String userJson = SharedPrefsUtil.getStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, "");
-        if (!TextUtils.isEmpty(userJson)) {
+        if (false && !TextUtils.isEmpty(userJson)) {
             try {
                 initUser(userJson);
             } catch (JSONException e) {
@@ -297,12 +293,13 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         }
         else{
+//            application.setSessionToken(null);
             String url = new UrlBuilder(UrlBuilder.API_ME).build();
             HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
             httpTask.setAuthorizationRequired(true, new HttpTask.SessionTimeOutListener() {
                 @Override
                 public void onSessionTimeout() {
-                    startActivity(Utils.getSessionTimeoutIntent(VideoPlayerActivity.this));
+                    startActivity(getSessionTimeoutIntent());
                 }
             });
             httpTask.setmCallback(new HttpTask.HttpCallback() {
@@ -310,6 +307,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 public void onResponse(String response) throws JSONException {
                     initUser(response);
                     SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, response);
+//                    startActivity(getSessionTimeoutIntent());
                 }
 
                 @Override
@@ -319,6 +317,18 @@ public class VideoPlayerActivity extends AppCompatActivity {
             });
             httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
         }
+    }
+
+    private Intent getSessionTimeoutIntent() {
+        Intent intent = Utils.getSessionTimeoutIntent(VideoPlayerActivity.this);
+        intent.putExtra(MainActivity.KEY_REDIRECTION_ACTIVITY, MainActivity.REDIRECTION_VIDEO_ACTIVITY);
+        intent.putExtra(MainActivity.KEY_PREVIOUS_USER_ID, application.getUserId());
+        Bundle redirectionExtra = new Bundle();
+        redirectionExtra.putBoolean(VideoPlayerActivity.KEY_SHOW_TIMER, showTimer);
+        redirectionExtra.putLong(VideoPlayerActivity.KEY_TIME_MILLIS, getIntent().getLongExtra(KEY_TIME_MILLIS, 0));
+        redirectionExtra.putSerializable(VideoPlayerActivity.KEY_WORKOUT, selectedWorkoutExercise);
+        intent.putExtra(MainActivity.KEY_REDIRECTION_EXTRA, redirectionExtra);
+        return intent;
     }
 
     private void toggleTimer(){
