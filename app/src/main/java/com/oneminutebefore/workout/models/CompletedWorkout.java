@@ -20,23 +20,30 @@ public class CompletedWorkout extends SelectedWorkout {
 
     private ArrayList<UserTrack> userTracks;
 
+    private boolean isCompleted;
+
+    private int completedWorkoutId;
+
     public CompletedWorkout(String id, String name, String description, String videoLink) {
         super(id, name, description, videoLink);
     }
 
-    public CompletedWorkout(WorkoutExercise workoutExercise, String timeKey, int repsCount) {
+    public CompletedWorkout(WorkoutExercise workoutExercise, String timeKey, int repsCount, boolean isCompleted) {
         super(workoutExercise, timeKey);
         this.repsCount = repsCount;
+        this.isCompleted = isCompleted;
     }
 
-    public CompletedWorkout(SelectedWorkout selectedWorkout, int repsCount, long date) {
+    public CompletedWorkout(SelectedWorkout selectedWorkout, int repsCount, long date, boolean isCompleted) {
         super(selectedWorkout, selectedWorkout.getTimeKey());
         this.repsCount = repsCount;
         this.date = date;
+        this.isCompleted = isCompleted;
     }
 
     public CompletedWorkout(SelectedWorkout selectedWorkout) {
         super(selectedWorkout, selectedWorkout.getTimeKey());
+        this.isCompleted = true;
     }
 
     public int getRepsCount() {
@@ -98,4 +105,15 @@ public class CompletedWorkout extends SelectedWorkout {
         return null;
     }
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompletedWorkoutId(int completedWorkoutId) {
+        this.completedWorkoutId = completedWorkoutId;
+    }
+
+    public int getCompletedWorkoutId() {
+        return completedWorkoutId;
+    }
 }

@@ -29,9 +29,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SELECTED_WORKOUT = "selected_workout";
     public static final String USER_TRACK = "user_track";
 
+    private static final int DB_VERSION = 2;
+
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DB_VERSION);
     }
 
 
@@ -58,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "user_track_id integer primary key autoincrement not null,"
                 + "workout_id varchar(50),"
                 + "rep numeric,"
+                + "is_completed INTEGER DEFAULT 1,"
                 + "date bigint)");
 
 
@@ -72,25 +75,30 @@ public class DBHelper extends SQLiteOpenHelper {
 //        db.execSQL("PRAGMA writable_schema = 0");
         // db.execSQL("vacuum");
         // db.execSQL("PRAGMA INTEGRITY_CHECK");
+
+        if(!isFieldExist(db,"is_completed",USER_TRACK)){
+            db.execSQL("ALTER TABLE "+USER_TRACK+" ADD COLUMN is_completed INTEGER DEFAULT 1");
+        }
+
         onCreate(db);
 
     }
 
-    public void insertSelectedWorkout(JSONObject jsonObject){
+    public void insertSelectedWorkout(JSONObject jsonObject) {
 
         insertSelectedWorkout(jsonObject, false, false);
     }
 
-    public void insertSelectedWorkout(JSONObject jsonObject, boolean insertTrack, boolean completeData){
+    public void insertSelectedWorkout(JSONObject jsonObject, boolean insertTrack, boolean completeData) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id", jsonObject.optString("_id"));
         contentValues.put("workout_time", jsonObject.optString("workout_time"));
-        if(completeData){
+        if (completeData) {
             contentValues.put("category", jsonObject.optJSONObject("category") != null ? jsonObject.optJSONObject("category").optString("_id") : jsonObject.optString("category"));
             contentValues.put("workout", jsonObject.optJSONObject("workout") != null ? jsonObject.optJSONObject("workout").optString("_id") : jsonObject.optString("workout"));
             contentValues.put("user_id", jsonObject.optJSONObject("user_id") != null ? jsonObject.optJSONObject("user_id").optString("_id") : jsonObject.optString("user_id"));
-        }else{
+        } else {
             contentValues.put("category", jsonObject.optString("category"));
             contentValues.put("workout", jsonObject.optString("workout"));
             contentValues.put("user_id", jsonObject.optString("user_id"));
@@ -108,114 +116,149 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert(SELECTED_WORKOUT, null, contentValues);
 
-        if(insertTrack){
+        if (insertTrack) {
             JSONArray track = jsonObject.optJSONArray("user_track");
-            if(track != null && track.length() > 0){
-                for(int i = 0 ; i < track.length() ; i++){
+            if (track != null && track.length() > 0) {
+                for (int i = 0; i < track.length(); i++) {
                     ContentValues values = new ContentValues();
                     values.put("workout_id", jsonObject.optString("_id"));
                     JSONObject trackItem = track.optJSONObject(i);
                     values.put("date", CompletedWorkout.getDateLong(trackItem.optString("date")));
                     values.put("rep", trackItem.optInt("rep"));
 
-                    db.insert(USER_TRACK,null,values);
+                    db.insert(USER_TRACK, null, values);
                 }
             }
         }
     }
 
-    public void insertUserTrack(CompletedWorkout completedWorkout){
+    public int insertUserTrack(CompletedWorkout completedWorkout) {
 
         ContentValues values = new ContentValues();
         values.put("workout_id", completedWorkout.getSelectedWorkoutId());
         values.put("date", completedWorkout.getDate());
         values.put("rep", completedWorkout.getRepsCount());
+        values.put("is_completed", completedWorkout.isCompleted() ? 1 : 0);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(USER_TRACK,null,values);
-
+        db.insert(USER_TRACK, null, values);
+        Cursor result = db.rawQuery("select max(user_track_id) as user_track_id", null);
+        if (result.moveToFirst()) {
+            return result.getInt(0);
+        }
+        return -1;
     }
 
-    public String getSelectedWorkoutIdByTime(String workoutTime){
+    public boolean completeUserTrack(CompletedWorkout completedWorkout){
+        ContentValues values = new ContentValues();
+        values.put("is_completed", completedWorkout.isCompleted() ? 1 : 0);
+        SQLiteDatabase db = getWritableDatabase();
+        return db.update(USER_TRACK, values, "user_track_id = ?", new String[]{String.valueOf(completedWorkout.getCompletedWorkoutId())}) > 0;
+    }
+
+    public String getSelectedWorkoutIdByTime(String workoutTime) {
 
         String sql = "select _id from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "' order by created_at desc";
         SQLiteDatabase db = getReadableDatabase();
-        Cursor result = db.rawQuery(sql,null);
-        if(result.moveToFirst()){
+        Cursor result = db.rawQuery(sql, null);
+        if (result.moveToFirst()) {
             return result.getString(0);
         }
         return null;
     }
 
 
-
-    public SelectedWorkout getSelectedWorkoutByTime(String workoutTime){
+    public SelectedWorkout getSelectedWorkoutByTime(String workoutTime) {
 
         String sql = "select * from " + SELECTED_WORKOUT + " where workout_time = '" + workoutTime + "' order by created_at desc";
         SQLiteDatabase db = getReadableDatabase();
-        Cursor result = db.rawQuery(sql,null);
-        if(result.moveToFirst()){
+        Cursor result = db.rawQuery(sql, null);
+        if (result.moveToFirst()) {
             String workoutId = result.getString(result.getColumnIndex("workout"));
             WorkoutApplication application = WorkoutApplication.getmInstance();
             String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
-            SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId),Utils.getTimeKey(timeMeridian));
+            SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
             selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
             return selectedWorkout;
         }
         return null;
     }
 
-    public boolean deleteSelectedWorkoutByTime(String workoutTime){
+    public boolean deleteSelectedWorkoutByTime(String workoutTime) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.delete(SELECTED_WORKOUT,"workout_time = '" + workoutTime + "'",null) > 0;
+        return db.delete(SELECTED_WORKOUT, "workout_time = '" + workoutTime + "'", null) > 0;
     }
 
-    public HashMap<String, SelectedWorkout> getSelectedWorkouts(){
+    public HashMap<String, SelectedWorkout> getSelectedWorkouts() {
 
         String sql = "select * from " + SELECTED_WORKOUT + " order by created_at desc";
         SQLiteDatabase db = getReadableDatabase();
-        Cursor result = db.rawQuery(sql,null);
-        if(result.moveToFirst()){
+        Cursor result = db.rawQuery(sql, null);
+        if (result.moveToFirst()) {
             HashMap<String, SelectedWorkout> selectedWorkouts = new HashMap<>();
-            do{
+            do {
                 String workoutId = result.getString(result.getColumnIndex("workout"));
                 WorkoutApplication application = WorkoutApplication.getmInstance();
                 String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
-                SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId),Utils.getTimeKey(timeMeridian));
+                SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
                 selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
                 selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
-                if(!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())){
+                if (!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())) {
                     selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
                 }
-            }while (result.moveToNext());
+            } while (result.moveToNext());
             return selectedWorkouts;
         }
         return null;
     }
 
-    public ArrayList<CompletedWorkout> getTodayCompletedWorkouts(){
+    public ArrayList<CompletedWorkout> getMissedWorkouts(){
+
+        String sql = "SELECT " + USER_TRACK + ".*, " + SELECTED_WORKOUT + ".*" +
+                " FROM " + USER_TRACK + " JOIN " + SELECTED_WORKOUT + " ON " + USER_TRACK + ".workout_id = " + SELECTED_WORKOUT + "._id " +
+                " WHERE " + USER_TRACK + ".is_completed = 0";
+
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor result = sqLiteDatabase.rawQuery(sql, null);
+        if (result.moveToFirst()) {
+            ArrayList<CompletedWorkout> workoutsDone = new ArrayList<>();
+            WorkoutApplication application = WorkoutApplication.getmInstance();
+            do {
+                String workoutId = result.getString(result.getColumnIndex("workout"));
+                String time = result.getString(result.getColumnIndex("workout_time"));
+                int rep = result.getInt(result.getColumnIndex("rep"));
+                CompletedWorkout completedWorkout = new CompletedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(time), rep, false);
+                workoutsDone.add(completedWorkout);
+            } while (result.moveToNext());
+            return workoutsDone;
+        }
+        return null;
+
+    }
+
+    public ArrayList<CompletedWorkout> getTodayCompletedWorkouts() {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 1);
 
         String sql = "SELECT " + USER_TRACK + ".rep, " + SELECTED_WORKOUT + ".*" +
                 " FROM " + USER_TRACK + " JOIN " + SELECTED_WORKOUT + " ON " + USER_TRACK + ".workout_id = " + SELECTED_WORKOUT + "._id " +
-                " WHERE " + USER_TRACK + ".date > " + calendar.getTimeInMillis();
+                " WHERE " + USER_TRACK + ".date > " + calendar.getTimeInMillis() + " AND " + USER_TRACK + ".is_completed = 1";
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor result = sqLiteDatabase.rawQuery(sql, null);
-        if(result.moveToFirst()){
+        if (result.moveToFirst()) {
             ArrayList<CompletedWorkout> workoutsDone = new ArrayList<>();
             WorkoutApplication application = WorkoutApplication.getmInstance();
-            do{
+            do {
                 String workoutId = result.getString(result.getColumnIndex("workout"));
                 String time = result.getString(result.getColumnIndex("workout_time"));
                 int rep = result.getInt(result.getColumnIndex("rep"));
-                CompletedWorkout completedWorkout = new CompletedWorkout(application.getWorkouts().get(workoutId),Utils.getTimeKey(time),rep);
+                CompletedWorkout completedWorkout = new CompletedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(time), rep, true);
                 workoutsDone.add(completedWorkout);
-            }while (result.moveToNext());
+            } while (result.moveToNext());
             return workoutsDone;
         }
         return null;
@@ -223,8 +266,28 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void clearData() {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(SELECTED_WORKOUT,null,null);
-        db.delete(USER_TRACK,null,null);
+        db.delete(SELECTED_WORKOUT, null, null);
+        db.delete(USER_TRACK, null, null);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isFieldExist(SQLiteDatabase db, String fieldName, String tableName) {
+        boolean isExist = false;
+        //    SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("PRAGMA table_info(" + tableName + ")", null);
+
+        if (res.moveToFirst()) {
+            do {
+                int value = res.getColumnIndex("name");
+                if (value != -1 && res.getString(value).equals(fieldName)) {
+                    isExist = true;
+                }
+
+            } while (res.moveToNext());
+        }
+
+        res.close();
+        return isExist;
     }
 
 }

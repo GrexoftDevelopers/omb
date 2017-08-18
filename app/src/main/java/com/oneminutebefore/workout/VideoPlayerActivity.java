@@ -54,6 +54,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     public static final String KEY_WORKOUT = "workout";
     public static final String KEY_TIME_MILLIS = "time_millis";
     public static final String KEY_SHOW_TIMER = "show_timer";
+    public static final String KEY_USER_TRACK_ID = "completed_workout_id";
 
     private YouTubePlayerFragment youTubePlayerFragment;
 
@@ -75,6 +76,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
     private Date workoutDate;
     private boolean showTimer;
+    private int completedWorkoutId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         selectedWorkoutExercise = (SelectedWorkout) mIntent.getSerializableExtra(KEY_WORKOUT);
         showTimer = mIntent.getBooleanExtra(KEY_SHOW_TIMER, true);
         long timeMillis = mIntent.getLongExtra(KEY_TIME_MILLIS, 0);
+        completedWorkoutId = mIntent.getIntExtra(KEY_USER_TRACK_ID, -1);
         workoutDate = new Date(timeMillis);
 
         application = WorkoutApplication.getmInstance();
@@ -334,6 +337,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         Bundle redirectionExtra = new Bundle();
         redirectionExtra.putBoolean(VideoPlayerActivity.KEY_SHOW_TIMER, showTimer);
         redirectionExtra.putLong(VideoPlayerActivity.KEY_TIME_MILLIS, getIntent().getLongExtra(KEY_TIME_MILLIS, 0));
+        redirectionExtra.putInt(KEY_USER_TRACK_ID, completedWorkoutId);
         redirectionExtra.putSerializable(VideoPlayerActivity.KEY_WORKOUT, selectedWorkoutExercise);
         intent.putExtra(MainActivity.KEY_REDIRECTION_EXTRA, redirectionExtra);
         return intent;
@@ -542,8 +546,10 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         });
         httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-        CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,workoutDate.getTime());
+        CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,workoutDate.getTime(), true);
         completedWorkout.setSelectedWorkoutId(selectedWorkoutExercise.getSelectedWorkoutId());
-        application.getDbHelper().insertUserTrack(completedWorkout);
+        completedWorkout.setCompletedWorkoutId(completedWorkoutId);
+//        application.getDbHelper().insertUserTrack(completedWorkout);
+        application.getDbHelper().completeUserTrack(completedWorkout);
     }
 }

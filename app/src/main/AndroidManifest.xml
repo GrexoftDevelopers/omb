@@ -96,6 +96,10 @@
         <activity
             android:name=".RepsBreakUpActivity"
             android:label="@string/title_activity_reps_break_up"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MissedWorkoutsActivity"
+            android:label="@string/title_activity_missed_workouts"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

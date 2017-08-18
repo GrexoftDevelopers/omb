@@ -222,4 +222,8 @@
     <string name="title_activity_report_new">Reports</string>
     <string name="title_activity_reps_break_up">Reps break up</string>
     <string name="resume">Resume</string>
+    <string name="title_activity_missed_workouts">Missed workouts</string>
+    <string name="no_workouts_found">No workouts found</string>
+    <string name="message">Message</string>
+    <string name="msg_missed_workouts">You may have missed workouts. Would you like finish them?</string>
 </resources>

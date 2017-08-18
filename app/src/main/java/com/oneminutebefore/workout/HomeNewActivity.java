@@ -111,6 +111,14 @@ public class HomeNewActivity extends AppCompatActivity
 //                }
                 initNavigationItems();
                 resetTimer();
+                if(!isPaused){
+                    Utils.showConfirmDialog(HomeNewActivity.this, R.string.message, R.string.msg_missed_workouts, null, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(HomeNewActivity.this, MissedWorkoutsActivity.class));
+                        }
+                    });
+                }
             }
         });
         initNavigationItems();
@@ -215,25 +223,25 @@ public class HomeNewActivity extends AppCompatActivity
             boolean restarted = false;
             boolean timerSet = false;
 
-            if(!isPaused){
-                Calendar calendar = Calendar.getInstance();
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-                String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
+            String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
 
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                if(dayOfWeek == 1 || dayOfWeek == 7){
-                    if(dayOfWeek == 1) {
-                        calendar.add(Calendar.DATE, 1);
-                    }
-                    else{
-                        calendar.add(Calendar.DATE,2);
-                    }
-                    hour = 0;
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            if(dayOfWeek == 1 || dayOfWeek == 7){
+                if(dayOfWeek == 1) {
+                    calendar.add(Calendar.DATE, 1);
                 }
+                else{
+                    calendar.add(Calendar.DATE,2);
+                }
+                hour = 0;
+            }
 
+            if(!isPaused){
                 for (int i = hour; ; i++) {
 
                     if (i == hours.length) {
@@ -283,14 +291,14 @@ public class HomeNewActivity extends AppCompatActivity
             layoutScheduleTask.setVisibility(!isPaused && !timerSet? View.VISIBLE : View.GONE);
             btnPause.setVisibility(!isPaused && !timerSet ? View.GONE : View.VISIBLE);
             if(!isPaused){
-                if(timerSet){
-                    IntentUtils.scheduleWorkoutNotifications(HomeNewActivity.this);
-                }else{
-                    IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
-                }
+//                if(timerSet){
+//                    IntentUtils.scheduleWorkoutNotifications(HomeNewActivity.this);
+//                }else{
+//                    IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
+//                }
                 btnPause.setText(getString(R.string.pause));
             }else{
-                IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
+//                IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
                 btnPause.setText(getString(R.string.resume));
             }
 

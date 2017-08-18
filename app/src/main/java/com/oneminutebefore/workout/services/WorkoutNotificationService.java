@@ -17,6 +17,7 @@ import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
 
@@ -79,7 +80,16 @@ public class WorkoutNotificationService extends IntentService {
                     // TODO : Remove temp Code
                     //application.setSessionToken(null);
 
-                    addNotification(new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId));
+                    SelectedWorkout selectedWorkout = new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId);
+                    long timeMillis = Calendar.getInstance().getTimeInMillis();
+                    CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkout,0,timeMillis, true);
+                    completedWorkout.setSelectedWorkoutId(selectedWorkout.getSelectedWorkoutId());
+                    int id = application.getDbHelper().insertUserTrack(completedWorkout);
+
+                    boolean isPaused = SharedPrefsUtil.getBooleanPreference(WorkoutNotificationService.this, Keys.KEY_IS_PAUSED, false);
+                    if(!isPaused){
+                        addNotification(selectedWorkout, timeMillis, id);
+                    }
                 }
             }
 
@@ -89,11 +99,13 @@ public class WorkoutNotificationService extends IntentService {
 //                addNotification(workoutLink);
 //            }
 
+
+
         }
 
     }
 
-    private void addNotification(SelectedWorkout workoutExercise) {
+    private void addNotification(SelectedWorkout workoutExercise, long timeMillis, int id) {
 
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(this)
@@ -108,7 +120,8 @@ public class WorkoutNotificationService extends IntentService {
 
         Intent intent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
         intent.putExtra(VideoPlayerActivity.KEY_WORKOUT, workoutExercise);
-        intent.putExtra(VideoPlayerActivity.KEY_TIME_MILLIS, Calendar.getInstance().getTimeInMillis());
+        intent.putExtra(VideoPlayerActivity.KEY_TIME_MILLIS, timeMillis);
+        intent.putExtra(VideoPlayerActivity.KEY_USER_TRACK_ID, id);
 
         PendingIntent contentIntent =
                 PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
