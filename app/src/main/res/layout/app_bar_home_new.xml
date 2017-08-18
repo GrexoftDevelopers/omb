@@ -17,6 +17,19 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            <Button
+                android:id="@+id/btn_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/activity_horizontal_margin_8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin_8dp"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/pause"/>
+
+
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

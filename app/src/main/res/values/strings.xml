@@ -221,4 +221,5 @@
     </plurals>
     <string name="title_activity_report_new">Reports</string>
     <string name="title_activity_reps_break_up">Reps break up</string>
+    <string name="resume">Resume</string>
 </resources>

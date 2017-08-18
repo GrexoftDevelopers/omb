@@ -59,6 +59,9 @@ public class HomeNewActivity extends AppCompatActivity
     private ArrayList<CompletedWorkout> workoutsDone;
     private TextView tvRepCountHead;
 
+    private Button btnPause;
+    private boolean isPaused;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,10 +96,24 @@ public class HomeNewActivity extends AppCompatActivity
             }
         });
 
+        isPaused = SharedPrefsUtil.getBooleanPreference(HomeNewActivity.this, Keys.KEY_IS_PAUSED, false);
 
+        btnPause = (Button) findViewById(R.id.btn_pause);
+        btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPaused = !isPaused;
+                SharedPrefsUtil.setBooleanPreference(HomeNewActivity.this, Keys.KEY_IS_PAUSED, isPaused);
+//                if(isPaused){
+//                    IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
+//                }else{
+//                    IntentUtils.scheduleWorkoutNotifications(HomeNewActivity.this);
+//                }
+                initNavigationItems();
+                resetTimer();
+            }
+        });
         initNavigationItems();
-
-        IntentUtils.scheduleWorkoutNotifications(this);
 
 ////        FirebaseCrash.report(new NullPointerException("wdvf"));
 //        throw new NullPointerException("wdvf");
@@ -195,73 +212,87 @@ public class HomeNewActivity extends AppCompatActivity
             findViewById(R.id.card_workout_count).setVisibility(View.VISIBLE);
             findViewById(R.id.card_timer).setVisibility(View.VISIBLE);
 
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-
-            String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
-
             boolean restarted = false;
             boolean timerSet = false;
 
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            if(dayOfWeek == 1 || dayOfWeek == 7){
-                if(dayOfWeek == 1) {
-                    calendar.add(Calendar.DATE, 1);
-                }
-                else{
-                    calendar.add(Calendar.DATE,2);
-                }
-                hour = 0;
-            }
+            if(!isPaused){
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
-            for (int i = hour; ; i++) {
+                String hours[] = Keys.getHourSelectionKeys(getApplicationContext());
 
-                if (i == hours.length) {
-                    restarted = true;
-                    i = 0;
-                    calendar.add(Calendar.DATE, 1);
-                    dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                    if(dayOfWeek == 7){
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(HomeNewActivity.this);
+
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                if(dayOfWeek == 1 || dayOfWeek == 7){
+                    if(dayOfWeek == 1) {
+                        calendar.add(Calendar.DATE, 1);
+                    }
+                    else{
                         calendar.add(Calendar.DATE,2);
                     }
+                    hour = 0;
                 }
-                if (preferences.getBoolean(hours[i], false)) {
-                    String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
+
+                for (int i = hour; ; i++) {
+
+                    if (i == hours.length) {
+                        restarted = true;
+                        i = 0;
+                        calendar.add(Calendar.DATE, 1);
+                        dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                        if(dayOfWeek == 7){
+                            calendar.add(Calendar.DATE,2);
+                        }
+                    }
+                    if (preferences.getBoolean(hours[i], false)) {
+                        String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
 //                    String categoryId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getUserLevelKey(HomeNewActivity.this), "");
-                    if (!TextUtils.isEmpty(workoutId)
-                            && application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
+                        if (!TextUtils.isEmpty(workoutId)
+                                && application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
 //                            && application.getWorkouts().get(workoutId).getCategory().getId().equals(categoryId)) {
-                        WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
-                        calendar.set(Calendar.HOUR_OF_DAY, i);
-                        calendar.set(Calendar.MINUTE, 59);
-                        if (timerTask != null) {
-                            timerTask.cancel(true);
+                            WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
+                            calendar.set(Calendar.HOUR_OF_DAY, i);
+                            calendar.set(Calendar.MINUTE, 59);
+                            if (timerTask != null) {
+                                timerTask.cancel(true);
+                            }
+                            ((TextView) findViewById(R.id.tv_workout_name)).setText(workoutExercise.getName());
+                            if(timerTask != null){
+                                timerTask.cancel(true);
+                            }
+                            timerTask = new TimerTask(calendar.getTimeInMillis());
+                            timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            timerSet = true;
+                            layoutUpcomingTask.setVisibility(View.VISIBLE);
+                            layoutScheduleTask.setVisibility(View.GONE);
+                            break;
+                        }else{
+                            if(timerTask != null){
+                                timerTask.cancel(true);
+                            }
+                            timerSet = false;
                         }
-                        ((TextView) findViewById(R.id.tv_workout_name)).setText(workoutExercise.getName());
-                        if(timerTask != null){
-                            timerTask.cancel(true);
-                        }
-                        timerTask = new TimerTask(calendar.getTimeInMillis());
-                        timerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        timerSet = true;
-                        layoutUpcomingTask.setVisibility(View.VISIBLE);
-                        layoutScheduleTask.setVisibility(View.GONE);
+                    }
+                    if (i == hour && restarted) {
                         break;
-                    }else{
-                        if(timerTask != null){
-                            timerTask.cancel(true);
-                        }
-                        timerSet = false;
                     }
                 }
-                if (i == hour && restarted) {
-                    break;
-                }
             }
-            layoutUpcomingTask.setVisibility(!timerSet ? View.GONE : View.VISIBLE);
-            layoutScheduleTask.setVisibility(!timerSet ? View.VISIBLE : View.GONE);
+            layoutUpcomingTask.setVisibility(!isPaused && timerSet? View.VISIBLE : View.GONE);
+            layoutScheduleTask.setVisibility(!isPaused && !timerSet? View.VISIBLE : View.GONE);
+            btnPause.setVisibility(!isPaused && !timerSet ? View.GONE : View.VISIBLE);
+            if(!isPaused){
+                if(timerSet){
+                    IntentUtils.scheduleWorkoutNotifications(HomeNewActivity.this);
+                }else{
+                    IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
+                }
+                btnPause.setText(getString(R.string.pause));
+            }else{
+                IntentUtils.cancelWorkoutNotifications(HomeNewActivity.this);
+                btnPause.setText(getString(R.string.resume));
+            }
 
             workoutsDone = application.getDbHelper().getTodayCompletedWorkouts();
 //            workoutsDone.add(new WorkoutExercise("1", "Push Ups", "", "", 18, 7));
@@ -518,6 +549,13 @@ public class HomeNewActivity extends AppCompatActivity
             } else {
                 viewHolder.itemView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
             }
+
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(HomeNewActivity.this, ReportNewActivity.class));
+                }
+            });
 
         }
 

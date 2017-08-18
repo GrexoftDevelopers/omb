@@ -117,7 +117,6 @@ public class VideoPlayerActivity extends AppCompatActivity {
         youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.player_layout);
 
         if (!TextUtils.isEmpty(selectedWorkoutExercise.getVideoLink())) {
-            fetchUserInfo();
             findViewById(R.id.youtube_content).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_no_content).setVisibility(View.GONE);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -147,11 +146,18 @@ public class VideoPlayerActivity extends AppCompatActivity {
                         application.setSessionToken(session);
                     }
                 }
-//                if(!TextUtils.isEmpty(session)){
-//                    if(application.getUser() == null){
-//                        fetchUserInfo();
-//                    }
-//                }
+                if(!TextUtils.isEmpty(session)){
+                    if(application.getUser() == null){
+                        String userJson = SharedPrefsUtil.getStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, "");
+                        if (!TextUtils.isEmpty(userJson)) {
+                            try {
+                                initUser(userJson);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
                 timerSecond = 0;
                 ivPlayPause = (ImageView)findViewById(R.id.iv_play_pause);
                 progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -209,6 +215,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 });
                 httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, builder.build());
             }
+
+            fetchUserInfo();
 
 
         } else {
@@ -284,15 +292,15 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
     private void fetchUserInfo(){
 
-        String userJson = SharedPrefsUtil.getStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, "");
-        if (false && !TextUtils.isEmpty(userJson)) {
-            try {
-                initUser(userJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
+//        String userJson = SharedPrefsUtil.getStringPreference(VideoPlayerActivity.this, Keys.KEY_USER, "");
+//        if (false){ // && !TextUtils.isEmpty(userJson)) {
+//            try {
+////                initUser(userJson);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        else{
 //            application.setSessionToken(null);
             String url = new UrlBuilder(UrlBuilder.API_ME).build();
             HttpTask httpTask = new HttpTask(false,VideoPlayerActivity.this,HttpTask.METHOD_GET);
@@ -316,7 +324,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
                 }
             });
             httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-        }
+//        }
     }
 
     private Intent getSessionTimeoutIntent() {
