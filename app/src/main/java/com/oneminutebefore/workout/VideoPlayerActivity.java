@@ -549,7 +549,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkoutExercise,(int)count,workoutDate.getTime(), true);
         completedWorkout.setSelectedWorkoutId(selectedWorkoutExercise.getSelectedWorkoutId());
         completedWorkout.setCompletedWorkoutId(completedWorkoutId);
-//        application.getDbHelper().insertUserTrack(completedWorkout);
+//      application.getDbHelper().insertUserTrack(completedWorkout);
         application.getDbHelper().completeUserTrack(completedWorkout);
     }
 }

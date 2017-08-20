@@ -82,7 +82,7 @@ public class WorkoutNotificationService extends IntentService {
 
                     SelectedWorkout selectedWorkout = new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId);
                     long timeMillis = Calendar.getInstance().getTimeInMillis();
-                    CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkout,0,timeMillis, true);
+                    CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkout,0,timeMillis, false);
                     completedWorkout.setSelectedWorkoutId(selectedWorkout.getSelectedWorkoutId());
                     int id = application.getDbHelper().insertUserTrack(completedWorkout);
 
@@ -90,6 +90,7 @@ public class WorkoutNotificationService extends IntentService {
                     if(!isPaused){
                         addNotification(selectedWorkout, timeMillis, id);
                     }
+                    return;
                 }
             }
 

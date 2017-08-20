@@ -122,6 +122,7 @@ public class HomeNewActivity extends AppCompatActivity
             }
         });
         initNavigationItems();
+        IntentUtils.scheduleWorkoutNotifications(this);
 
 ////        FirebaseCrash.report(new NullPointerException("wdvf"));
 //        throw new NullPointerException("wdvf");
@@ -329,6 +330,7 @@ public class HomeNewActivity extends AppCompatActivity
             recyclerView.setNestedScrollingEnabled(false);
             if(workoutsDone != null && !workoutsDone.isEmpty()){
                 findViewById(R.id.txt_no_workout).setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 int repCountTotal = 0;
                 for(CompletedWorkout workout : workoutsDone){
                     repCountTotal += workout.getRepsCount();

@@ -125,6 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     JSONObject trackItem = track.optJSONObject(i);
                     values.put("date", CompletedWorkout.getDateLong(trackItem.optString("date")));
                     values.put("rep", trackItem.optInt("rep"));
+                    values.put("is_completed", 1);
 
                     db.insert(USER_TRACK, null, values);
                 }
@@ -142,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(USER_TRACK, null, values);
-        Cursor result = db.rawQuery("select max(user_track_id) as user_track_id", null);
+        Cursor result = db.rawQuery("select max(user_track_id) as user_track_id from " + USER_TRACK, null);
         if (result.moveToFirst()) {
             return result.getInt(0);
         }
@@ -152,6 +153,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean completeUserTrack(CompletedWorkout completedWorkout){
         ContentValues values = new ContentValues();
         values.put("is_completed", completedWorkout.isCompleted() ? 1 : 0);
+        values.put("rep", completedWorkout.getRepsCount());
         SQLiteDatabase db = getWritableDatabase();
         return db.update(USER_TRACK, values, "user_track_id = ?", new String[]{String.valueOf(completedWorkout.getCompletedWorkoutId())}) > 0;
     }
@@ -225,9 +227,21 @@ public class DBHelper extends SQLiteOpenHelper {
             WorkoutApplication application = WorkoutApplication.getmInstance();
             do {
                 String workoutId = result.getString(result.getColumnIndex("workout"));
+                String selectedWorkoutId = result.getString(result.getColumnIndex("workout_id"));
+                int completedWorkoutId = result.getInt(result.getColumnIndex("user_track_id"));
+                long date = result.getLong(result.getColumnIndex("date"));
                 String time = result.getString(result.getColumnIndex("workout_time"));
                 int rep = result.getInt(result.getColumnIndex("rep"));
-                CompletedWorkout completedWorkout = new CompletedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(time), rep, false);
+                SelectedWorkout selectedWorkout = new SelectedWorkout(
+                        application.getWorkouts().get(workoutId),
+                        Utils.getTimeKey(time));
+                selectedWorkout.setSelectedWorkoutId(selectedWorkoutId);
+                CompletedWorkout completedWorkout = new CompletedWorkout(
+                        selectedWorkout,
+                        rep,
+                        date,
+                        false);
+                completedWorkout.setCompletedWorkoutId(completedWorkoutId);
                 workoutsDone.add(completedWorkout);
             } while (result.moveToNext());
             return workoutsDone;
@@ -240,8 +254,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 1);
+        calendar.add(Calendar.HOUR_OF_DAY, -1);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
 
         String sql = "SELECT " + USER_TRACK + ".rep, " + SELECTED_WORKOUT + ".*" +
                 " FROM " + USER_TRACK + " JOIN " + SELECTED_WORKOUT + " ON " + USER_TRACK + ".workout_id = " + SELECTED_WORKOUT + "._id " +

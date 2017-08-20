@@ -52,8 +52,9 @@ public class IntentUtils {
         long currentTime = calendar.getTimeInMillis();
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         if(currentTime > calendar.getTimeInMillis()){
-            calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1 % 24);
+            calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
 
         AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);

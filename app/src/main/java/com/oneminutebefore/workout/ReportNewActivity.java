@@ -96,6 +96,9 @@ public class ReportNewActivity extends AppCompatActivity {
             }
         });
 
+        ((TextView)findViewById(R.id.txt_title)).setText(getTitle());
+        ((TextView)findViewById(R.id.txt_subtitle)).setText(getString(R.string.reps_count));
+
 
         fetchData();
 

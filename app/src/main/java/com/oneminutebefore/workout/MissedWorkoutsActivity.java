@@ -26,7 +26,7 @@ public class MissedWorkoutsActivity extends AppCompatActivity {
 
     private WorkoutApplication application;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd - MM - yyyy");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MissedWorkoutsActivity extends AppCompatActivity {
 
             final CompletedWorkout completedWorkout = missedWorkouts.get(position);
             holder.tvName.setText(completedWorkout.getName());
-            holder.tvDate.setText(completedWorkout.getTimeMeridian() + " " + dateFormat.format(completedWorkout.getDate()));
+            holder.tvDate.setText(dateFormat.format(completedWorkout.getDate()) + " " + completedWorkout.getTimeMeridian());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

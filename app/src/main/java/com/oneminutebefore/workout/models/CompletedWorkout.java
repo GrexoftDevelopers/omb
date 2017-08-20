@@ -36,6 +36,7 @@ public class CompletedWorkout extends SelectedWorkout {
 
     public CompletedWorkout(SelectedWorkout selectedWorkout, int repsCount, long date, boolean isCompleted) {
         super(selectedWorkout, selectedWorkout.getTimeKey());
+        this.setSelectedWorkoutId(selectedWorkout.getSelectedWorkoutId());
         this.repsCount = repsCount;
         this.date = date;
         this.isCompleted = isCompleted;
