@@ -142,10 +142,16 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("is_completed", completedWorkout.isCompleted() ? 1 : 0);
 
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(USER_TRACK, null, values);
-        Cursor result = db.rawQuery("select max(user_track_id) as user_track_id from " + USER_TRACK, null);
-        if (result.moveToFirst()) {
-            return result.getInt(0);
+
+        String sql = " SELECT * FROM " + USER_TRACK + " WHERE workout_id = '" + completedWorkout.getSelectedWorkoutId()
+                + "' AND date(date/1000,'unixepoch','localtime') =  date("+completedWorkout.getDate()+"/1000,'unixepoch','localtime')";
+        Cursor result = db.rawQuery(sql, null);
+        if(!result.moveToFirst()){
+            db.insert(USER_TRACK, null, values);
+            result = db.rawQuery("select max(user_track_id) as user_track_id from " + USER_TRACK, null);
+            if (result.moveToFirst()) {
+                return result.getInt(0);
+            }
         }
         return -1;
     }

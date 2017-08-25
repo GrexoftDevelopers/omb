@@ -86,9 +86,11 @@ public class WorkoutNotificationService extends IntentService {
                     completedWorkout.setSelectedWorkoutId(selectedWorkout.getSelectedWorkoutId());
                     int id = application.getDbHelper().insertUserTrack(completedWorkout);
 
-                    boolean isPaused = SharedPrefsUtil.getBooleanPreference(WorkoutNotificationService.this, Keys.KEY_IS_PAUSED, false);
-                    if(!isPaused){
-                        addNotification(selectedWorkout, timeMillis, id);
+                    if(id > 0){
+                        boolean isPaused = SharedPrefsUtil.getBooleanPreference(WorkoutNotificationService.this, Keys.KEY_IS_PAUSED, false);
+                        if(!isPaused){
+                            addNotification(selectedWorkout, timeMillis, id);
+                        }
                     }
                     return;
                 }

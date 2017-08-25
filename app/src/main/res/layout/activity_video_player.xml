@@ -20,152 +20,159 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_content"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:id="@+id/youtube_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/margin_padding_5dp"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:text="@string/one_minute_before_video"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_size_xxl" />
-
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/player_layout"
-                class="com.google.android.youtube.player.YouTubePlayerFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <RelativeLayout
-                android:id="@+id/timer_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/activity_horizontal_margin">
-
-                <com.dinuscxj.progressbar.CircleProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    app:draw_progress_text="false"
-                    app:progress_start_color="@color/colorPrimary"
-                    app:progress_end_color="@color/colorPrimary"
-                    app:style="solid_line"
-                    app:progress_stroke_width="5dp"/>
-
-                <ImageView
-                    android:id="@+id/iv_play_pause"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:src="@drawable/ic_play_arrow_48dp"
-                    android:padding="@dimen/margin_padding_18dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"/>
-
-                <TextView
-                    android:id="@+id/txt_timer_action_msg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/iv_play_pause"
-                    android:layout_marginTop="8dp"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/start"/>
-
-
-
-            </RelativeLayout>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_workout_count"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
-                        android:text="@string/reps_count"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="12dp"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="4dp"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_no_workout"
-                        android:text="@string/no_data_for_workout"
-                        android:textAppearance="?attr/textAppearanceListItem"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginBottom="12dp"
-                        android:visibility="visible"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/list_workout_count"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:visibility="gone"
-                        app:layoutManager="LinearLayoutManager"/>
-
-                    <ProgressBar
-                        android:id="@+id/history_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="@dimen/activity_horizontal_margin"/>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-        </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_no_content"
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_no_video"
+            <LinearLayout
+                android:id="@+id/youtube_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:padding="@dimen/margin_padding_5dp"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:text="@string/no_video_available_something_went_wrong"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_xxl" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_padding_5dp"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:text="@string/one_minute_before_video"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_size_xxl" />
+
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/player_layout"
+                    class="com.google.android.youtube.player.YouTubePlayerFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <RelativeLayout
+                    android:id="@+id/timer_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/activity_horizontal_margin">
+
+                    <com.dinuscxj.progressbar.CircleProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        app:draw_progress_text="false"
+                        app:progress_start_color="@color/colorPrimary"
+                        app:progress_end_color="@color/colorPrimary"
+                        app:style="solid_line"
+                        app:progress_stroke_width="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/iv_play_pause"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:src="@drawable/ic_play_arrow_48dp"
+                        android:padding="@dimen/margin_padding_18dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+
+                    <TextView
+                        android:id="@+id/txt_timer_action_msg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/iv_play_pause"
+                        android:layout_marginTop="8dp"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/start"/>
+
+
+
+                </RelativeLayout>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_workout_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSearchResultSubtitle"
+                            android:text="@string/reps_count"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="4dp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorAccent"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txt_no_workout"
+                            android:text="@string/no_data_for_workout"
+                            android:textAppearance="?attr/textAppearanceListItem"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:visibility="visible"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/list_workout_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone"
+                            app:layoutManager="LinearLayoutManager"/>
+
+                        <ProgressBar
+                            android:id="@+id/history_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="@dimen/activity_horizontal_margin"/>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_no_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_no_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/margin_padding_5dp"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:text="@string/no_video_available_something_went_wrong"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_xxl" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
-    </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 
 </android.support.design.widget.CoordinatorLayout>
