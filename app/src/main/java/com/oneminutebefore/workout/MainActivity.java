@@ -12,13 +12,17 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
+import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.SelectedWorkout;
 import com.oneminutebefore.workout.models.User;
+import com.oneminutebefore.workout.models.WorkoutCategory;
+import com.oneminutebefore.workout.models.WorkoutExercise;
 import com.oneminutebefore.workout.widgets.SwipeDisabledViewPager;
 
 import org.json.JSONArray;
@@ -29,7 +33,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends BaseRequestActivity implements LoginFragment.LoginInteractionListener, RegisterFragment.RegisterInteractionListener {
 
@@ -48,6 +51,8 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
 
     public static final int REDIRECTION_HOME = -1;
     public static final int REDIRECTION_VIDEO_ACTIVITY = 0;
+    private boolean videosSaved;
+    private boolean categoriesSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +60,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         setContentView(R.layout.activity_main);
 
         application = ((WorkoutApplication) getApplication());
-        if (application.getDbHelper() == null) {
-            application.setDbHelper(new DBHelper(MainActivity.this));
-        }
+//        if (application.getDbHelper() == null) {
+//            application.setDbHelper(new DBHelper(MainActivity.this));
+//        }
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
         ViewPagerAdapter formsAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         formsAdapter.addItem(new LoginFragment());
@@ -161,7 +166,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onLoginSuccessFul() {
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_successful), Snackbar.LENGTH_SHORT).show();
-        fetchInfo();
+        fetchData();
     }
 
     @Override
@@ -172,13 +177,88 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     @Override
     public void onRegisterSuccessFul() {
         Toast.makeText(MainActivity.this, "Registered", Toast.LENGTH_LONG).show();
-        fetchInfo();
+        fetchData();
+    }
+
+    private void fetchData() {
+        showProgress(true);
+        boolean areLinksDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
+        boolean areCategoriesDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
+        if(!areLinksDownloaded){
+            fetchLinks();
+        }else{
+            String workoutsJson = SharedPrefsUtil.getStringPreference(MainActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
+            application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
+            videosSaved = true;
+            fetchInfo();
+        }
+        if (!areCategoriesDownloaded) {
+            fetchCategories();
+        } else {
+            String categoriesJson = SharedPrefsUtil.getStringPreference(MainActivity.this, Keys.KEY_CATEGORIES_INFO, "[]");
+            application.setWorkoutCategories(WorkoutCategory.createMapFromJson(categoriesJson));
+            categoriesSaved = true;
+            fetchInfo();
+        }
     }
 
     private void fetchInfo() {
-        showProgress(true);
         fetchSelectedWorkoutsInfo();
         fetchUserInfo();
+    }
+
+    private void fetchCategories() {
+        VolleyHelper volleyHelper = new VolleyHelper(this, false);
+        String url = new UrlBuilder(UrlBuilder.API_ALL_CATEGORIES).build();
+        volleyHelper.callApi(Request.Method.GET, url, null, new VolleyHelper.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) throws JSONException {
+                saveCategories(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                saveCategories(null);
+            }
+        });
+    }
+
+    private void saveCategories(String linksData) {
+        HashMap<String, WorkoutCategory> map = WorkoutCategory.createMapFromJson(linksData);
+        if (map != null && !map.isEmpty()) {
+            application.setWorkoutCategories(map);
+            SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_CATEGORIES_INFO, linksData);
+            SharedPrefsUtil.setBooleanPreference(MainActivity.this, Keys.KEY_CATEGORIES_DOWNLOADED, true);
+        }
+        categoriesSaved = true;
+        fetchInfo();
+    }
+
+    private void fetchLinks(){
+        VolleyHelper volleyHelper = new VolleyHelper(this, false);
+        String url = new UrlBuilder(UrlBuilder.API_ALL_VIDEOS).build();
+        volleyHelper.callApi(Request.Method.GET, url, null, new VolleyHelper.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) throws JSONException {
+                saveLinks(result);
+            }
+
+            @Override
+            public void onError(String error) {
+                saveLinks(null);
+            }
+        });
+    }
+
+    private void saveLinks(String linksData) {
+        HashMap<String, WorkoutExercise> map = WorkoutExercise.createMapFromJson(linksData);
+        if (map != null && !map.isEmpty()) {
+            application.setWorkouts(map);
+            SharedPrefsUtil.setStringPreference(MainActivity.this, Keys.KEY_VIDEOS_INFO, linksData);
+            SharedPrefsUtil.setBooleanPreference(MainActivity.this, Keys.KEY_LINKS_DOWNLOADED, true);
+        }
+        videosSaved = true;
+        fetchInfo();
     }
 
     private void switchToHomeActivity() {

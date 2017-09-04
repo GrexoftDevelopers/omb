@@ -70,9 +70,9 @@ public class WorkoutNotificationService extends IntentService {
                 WorkoutExercise workoutExercise = workouts.get(workoutId);
                 if(workoutExercise != null){
                     WorkoutApplication application = WorkoutApplication.getmInstance();
-                    if(application.getDbHelper() == null){
-                        application.setDbHelper(new DBHelper(getApplicationContext()));
-                    }
+//                    if(application.getDbHelper() == null){
+//                        application.setDbHelper(new DBHelper(getApplicationContext()));
+//                    }
                     String timeMeridian = SelectedWorkout.getTimeMeridian(hour + "_59");
 //                    String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(hour % 12 + ":59" + (hour/12==0?" am":" pm"));
                     String selectedWorkoutId = application.getDbHelper().getSelectedWorkoutIdByTime(timeMeridian);

@@ -37,8 +37,8 @@ public class SplashActivity extends BaseRequestActivity {
 
         setContentView(R.layout.activity_splash);
 
-        boolean areLinksDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
-        boolean areCategoriesDownloaded = SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
+        boolean areLinksDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
+        boolean areCategoriesDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
 
         application = WorkoutApplication.getmInstance();
 
@@ -113,7 +113,7 @@ public class SplashActivity extends BaseRequestActivity {
         application.setUser(user);
         application.setUserId(user.getId());
 //        SharedPrefsUtil.setStringPreference(SplashActivity.this, Keys.getUserLevelKey(SplashActivity.this), user.getUserLevel());
-        application.setDbHelper(new DBHelper(SplashActivity.this));
+//        application.setDbHelper(new DBHelper(SplashActivity.this));
         Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
         startActivity(intent);
         new Handler().postDelayed(new Runnable() {

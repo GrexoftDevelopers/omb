@@ -86,10 +86,13 @@ public class WorkoutApplication extends Application {
     }
 
     public DBHelper getDbHelper() {
+        if(dbHelper == null){
+            dbHelper = new DBHelper(getApplicationContext());
+        }
         return dbHelper;
     }
 
-    public void setDbHelper(DBHelper dbHelper) {
-        this.dbHelper = dbHelper;
-    }
+//    public void setDbHelper(DBHelper dbHelper) {
+//        this.dbHelper = dbHelper;
+//    }
 }

@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.oneminutebefore.workout.WorkoutApplication;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
+import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -208,11 +209,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 String workoutId = result.getString(result.getColumnIndex("workout"));
                 WorkoutApplication application = WorkoutApplication.getmInstance();
                 String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
-                SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
-                selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
-                selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
-                if (!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())) {
-                    selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
+                WorkoutExercise exercise = application.getWorkouts().get(workoutId);
+                if(exercise != null){
+                    SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
+                    selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
+                    selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
+                    if (!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())) {
+                        selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
+                    }
                 }
             } while (result.moveToNext());
             return selectedWorkouts;

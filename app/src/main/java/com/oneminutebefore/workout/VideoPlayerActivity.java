@@ -287,9 +287,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         WorkoutApplication application = ((WorkoutApplication) getApplication());
         application.setUser(user);
         application.setUserId(user.getId());
-        if(application.getDbHelper() == null){
-            application.setDbHelper(new DBHelper(VideoPlayerActivity.this));
-        }
+//        if(application.getDbHelper() == null){
+//            application.setDbHelper(new DBHelper(VideoPlayerActivity.this));
+//        }
 //        SharedPrefsUtil.setStringPreference(VideoPlayerActivity.this, Keys.getUserLevelKey(VideoPlayerActivity.this), user.getUserLevel());
     }
 
