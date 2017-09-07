@@ -122,15 +122,17 @@ public class VideoPlayerActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(selectedWorkoutExercise.getVideoLink())) {
             findViewById(R.id.youtube_content).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_no_content).setVisibility(View.GONE);
+            System.out.println("video link : " + selectedWorkoutExercise.getVideoLink());
+            int substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("=") + 1;
+            if(substringIndex <= 0){
+                substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("/") + 1;
+            }
+            final String url = selectedWorkoutExercise.getVideoLink().substring(substringIndex);
+            System.out.println("url : " + url);
             youTubePlayerFragment.initialize(Constants.DEVELOPER_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.setShowFullscreenButton(true);
-                    int substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("=") + 1;
-                    if(substringIndex < 0){
-                        substringIndex = selectedWorkoutExercise.getVideoLink().lastIndexOf("/") + 1;
-                    }
-                    String url = selectedWorkoutExercise.getVideoLink().substring(substringIndex);
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                     youTubePlayer.cueVideo(url);
                 }

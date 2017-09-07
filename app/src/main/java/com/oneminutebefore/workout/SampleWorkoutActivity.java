@@ -71,7 +71,7 @@ public class SampleWorkoutActivity extends AppCompatActivity {
 
             final WorkoutExercise workoutExercise = workouts.get(position);
             int substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
-            if(substringIndex < 0){
+            if(substringIndex <= 0){
                 substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
             }
             final String link = workoutExercise.getVideoLink().substring(substringIndex);
@@ -94,7 +94,7 @@ public class SampleWorkoutActivity extends AppCompatActivity {
                     Intent intent = new Intent(SampleWorkoutActivity.this, YoutubePlayerActivity.class);
                     final WorkoutExercise workoutExercise = workouts.get(holder.getAdapterPosition());
                     int substringIndex = workoutExercise.getVideoLink().lastIndexOf("=") + 1;
-                    if(substringIndex < 0){
+                    if(substringIndex <= 0){
                         substringIndex = workoutExercise.getVideoLink().lastIndexOf("/") + 1;
                     }
                     final String link = workoutExercise.getVideoLink().substring(substringIndex);
