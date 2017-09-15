@@ -112,12 +112,17 @@ public class HomeNewActivity extends AppCompatActivity
                 initNavigationItems();
                 resetTimer();
                 if(!isPaused){
-                    Utils.showConfirmDialog(HomeNewActivity.this, R.string.message, R.string.msg_missed_workouts, null, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(HomeNewActivity.this, MissedWorkoutsActivity.class));
-                        }
-                    });
+                    int missedWorkoutCount = WorkoutApplication.getmInstance().getDbHelper().getMissedWorkoutsCount();
+                    if(missedWorkoutCount > 0){
+                        Utils.showConfirmDialog(HomeNewActivity.this, R.string.message, R.string.msg_missed_workouts, null, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent(HomeNewActivity.this, MissedWorkoutsActivity.class));
+                            }
+                        });
+                    }
+                }else{
+                    WorkoutApplication.getmInstance().getDbHelper().deleteOldMissedWorkouts();
                 }
             }
         });

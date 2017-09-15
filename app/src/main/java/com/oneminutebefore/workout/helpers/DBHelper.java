@@ -224,11 +224,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public void deleteOldMissedWorkouts(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(USER_TRACK, "is_completed = 0", null);
+    }
+
+    public int getMissedWorkoutsCount(){
+
+        String sql = "SELECT COUNT(*)" +
+                " FROM " + USER_TRACK + " JOIN " + SELECTED_WORKOUT + " ON " + USER_TRACK + ".workout_id = " + SELECTED_WORKOUT + "._id " +
+                " WHERE " + USER_TRACK + ".is_completed = 0 AND date(" + USER_TRACK + ".date/1000,'unixepoch','localtime') =  date("+System.currentTimeMillis()+"/1000,'unixepoch','localtime')";
+
+        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+        Cursor result = sqLiteDatabase.rawQuery(sql, null);
+        if(result.moveToFirst()){
+            return result.getInt(0);
+        }
+        return 0;
+    }
+
     public ArrayList<CompletedWorkout> getMissedWorkouts(){
 
         String sql = "SELECT " + USER_TRACK + ".*, " + SELECTED_WORKOUT + ".*" +
                 " FROM " + USER_TRACK + " JOIN " + SELECTED_WORKOUT + " ON " + USER_TRACK + ".workout_id = " + SELECTED_WORKOUT + "._id " +
-                " WHERE " + USER_TRACK + ".is_completed = 0";
+                " WHERE " + USER_TRACK + ".is_completed = 0 AND date(" + USER_TRACK + ".date/1000,'unixepoch','localtime') =  date("+System.currentTimeMillis()+"/1000,'unixepoch','localtime')";
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor result = sqLiteDatabase.rawQuery(sql, null);
