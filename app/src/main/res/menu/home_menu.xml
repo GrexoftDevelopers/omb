@@ -19,6 +19,11 @@
         android:title="@string/sample_exercises" />
 
     <item
+        android:id="@+id/action_missed"
+        android:icon="@drawable/ic_missed_notification_black_24dp"
+        android:title="@string/missed_workouts" />
+
+    <item
         android:id="@+id/action_contact"
         android:icon="@drawable/ic_contact_24dp"
         android:title="@string/contact" />

@@ -226,4 +226,5 @@
     <string name="no_workouts_found">No workouts found</string>
     <string name="message">Message</string>
     <string name="msg_missed_workouts">You may have missed workouts. Would you like finish them?</string>
+    <string name="missed_workouts">Missed workouts</string>
 </resources>

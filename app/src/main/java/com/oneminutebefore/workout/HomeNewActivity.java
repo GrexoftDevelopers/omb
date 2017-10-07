@@ -121,9 +121,10 @@ public class HomeNewActivity extends AppCompatActivity
                             }
                         });
                     }
-                }else{
-                    WorkoutApplication.getmInstance().getDbHelper().deleteOldMissedWorkouts();
                 }
+//                else{
+//                    WorkoutApplication.getmInstance().getDbHelper().deleteOldMissedWorkouts();
+//                }
             }
         });
         initNavigationItems();
@@ -406,6 +407,8 @@ public class HomeNewActivity extends AppCompatActivity
             startActivityForResult(intent, RC_SIGNUP);
         } else if (id == R.id.action_sample) {
             startActivity(new Intent(this, SampleWorkoutActivity.class));
+        } else if (id == R.id.action_missed) {
+            startActivity(new Intent(this, MissedWorkoutsActivity.class));
         } else if (id == R.id.action_contact) {
             startActivity(new Intent(this, ContactActivity.class));
         } else if (id == R.id.action_report) {
