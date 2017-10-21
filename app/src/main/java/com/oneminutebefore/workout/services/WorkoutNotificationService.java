@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
@@ -13,7 +12,6 @@ import android.support.v7.app.NotificationCompat;
 import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.VideoPlayerActivity;
 import com.oneminutebefore.workout.WorkoutApplication;
-import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -47,15 +45,30 @@ public class WorkoutNotificationService extends IntentService {
             if(dayOfWeek >= 2 && dayOfWeek <= 6){
                 checkHourSelection();
             }
-            IntentUtils.scheduleWorkoutNotifications(getApplicationContext());
         }catch (Exception e ){
             e.printStackTrace();
         }
+        IntentUtils.scheduleWorkoutNotifications(getApplicationContext());
     }
 
     private void checkHourSelection() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        int minute = calendar.get(Calendar.MINUTE);
+        if(minute < 59){
+            hour--;
+            if(hour < 0){
+                hour = 23;
+                int day = Calendar.DAY_OF_WEEK - 1;
+                if(day < 2){
+                    return;
+                }
+                calendar.add(Calendar.DAY_OF_WEEK, -1);
+            }
+            calendar.set(Calendar.HOUR_OF_DAY,hour);
+            calendar.set(Calendar.MINUTE, 59);
+        }
 
         String hourSelectionKey = Keys.getHourSelectionKeys(getApplicationContext())[hour];
         boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(getApplicationContext(),hourSelectionKey,false);
@@ -81,7 +94,7 @@ public class WorkoutNotificationService extends IntentService {
                     //application.setSessionToken(null);
 
                     SelectedWorkout selectedWorkout = new SelectedWorkout(workoutExercise,hour + "_59",selectedWorkoutId);
-                    long timeMillis = Calendar.getInstance().getTimeInMillis();
+                    long timeMillis = calendar.getTimeInMillis();
                     CompletedWorkout completedWorkout = new CompletedWorkout(selectedWorkout,0,timeMillis, false);
                     completedWorkout.setSelectedWorkoutId(selectedWorkout.getSelectedWorkoutId());
                     int id = application.getDbHelper().insertUserTrack(completedWorkout);

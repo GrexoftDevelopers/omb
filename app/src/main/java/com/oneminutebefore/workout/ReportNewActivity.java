@@ -12,21 +12,17 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.Utils;
-import com.oneminutebefore.workout.models.CompletedWorkout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -227,21 +223,22 @@ public class ReportNewActivity extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ReportNewActivity.this, RepsBreakUpActivity.class);
-                        HashMap<String, Integer> mapBreakUp = workoutsBreakupMap.get(holder.getAdapterPosition() - padding + 1);
-                        if(mapBreakUp != null){
-                            intent.putExtra(RepsBreakUpActivity.KEY_BREAKUP_MAP, mapBreakUp);
-                            Calendar tempCalendar = Calendar.getInstance();
-                            tempCalendar.set(Calendar.YEAR, year);
-                            tempCalendar.set(Calendar.MONTH, month);
-                            tempCalendar.set(Calendar.DAY_OF_MONTH, holder.getAdapterPosition() - padding + 1);
-                            intent.putExtra(RepsBreakUpActivity.KEY_DATE, tempCalendar.getTimeInMillis());
-                            startActivity(intent);
+                        if(workoutsBreakupMap != null && !workoutsBreakupMap.isEmpty()){
+                            Intent intent = new Intent(ReportNewActivity.this, RepsBreakUpActivity.class);
+                            HashMap<String, Integer> mapBreakUp = workoutsBreakupMap.get(holder.getAdapterPosition() - padding + 1);
+                            if(mapBreakUp != null){
+                                intent.putExtra(RepsBreakUpActivity.KEY_BREAKUP_MAP, mapBreakUp);
+                                Calendar tempCalendar = Calendar.getInstance();
+                                tempCalendar.set(Calendar.YEAR, year);
+                                tempCalendar.set(Calendar.MONTH, month);
+                                tempCalendar.set(Calendar.DAY_OF_MONTH, holder.getAdapterPosition() - padding + 1);
+                                intent.putExtra(RepsBreakUpActivity.KEY_DATE, tempCalendar.getTimeInMillis());
+                                startActivity(intent);
+                            }
                         }
                     }
                 });
             }
-
         }
 
         @Override

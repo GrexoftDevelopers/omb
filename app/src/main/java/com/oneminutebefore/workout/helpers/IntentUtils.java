@@ -58,7 +58,9 @@ public class IntentUtils {
         }
 
         AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             alarm.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
         }else{
             alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),

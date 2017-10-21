@@ -23,12 +23,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -40,7 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
+import java.util.HashMap;
 
 public class HomeNewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -130,8 +127,6 @@ public class HomeNewActivity extends AppCompatActivity
         initNavigationItems();
         IntentUtils.scheduleWorkoutNotifications(this);
 
-////        FirebaseCrash.report(new NullPointerException("wdvf"));
-//        throw new NullPointerException("wdvf");
     }
 
     @Override
@@ -263,10 +258,11 @@ public class HomeNewActivity extends AppCompatActivity
                     if (preferences.getBoolean(hours[i], false)) {
                         String workoutId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getWorkoutSelectionKeys(getApplicationContext())[i], "");
 //                    String categoryId = SharedPrefsUtil.getStringPreference(getApplicationContext(), Keys.getUserLevelKey(HomeNewActivity.this), "");
+                        HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
                         if (!TextUtils.isEmpty(workoutId)
-                                && application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
+                                && exerciseHashMap != null && !exerciseHashMap.isEmpty()){
 //                            && application.getWorkouts().get(workoutId).getCategory().getId().equals(categoryId)) {
-                            WorkoutExercise workoutExercise = application.getWorkouts().get(workoutId);
+                            WorkoutExercise workoutExercise = exerciseHashMap.get(workoutId);
                             calendar.set(Calendar.HOUR_OF_DAY, i);
                             calendar.set(Calendar.MINUTE, 59);
                             if (timerTask != null) {
@@ -310,27 +306,6 @@ public class HomeNewActivity extends AppCompatActivity
             }
 
             workoutsDone = application.getDbHelper().getTodayCompletedWorkouts();
-//            workoutsDone.add(new WorkoutExercise("1", "Push Ups", "", "", 18, 7));
-//            workoutsDone.add(new WorkoutExercise("1", "Jump Rope", "", "", 24, 11));
-//            workoutsDone.add(new WorkoutExercise("1", "Stair Run", "", "", 56, 2));
-//            workoutsDone.add(new WorkoutExercise("1", "Squat Jump", "", "", 24, 3));
-//            if (application.getWorkouts() != null && !application.getWorkouts().isEmpty()) {
-//
-//                int index = 0;
-//                for (String key : application.getWorkouts().keySet()) {
-//                    String value = application.getWorkouts().get(key).getName();
-//                    ++index;
-//
-//                    Random rn = new Random();
-//                    int range = 56 - 5 + 1;
-//                    int randomNum =  rn.nextInt(range) + 5;
-//                    workoutsDone.add(new CompletedWorkout(new WorkoutExercise("1", value, "", ""), String.valueOf(7+index), randomNum));
-//                    if (index >= 4) {
-//                        break;
-//                    }
-//                }
-//            }
-
 
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_workout_count);
             recyclerView.setNestedScrollingEnabled(false);

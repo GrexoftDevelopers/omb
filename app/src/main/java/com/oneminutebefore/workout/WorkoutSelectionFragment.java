@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.models.SelectedWorkout;
-import com.oneminutebefore.workout.models.WorkoutExercise;
 
 import java.util.ArrayList;
 
@@ -46,6 +45,8 @@ public class WorkoutSelectionFragment extends DialogFragment {
 
     private boolean mCancelled;
 
+    private boolean isDismissed;
+
     private DialogInterface.OnDismissListener dismissListener;
 
 
@@ -69,6 +70,10 @@ public class WorkoutSelectionFragment extends DialogFragment {
         args.putSerializable(ARG_EDITED_WORKOUT, selectedWorkout);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setDismissed(boolean dismissed) {
+        isDismissed = dismissed;
     }
 
     public void setDismissListener(DialogInterface.OnDismissListener dismissListener) {
@@ -107,6 +112,12 @@ public class WorkoutSelectionFragment extends DialogFragment {
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
+
+                if(isDismissed){
+                    alertDialog.dismiss();
+                    return;
+                }
+
                 final ViewPager viewPager = (ViewPager) fragmentView.findViewById(R.id.view_pager);
                 ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
                 String hourKeys[] = Keys.getHourSelectionKeys(getActivity());
@@ -183,7 +194,8 @@ public class WorkoutSelectionFragment extends DialogFragment {
                 alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if(!mCancelled && dismissListener != null){
+//                        if(!mCancelled && dismissListener != null){
+                        if(dismissListener != null){
                             dismissListener.onDismiss(dialog);
                         }
                     }
@@ -230,6 +242,13 @@ public class WorkoutSelectionFragment extends DialogFragment {
         @Override
         public int getCount() {
             return fragments != null ? fragments.size() : 0;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            fragments.set(position, fragment);
+            return fragment;
         }
     }
 

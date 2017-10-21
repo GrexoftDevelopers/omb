@@ -41,9 +41,10 @@ public class SampleWorkoutActivity extends AppCompatActivity {
 
         RecyclerView rclSample = (RecyclerView) findViewById(R.id.sample_list);
         application = WorkoutApplication.getmInstance();
-        if(application.getWorkouts() != null && !application.getWorkouts().isEmpty()){
+        HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+        if(exerciseHashMap != null && !exerciseHashMap.isEmpty()){
             rclSample.setLayoutManager(new GridLayoutManager(this,2));
-            rclSample.setAdapter(new SampleAdapter(application.getWorkouts()));
+            rclSample.setAdapter(new SampleAdapter(exerciseHashMap));
         }
     }
 

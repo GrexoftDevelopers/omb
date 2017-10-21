@@ -1,7 +1,6 @@
 package com.oneminutebefore.workout;
 
 
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,7 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -104,83 +103,88 @@ public class WorkoutSelectionFormFragment extends Fragment {
 
         categories = new ArrayList<>();
         int selectedIndex = 0;
-        for(Map.Entry entry : application.getWorkoutCategories().entrySet()){
-            categories.add((WorkoutCategory) entry.getValue());
-        }
+        HashMap<String , WorkoutCategory> categoryHashMap = application.getWorkoutCategories();
+        if(categoryHashMap != null){
+            for(Map.Entry entry : categoryHashMap.entrySet()){
+                categories.add((WorkoutCategory) entry.getValue());
+            }
 
-        if(selectedWorkout != null){
-            selectedIndex = categories.indexOf(selectedWorkout.getCategory());
-        }
+            if(selectedWorkout != null){
+                selectedIndex = categories.indexOf(selectedWorkout.getCategory());
+            }
 
-        ArrayAdapter<WorkoutCategory> categoryAdapter = new ArrayAdapter<WorkoutCategory>(getActivity(), android.R.layout.simple_spinner_item, categories){
+            ArrayAdapter<WorkoutCategory> categoryAdapter = new ArrayAdapter<WorkoutCategory>(getActivity(), android.R.layout.simple_spinner_item, categories){
 
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if(convertView == null){
-                    convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item,parent,false);
+                @Override
+                public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    if(convertView == null){
+                        convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item,parent,false);
+                    }
+                    ((TextView)convertView).setText(categories.get(position).getName());
+                    return convertView;
                 }
-                ((TextView)convertView).setText(categories.get(position).getName());
-                return convertView;
-            }
 
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if(convertView == null){
-                    convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_item,parent,false);
+                @NonNull
+                @Override
+                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                    if(convertView == null){
+                        convertView = getActivity().getLayoutInflater().inflate(android.R.layout.simple_spinner_item,parent,false);
+                    }
+                    ((TextView)convertView).setText(categories.get(position).getName());
+                    return convertView;
                 }
-                ((TextView)convertView).setText(categories.get(position).getName());
-                return convertView;
-            }
-        };
+            };
 
-        spLevel.setAdapter(categoryAdapter);
+            spLevel.setAdapter(categoryAdapter);
 
-        spLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setWorkoutsAdapter(position);
-                refreshButton();
-            }
+            spLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    setWorkoutsAdapter(position);
+                    refreshButton();
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+                }
+            });
 
-        spLevel.setSelection(selectedIndex);
+            spLevel.setSelection(selectedIndex);
 
-        selectableHours = new ArrayList<>();
-        for(String hour : hourKeys){
-            boolean exists = false;
-            for(SelectedWorkout selectedWorkout1 : selectedWorkouts){
-                if(selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout){
-                    exists = true;
-                    break;
+            selectableHours = new ArrayList<>();
+            for(String hour : hourKeys){
+                boolean exists = false;
+                for(SelectedWorkout selectedWorkout1 : selectedWorkouts){
+                    if(selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout){
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists){
+                    selectableHours.add(SelectedWorkout.getTimeMeridian(hour));
                 }
             }
-            if(!exists){
-                selectableHours.add(SelectedWorkout.getTimeMeridian(hour));
+            ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,selectableHours);
+            hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spHour.setAdapter(hourAdapter);
+            if(selectedWorkout != null && selectableHours.contains(selectedWorkout.getTimeMeridian())){
+                spHour.setSelection(selectableHours.indexOf(selectedWorkout.getTimeMeridian()));
             }
         }
-        ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,selectableHours);
-        hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spHour.setAdapter(hourAdapter);
-        if(selectedWorkout != null && selectableHours.contains(selectedWorkout.getTimeMeridian())){
-            spHour.setSelection(selectableHours.indexOf(selectedWorkout.getTimeMeridian()));
-        }
-
         return dialogView;
     }
 
     private void setWorkoutsAdapter(int selectedIndex) {
         workoutExercises = new ArrayList<>();
-        for(Map.Entry entry : application.getWorkouts().entrySet()){
-            WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
-            if(!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))){
-                if(workoutExercise.getCategory().equals(categories.get(selectedIndex))){
-                    workoutExercises.add(workoutExercise);
+        HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+        if(exerciseHashMap != null){
+            for(Map.Entry entry : exerciseHashMap.entrySet()){
+                WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
+                if(!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))){
+                    if(workoutExercise.getCategory().equals(categories.get(selectedIndex))){
+                        workoutExercises.add(workoutExercise);
+                    }
                 }
             }
         }

@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import com.oneminutebefore.workout.MainActivity;
 import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.WorkoutApplication;
-import com.oneminutebefore.workout.models.WorkoutExercise;
 
 /**
  * Created by tahir on 13/5/17.
@@ -28,6 +27,7 @@ public class Utils {
         SharedPrefsUtil.deletePreference(context, Keys.KEY_TOKEN);
         SharedPrefsUtil.deletePreference(context, Keys.KEY_USER_ID);
         SharedPrefsUtil.deletePreference(context, Keys.KEY_IS_PAUSED);
+        SharedPrefsUtil.deletePreference(context, Keys.KEY_USER);
 //        SharedPrefsUtil.deletePreference(context, Keys.getUserLevelKey(context));
         String hourPrefKeys[] = Keys.getHourSelectionKeys(context);
         for(String key : hourPrefKeys){
@@ -41,7 +41,6 @@ public class Utils {
         application.clearUserData();
         application.getDbHelper().clearData();
     }
-
 
     public static String getTimeKey(String timeMeridian){
         String time = timeMeridian.split(" ")[0];

@@ -186,9 +186,15 @@ public class DBHelper extends SQLiteOpenHelper {
             String workoutId = result.getString(result.getColumnIndex("workout"));
             WorkoutApplication application = WorkoutApplication.getmInstance();
             String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
-            SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
-            selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
-            return selectedWorkout;
+            HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+            if(exerciseHashMap != null && !exerciseHashMap.isEmpty()){
+                WorkoutExercise exercise = exerciseHashMap.get(workoutId);
+                if(exercise != null){
+                    SelectedWorkout selectedWorkout = new SelectedWorkout(exercise, Utils.getTimeKey(timeMeridian));
+                    selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
+                    return selectedWorkout;
+                }
+            }
         }
         return null;
     }
@@ -205,20 +211,23 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery(sql, null);
         if (result.moveToFirst()) {
             HashMap<String, SelectedWorkout> selectedWorkouts = new HashMap<>();
-            do {
-                String workoutId = result.getString(result.getColumnIndex("workout"));
-                WorkoutApplication application = WorkoutApplication.getmInstance();
-                String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
-                WorkoutExercise exercise = application.getWorkouts().get(workoutId);
-                if(exercise != null){
-                    SelectedWorkout selectedWorkout = new SelectedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(timeMeridian));
-                    selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
-                    selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
-                    if (!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())) {
-                        selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
+            WorkoutApplication application = WorkoutApplication.getmInstance();
+            HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+            if(exerciseHashMap != null && !exerciseHashMap.isEmpty()){
+                do {
+                    String workoutId = result.getString(result.getColumnIndex("workout"));
+                    String timeMeridian = result.getString(result.getColumnIndex("workout_time"));
+                    WorkoutExercise exercise = exerciseHashMap.get(workoutId);
+                    if(exercise != null){
+                        SelectedWorkout selectedWorkout = new SelectedWorkout(exercise, Utils.getTimeKey(timeMeridian));
+                        selectedWorkout.setSelectedWorkoutId(result.getString(result.getColumnIndex("_id")));
+                        selectedWorkout.setCreatedAt(result.getLong(result.getColumnIndex("created_at")));
+                        if (!selectedWorkouts.containsKey(selectedWorkout.getTimeKey())) {
+                            selectedWorkouts.put(selectedWorkout.getTimeKey(), selectedWorkout);
+                        }
                     }
-                }
-            } while (result.moveToNext());
+                } while (result.moveToNext());
+            }
             return selectedWorkouts;
         }
         return null;
@@ -254,25 +263,28 @@ public class DBHelper extends SQLiteOpenHelper {
         if (result.moveToFirst()) {
             ArrayList<CompletedWorkout> workoutsDone = new ArrayList<>();
             WorkoutApplication application = WorkoutApplication.getmInstance();
-            do {
-                String workoutId = result.getString(result.getColumnIndex("workout"));
-                String selectedWorkoutId = result.getString(result.getColumnIndex("workout_id"));
-                int completedWorkoutId = result.getInt(result.getColumnIndex("user_track_id"));
-                long date = result.getLong(result.getColumnIndex("date"));
-                String time = result.getString(result.getColumnIndex("workout_time"));
-                int rep = result.getInt(result.getColumnIndex("rep"));
-                SelectedWorkout selectedWorkout = new SelectedWorkout(
-                        application.getWorkouts().get(workoutId),
-                        Utils.getTimeKey(time));
-                selectedWorkout.setSelectedWorkoutId(selectedWorkoutId);
-                CompletedWorkout completedWorkout = new CompletedWorkout(
-                        selectedWorkout,
-                        rep,
-                        date,
-                        false);
-                completedWorkout.setCompletedWorkoutId(completedWorkoutId);
-                workoutsDone.add(completedWorkout);
-            } while (result.moveToNext());
+            HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+            if(exerciseHashMap != null){
+                do {
+                    String workoutId = result.getString(result.getColumnIndex("workout"));
+                    String selectedWorkoutId = result.getString(result.getColumnIndex("workout_id"));
+                    int completedWorkoutId = result.getInt(result.getColumnIndex("user_track_id"));
+                    long date = result.getLong(result.getColumnIndex("date"));
+                    String time = result.getString(result.getColumnIndex("workout_time"));
+                    int rep = result.getInt(result.getColumnIndex("rep"));
+                    SelectedWorkout selectedWorkout = new SelectedWorkout(
+                            exerciseHashMap.get(workoutId),
+                    Utils.getTimeKey(time));
+                    selectedWorkout.setSelectedWorkoutId(selectedWorkoutId);
+                    CompletedWorkout completedWorkout = new CompletedWorkout(
+                            selectedWorkout,
+                            rep,
+                            date,
+                            false);
+                    completedWorkout.setCompletedWorkoutId(completedWorkoutId);
+                    workoutsDone.add(completedWorkout);
+                } while (result.moveToNext());
+            }
             return workoutsDone;
         }
         return null;
@@ -296,13 +308,16 @@ public class DBHelper extends SQLiteOpenHelper {
         if (result.moveToFirst()) {
             ArrayList<CompletedWorkout> workoutsDone = new ArrayList<>();
             WorkoutApplication application = WorkoutApplication.getmInstance();
-            do {
-                String workoutId = result.getString(result.getColumnIndex("workout"));
-                String time = result.getString(result.getColumnIndex("workout_time"));
-                int rep = result.getInt(result.getColumnIndex("rep"));
-                CompletedWorkout completedWorkout = new CompletedWorkout(application.getWorkouts().get(workoutId), Utils.getTimeKey(time), rep, true);
-                workoutsDone.add(completedWorkout);
-            } while (result.moveToNext());
+            HashMap<String, WorkoutExercise> exerciseHashMap = application.getWorkouts();
+            if(exerciseHashMap != null && !exerciseHashMap.isEmpty()){
+                do {
+                    String workoutId = result.getString(result.getColumnIndex("workout"));
+                    String time = result.getString(result.getColumnIndex("workout_time"));
+                    int rep = result.getInt(result.getColumnIndex("rep"));
+                    CompletedWorkout completedWorkout = new CompletedWorkout(exerciseHashMap.get(workoutId), Utils.getTimeKey(time), rep, true);
+                    workoutsDone.add(completedWorkout);
+                } while (result.moveToNext());
+            }
             return workoutsDone;
         }
         return null;

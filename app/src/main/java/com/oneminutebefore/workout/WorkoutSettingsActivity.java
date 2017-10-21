@@ -5,21 +5,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.oneminutebefore.workout.helpers.HttpTask;
@@ -37,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 public class WorkoutSettingsActivity extends AppCompatActivity {
 
@@ -47,6 +41,7 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
     private String[] hourKeys;
     private String[] workoutKeys;
     private RecyclerView rclWorkouts;
+    private boolean isWorkoutSelectionDialogDismissed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +83,18 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
             boolean isHourSelected = SharedPrefsUtil.getBooleanPreference(this, hourKeys[i], false);
             if (isHourSelected) {
                 String hourWorkout = SharedPrefsUtil.getStringPreference(this, workoutKeys[i]);
-                if (workouts.containsKey(hourWorkout)) {
-                    SelectedWorkout selectedWorkout = application
-                            .getDbHelper()
-                            .getSelectedWorkoutByTime(SelectedWorkout.getTimeMeridian(hourKeys[i]));
+                if(workouts != null){
+                    if (workouts.containsKey(hourWorkout)) {
+                        SelectedWorkout selectedWorkout = application
+                                .getDbHelper()
+                                .getSelectedWorkoutByTime(SelectedWorkout.getTimeMeridian(hourKeys[i]));
 //                        && workouts.get(hourWorkout).getCategory().getId().equals(categoryId)){
 //                    selectedWorkouts.add(new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]));
-                    if(selectedWorkout == null){
-                        selectedWorkout = new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]);
+                        if(selectedWorkout == null){
+                            selectedWorkout = new SelectedWorkout(workouts.get(hourWorkout),hourKeys[i]);
+                        }
+                        selectedWorkouts.add(selectedWorkout);
                     }
-                    selectedWorkouts.add(selectedWorkout);
                 }
             }
         }
@@ -119,110 +116,121 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void showAddWorkoutDialog(final SelectedWorkout selectedWorkout) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutSettingsActivity.this);
-        builder.setNegativeButton(getString(R.string.cancel), null);
-        builder.setPositiveButton(getString(R.string.ok), null);
-
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_workout, null);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setView(dialogView);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                final Spinner spHour = (Spinner) dialogView.findViewById(R.id.sp_hour);
-                final Spinner spWorkout = (Spinner) dialogView.findViewById(R.id.sp_workout);
-                final ArrayList<WorkoutExercise> workoutExercises = new ArrayList<>();
-                for (Map.Entry entry : application.getWorkouts().entrySet()) {
-                    WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
-                    if (!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))) {
-                        if (true) { //workoutExercise.getCategory().getId().equals(categoryId)){
-                            workoutExercises.add(workoutExercise);
-                        }
-                    }
-                }
-                ArrayAdapter<WorkoutExercise> arrayAdapter = new ArrayAdapter<WorkoutExercise>(WorkoutSettingsActivity.this
-                        , android.R.layout.simple_spinner_item, workoutExercises) {
-
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if (convertView == null) {
-                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_item, parent, false);
-                        }
-                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
-//                        return super.getView(position, convertView, parent);
-                        return convertView;
-                    }
-
-                    @Override
-                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if (convertView == null) {
-                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
-                        }
-                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
-                        return convertView;
-                    }
-                };
-                spWorkout.setAdapter(arrayAdapter);
-                if (selectedWorkout != null) {
-                    for (int i = 0; i < workoutExercises.size(); i++) {
-                        if (selectedWorkout.getId().equals(workoutExercises.get(i).getId())) {
-                            spWorkout.setSelection(i);
-                            break;
-                        }
-                    }
-                }
+//    private void showAddWorkoutDialog(final SelectedWorkout selectedWorkout) {
 //
-                final ArrayList<String> selectableHours = new ArrayList<>();
-                for (String hour : hourKeys) {
-                    boolean exists = false;
-                    for (SelectedWorkout selectedWorkout1 : selectedWorkouts) {
-                        if (selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        selectableHours.add(hour.replace('_', ':'));
-                    }
-                }
-                if (selectableHours.isEmpty()) {
-                    alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setVisibility(View.GONE);
-                }
-                ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(WorkoutSettingsActivity.this, android.R.layout.simple_spinner_item, selectableHours);
-                hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spHour.setAdapter(hourAdapter);
-                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WorkoutExercise workoutExercise = (WorkoutExercise) spWorkout.getSelectedItem();
-                        String hour = ((String) spHour.getSelectedItem()).replace(':', '_');
-                        if (selectedWorkout != null) {
-                            int index = selectedWorkouts.lastIndexOf(selectedWorkout);
-                            selectedWorkouts.set(index, new SelectedWorkout(workoutExercise, hour));
-                            rclWorkouts.getAdapter().notifyItemChanged(index);
-                        } else {
-                            if (workoutExercise != null) {
-                                selectedWorkouts.add(new SelectedWorkout(workoutExercise, hour));
-                                rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size() - 1);
-                            }
-                        }
-                        refreshUI();
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
-        alertDialog.show();
-    }
+//        AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutSettingsActivity.this);
+//        builder.setNegativeButton(getString(R.string.cancel), null);
+//        builder.setPositiveButton(getString(R.string.ok), null);
+//
+//        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_workout, null);
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.setView(dialogView);
+//        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+//            @Override
+//            public void onShow(DialogInterface dialog) {
+//                final Spinner spHour = (Spinner) dialogView.findViewById(R.id.sp_hour);
+//                final Spinner spWorkout = (Spinner) dialogView.findViewById(R.id.sp_workout);
+//                final ArrayList<WorkoutExercise> workoutExercises = new ArrayList<>();
+//                for (Map.Entry entry : application.getWorkouts().entrySet()) {
+//                    WorkoutExercise workoutExercise = (WorkoutExercise) entry.getValue();
+//                    if (!selectedWorkouts.contains(workoutExercise) || (selectedWorkout != null && selectedWorkout.equals(workoutExercise))) {
+//                        if (true) { //workoutExercise.getCategory().getId().equals(categoryId)){
+//                            workoutExercises.add(workoutExercise);
+//                        }
+//                    }
+//                }
+//                ArrayAdapter<WorkoutExercise> arrayAdapter = new ArrayAdapter<WorkoutExercise>(WorkoutSettingsActivity.this
+//                        , android.R.layout.simple_spinner_item, workoutExercises) {
+//
+//                    @NonNull
+//                    @Override
+//                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//                        if (convertView == null) {
+//                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_item, parent, false);
+//                        }
+//                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
+////                        return super.getView(position, convertView, parent);
+//                        return convertView;
+//                    }
+//
+//                    @Override
+//                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//                        if (convertView == null) {
+//                            convertView = getLayoutInflater().inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+//                        }
+//                        ((TextView) convertView).setText(workoutExercises.get(position).getName());
+//                        return convertView;
+//                    }
+//                };
+//                spWorkout.setAdapter(arrayAdapter);
+//                if (selectedWorkout != null) {
+//                    for (int i = 0; i < workoutExercises.size(); i++) {
+//                        if (selectedWorkout.getId().equals(workoutExercises.get(i).getId())) {
+//                            spWorkout.setSelection(i);
+//                            break;
+//                        }
+//                    }
+//                }
+////
+//                final ArrayList<String> selectableHours = new ArrayList<>();
+//                for (String hour : hourKeys) {
+//                    boolean exists = false;
+//                    for (SelectedWorkout selectedWorkout1 : selectedWorkouts) {
+//                        if (selectedWorkout1.getTimeKey().equals(hour) && selectedWorkout1 != selectedWorkout) {
+//                            exists = true;
+//                            break;
+//                        }
+//                    }
+//                    if (!exists) {
+//                        selectableHours.add(hour.replace('_', ':'));
+//                    }
+//                }
+//                if (selectableHours.isEmpty()) {
+//                    alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setVisibility(View.GONE);
+//                }
+//                ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(WorkoutSettingsActivity.this, android.R.layout.simple_spinner_item, selectableHours);
+//                hourAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spHour.setAdapter(hourAdapter);
+//                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        WorkoutExercise workoutExercise = (WorkoutExercise) spWorkout.getSelectedItem();
+//                        String hour = ((String) spHour.getSelectedItem()).replace(':', '_');
+//                        if (selectedWorkout != null) {
+//                            int index = selectedWorkouts.lastIndexOf(selectedWorkout);
+//                            selectedWorkouts.set(index, new SelectedWorkout(workoutExercise, hour));
+//                            rclWorkouts.getAdapter().notifyItemChanged(index);
+//                        } else {
+//                            if (workoutExercise != null) {
+//                                selectedWorkouts.add(new SelectedWorkout(workoutExercise, hour));
+//                                rclWorkouts.getAdapter().notifyItemInserted(selectedWorkouts.size() - 1);
+//                            }
+//                        }
+//                        refreshUI();
+//                        alertDialog.dismiss();
+//                    }
+//                });
+//            }
+//        });
+//        alertDialog.show();
+//    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        getMenuInflater().inflate(R.menu.form_menu,menu);
 //        return super.onCreateOptionsMenu(menu);
 //    }
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if(isWorkoutSelectionDialogDismissed){
+            WorkoutSelectionFragment fragment = (WorkoutSelectionFragment) getSupportFragmentManager().findFragmentByTag("tag");
+            fragment.setDismissed(true);
+            fragment.getDialog().dismiss();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -364,9 +372,11 @@ public class WorkoutSettingsActivity extends AppCompatActivity {
                                         @Override
                                         public void onDismiss(DialogInterface dialog) {
                                             notifyItemChanged(viewHolder.getAdapterPosition());
+                                            isWorkoutSelectionDialogDismissed = true;
                                         }
                                     });
                                     fragment.show(getSupportFragmentManager(), "tag");
+                                    isWorkoutSelectionDialogDismissed = false;
                                     break;
                             }
                             return true;
