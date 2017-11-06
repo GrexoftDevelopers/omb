@@ -5,19 +5,28 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.oneminutebefore.workout.R;
 import com.oneminutebefore.workout.VideoPlayerActivity;
 import com.oneminutebefore.workout.WorkoutApplication;
+import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.IntentUtils;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
+import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.SelectedWorkout;
+import com.oneminutebefore.workout.models.User;
 import com.oneminutebefore.workout.models.WorkoutExercise;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,6 +37,9 @@ public class WorkoutNotificationService extends IntentService {
     private static final String NAME = "workout notification";
 
     public static final int REQUEST_CODE = 1001;
+    private Handler handler;
+    private Runnable message;
+    private WorkoutApplication application;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -37,8 +49,44 @@ public class WorkoutNotificationService extends IntentService {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        application = (WorkoutApplication) getApplication();
+        handler = new Handler();
+        message = new Runnable() {
+            @Override
+            public void run() {
+                String url = new UrlBuilder(UrlBuilder.API_ME).build();
+                HttpTask httpTask = new HttpTask(false, WorkoutNotificationService.this, HttpTask.METHOD_GET);
+                httpTask.setAuthorizationRequired(true, null);
+                httpTask.setmCallback(new HttpTask.HttpCallback() {
+                    @Override
+                    public void onResponse(String response) throws JSONException {
+                        User user = User.createFromJson(new JSONObject(response));
+                        application.setUser(user);
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+
+                    }
+                });
+                httpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+            }
+        };
+    }
+
+    @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         System.out.println("workout notification check");
+        String session = application.getSessionToken();
+        if(TextUtils.isEmpty(session)){
+            session = SharedPrefsUtil.getStringPreference(WorkoutNotificationService.this, Keys.KEY_TOKEN);
+        }
+        if(!TextUtils.isEmpty(session)){
+            application.setSessionToken(session);
+            handler.post(message);
+        }
         try {
             Calendar calendar = Calendar.getInstance();
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -14,17 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.android.volley.Request;
 import com.oneminutebefore.workout.helpers.HttpConnectException;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.UrlBuilder;
 import com.oneminutebefore.workout.helpers.Utils;
-import com.oneminutebefore.workout.helpers.VolleyHelper;
 import com.oneminutebefore.workout.models.User;
 
 import org.json.JSONException;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePasswordActivity extends BaseRequestActivity {
 
     private EditText etPassword;
     private EditText etConfirmPassword;

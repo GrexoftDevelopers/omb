@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -33,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class WorkoutSettingsActivity extends AppCompatActivity {
+public class WorkoutSettingsActivity extends BaseRequestActivity {
 
     private ArrayList<SelectedWorkout> selectedWorkouts;
     private WorkoutApplication application;

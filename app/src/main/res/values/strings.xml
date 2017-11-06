@@ -227,4 +227,9 @@
     <string name="message">Message</string>
     <string name="msg_missed_workouts">You may have missed workouts. Would you like finish them?</string>
     <string name="missed_workouts">Missed workouts</string>
+    <string name="desc_forgot_password">Please enter your email address</string>
+    <string name="title_activity_forgot_password">Forgot password</string>
+    <string name="success">Success</string>
+    <string name="forgot_password"><u>Forgot password</u></string>
+    <string name="error">Error</string>
 </resources>

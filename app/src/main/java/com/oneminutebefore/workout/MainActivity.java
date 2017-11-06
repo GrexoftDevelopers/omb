@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -190,7 +189,7 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             String workoutsJson = SharedPrefsUtil.getStringPreference(MainActivity.this, Keys.KEY_VIDEOS_INFO, "[]");
             application.setWorkouts(WorkoutExercise.createMapFromJson(workoutsJson));
             videosSaved = true;
-            fetchInfo();
+//            fetchInfo();
         }
         if (!areCategoriesDownloaded) {
             fetchCategories();
@@ -198,6 +197,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             String categoriesJson = SharedPrefsUtil.getStringPreference(MainActivity.this, Keys.KEY_CATEGORIES_INFO, "[]");
             application.setWorkoutCategories(WorkoutCategory.createMapFromJson(categoriesJson));
             categoriesSaved = true;
+//            fetchInfo();
+        }
+        if(areCategoriesDownloaded && areLinksDownloaded){
             fetchInfo();
         }
     }
@@ -231,7 +233,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             SharedPrefsUtil.setBooleanPreference(MainActivity.this, Keys.KEY_CATEGORIES_DOWNLOADED, true);
         }
         categoriesSaved = true;
-        fetchInfo();
+        if(videosSaved){
+            fetchInfo();
+        }
     }
 
     private void fetchLinks(){
@@ -258,7 +262,9 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
             SharedPrefsUtil.setBooleanPreference(MainActivity.this, Keys.KEY_LINKS_DOWNLOADED, true);
         }
         videosSaved = true;
-        fetchInfo();
+        if(categoriesSaved){
+            fetchInfo();
+        }
     }
 
     private void switchToHomeActivity() {

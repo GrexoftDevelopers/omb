@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -32,7 +31,7 @@ import java.util.HashMap;
 
 import static com.oneminutebefore.workout.ReportFragment.REPORT_CUSTOM;
 
-public class ReportNewActivity extends AppCompatActivity {
+public class ReportNewActivity extends BaseRequestActivity {
 
     private ImageButton btnPrevious;
     private ImageButton btnNext;

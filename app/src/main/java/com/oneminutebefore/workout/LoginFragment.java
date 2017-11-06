@@ -138,6 +138,13 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        fragmentView.findViewById(R.id.tv_forgot_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
+            }
+        });
+
         return fragmentView;
     }
 

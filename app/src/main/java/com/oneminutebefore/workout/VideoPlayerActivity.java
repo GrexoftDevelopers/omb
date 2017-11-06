@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
 import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
@@ -48,7 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VideoPlayerActivity extends AppCompatActivity {
+public class VideoPlayerActivity extends BaseRequestActivity {
 
     public static final String KEY_URL = "url";
     public static final String KEY_WORKOUT = "workout";
