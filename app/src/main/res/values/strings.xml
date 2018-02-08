@@ -232,4 +232,10 @@
     <string name="success">Success</string>
     <string name="forgot_password"><u>Forgot password</u></string>
     <string name="error">Error</string>
+    <string name="title_profile">Profile</string>
+    <string name="actions">Actions</string>
+    <string name="info">Info</string>
+    <string name="more">More</string>
+    <string name="name">Name</string>
+    <string name="info_saved">Profile update successfully</string>
 </resources>

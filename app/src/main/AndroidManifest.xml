@@ -102,8 +102,13 @@
             android:name=".MissedWorkoutsActivity"
             android:label="@string/title_activity_missed_workouts"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ForgotPasswordActivity"
+        <activity
+            android:name=".ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".widgets.ProfileEditActivity"
+            android:label="@string/title_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

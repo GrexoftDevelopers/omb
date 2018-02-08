@@ -7,39 +7,59 @@
         android:icon="@drawable/ic_signup_24dp"
         android:title="@string/sign_up" />
 
+    <item android:title="@string/actions">
+        <menu>
 
-    <item
-        android:id="@+id/action_setting"
-        android:icon="@drawable/ic_settings_24dp"
-        android:title="@string/action_settings" />
+            <item
+                android:id="@+id/action_setting"
+                android:icon="@drawable/ic_settings_24dp"
+                android:title="@string/action_settings" />
 
-    <item
-        android:id="@+id/action_sample"
-        android:icon="@drawable/ic_workout_24dp"
-        android:title="@string/sample_exercises" />
+            <item
+                android:id="@+id/action_missed"
+                android:icon="@drawable/ic_missed_notification_black_24dp"
+                android:title="@string/missed_workouts" />
 
-    <item
-        android:id="@+id/action_missed"
-        android:icon="@drawable/ic_missed_notification_black_24dp"
-        android:title="@string/missed_workouts" />
+        </menu>
+    </item>
 
-    <item
-        android:id="@+id/action_contact"
-        android:icon="@drawable/ic_contact_24dp"
-        android:title="@string/contact" />
-    <item
-        android:id="@+id/action_report"
-        android:icon="@drawable/ic_trending_up_black_24dp"
-        android:title="@string/reports" />
+    <item android:title="@string/info">
+        <menu>
+            <item
+                android:id="@+id/action_profile"
+                android:title="@string/title_profile"
+                android:icon="@drawable/ic_person_24dp"
+                />
 
-    <item
-        android:id="@+id/action_about"
-        android:icon="@drawable/ic_about_24dp"
-        android:title="@string/about" />
+            <item
+                android:id="@+id/action_report"
+                android:icon="@drawable/ic_trending_up_black_24dp"
+                android:title="@string/reports" />
+        </menu>
+    </item>
 
-    <item
-        android:id="@+id/action_logout"
-        android:icon="@drawable/ic_logout_24dp"
-        android:title="@string/logout" />
+    <item android:title="@string/more">
+        <menu>
+            <item
+                android:id="@+id/action_sample"
+                android:icon="@drawable/ic_workout_24dp"
+                android:title="@string/sample_exercises" />
+
+            <item
+                android:id="@+id/action_contact"
+                android:icon="@drawable/ic_contact_24dp"
+                android:title="@string/contact" />
+
+            <item
+                android:id="@+id/action_about"
+                android:icon="@drawable/ic_about_24dp"
+                android:title="@string/about" />
+
+            <item
+                android:id="@+id/action_logout"
+                android:icon="@drawable/ic_logout_24dp"
+                android:title="@string/logout" />
+        </menu>
+    </item>
 
 </menu>

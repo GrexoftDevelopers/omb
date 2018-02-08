@@ -32,6 +32,7 @@ import com.oneminutebefore.workout.helpers.SharedPrefsUtil;
 import com.oneminutebefore.workout.helpers.Utils;
 import com.oneminutebefore.workout.models.CompletedWorkout;
 import com.oneminutebefore.workout.models.WorkoutExercise;
+import com.oneminutebefore.workout.widgets.ProfileEditActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -413,6 +414,8 @@ public class HomeNewActivity extends AppCompatActivity
                         }
                     })
                     .show();
+        }else if(id == R.id.action_profile){
+            startActivity(new Intent(HomeNewActivity.this, ProfileEditActivity.class));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

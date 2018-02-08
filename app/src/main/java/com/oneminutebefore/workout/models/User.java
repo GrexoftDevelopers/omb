@@ -99,6 +99,10 @@ public class User {
         return id;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+
     public static User createFromJson(JSONObject jsonObject){
 
         if(jsonObject != null){
@@ -113,6 +117,7 @@ public class User {
             user.groupCode = jsonObject.optString("group_code");
             user.email = jsonObject.optString("email");
             user.phone = jsonObject.optString("phone");
+            user.timeZone = jsonObject.optString("time_zone");
             return user;
         }
         return null;
@@ -132,10 +137,26 @@ public class User {
             jsonObject.put("group_code", groupCode);
             jsonObject.put("email", email);
             jsonObject.put("phone", phone);
+            jsonObject.put("time_zone", timeZone);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }
