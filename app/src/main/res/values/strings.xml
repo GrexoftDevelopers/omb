@@ -238,4 +238,6 @@
     <string name="more">More</string>
     <string name="name">Name</string>
     <string name="info_saved">Profile update successfully</string>
+    <string name="omb_channel_name">One minute before Notification</string>
+    <string name="omb_channel_description">This channel is for showing workout notifications of OneMinuteBefore app</string>
 </resources>

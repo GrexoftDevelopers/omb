@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
+import com.oneminutebefore.workout.receiver.OmbReceiver;
 import com.oneminutebefore.workout.services.WorkoutNotificationService;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
@@ -50,18 +52,29 @@ public class IntentUtils {
 
         Calendar calendar = Calendar.getInstance();
         long currentTime = calendar.getTimeInMillis();
+        System.out.println("scheduling workout notification : current time " + new Date(currentTime).toString());
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        System.out.println("scheduling workout notification : adjusted time " + new Date(calendar.getTimeInMillis()).toString());
         if(currentTime > calendar.getTimeInMillis()){
             calendar.add(Calendar.HOUR_OF_DAY, 1);
+            System.out.println("scheduling workout notification after adding time: new time " + new Date(calendar.getTimeInMillis()).toString());
         }
 
+        Intent checkerIntent = new Intent(OmbReceiver.ACTION_CHECKER);
+        PendingIntent checkerPending = PendingIntent.getBroadcast(context,OmbReceiver.REQUEST_CODE,checkerIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarm = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        long halfHourMillis = 30 * 60 * 1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + halfHourMillis
+                    , halfHourMillis, checkerPending);
+
         }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             alarm.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + halfHourMillis
+                    , halfHourMillis, checkerPending);
         }else{
             alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_HOUR , pIntent);
@@ -78,6 +91,10 @@ public class IntentUtils {
                 intent, FLAG_UPDATE_CURRENT);
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.cancel(pIntent);
+
+        Intent checkerIntent = new Intent(OmbReceiver.ACTION_CHECKER);
+        PendingIntent checkerPending = PendingIntent.getBroadcast(context,OmbReceiver.REQUEST_CODE,checkerIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarm.cancel(checkerPending);
     }
 
 }

@@ -34,11 +34,23 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".SplashActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="1minutebefore.com"
+                    android:pathPrefix="/signup"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
 
@@ -109,7 +121,16 @@
         <activity
             android:name=".widgets.ProfileEditActivity"
             android:label="@string/title_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver
+            android:name=".receiver.OmbReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.oneminutebefore.workout.ACTOIN_CHECKER"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

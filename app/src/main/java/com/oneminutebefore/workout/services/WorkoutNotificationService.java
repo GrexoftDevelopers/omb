@@ -1,15 +1,17 @@
 package com.oneminutebefore.workout.services;
 
 import android.app.IntentService;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.oneminutebefore.workout.R;
@@ -37,6 +39,7 @@ public class WorkoutNotificationService extends IntentService {
     private static final String NAME = "workout notification";
 
     public static final int REQUEST_CODE = 1001;
+    private static final String CHANNEL_OMB = "com.oneminutebefore.workout.CHANNEL_NOTIFICATION";
     private Handler handler;
     private Runnable message;
     private WorkoutApplication application;
@@ -150,7 +153,7 @@ public class WorkoutNotificationService extends IntentService {
                     if(id > 0){
                         boolean isPaused = SharedPrefsUtil.getBooleanPreference(WorkoutNotificationService.this, Keys.KEY_IS_PAUSED, false);
                         if(!isPaused){
-                            addNotification(selectedWorkout, timeMillis, id);
+                            addNotification(selectedWorkout, timeMillis, id, hour);
                         }
                     }
                     return;
@@ -169,18 +172,22 @@ public class WorkoutNotificationService extends IntentService {
 
     }
 
-    private void addNotification(SelectedWorkout workoutExercise, long timeMillis, int id) {
+    private void addNotification(SelectedWorkout workoutExercise, long timeMillis, int id, int hour) {
+
+        String groupName = "com.oneminutebefore.workout.NOTIFICATION_GROUP";
 
         NotificationCompat.Builder builder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(this, CHANNEL_OMB)
                         .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                        .setSmallIcon(R.mipmap.ic_launcher_round)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setTicker("OMB")
                         .setAutoCancel(true)
                         .setContentTitle(getString(R.string.one_minute_workout))
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentText(workoutExercise.getName())
-                        .setDefaults(NotificationCompat.DEFAULT_SOUND);
+                        .setGroup(groupName)
+//                        .setDefaults(NotificationCompat.DEFAULT_SOUND)
+                ;
 
         Intent intent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
         intent.putExtra(VideoPlayerActivity.KEY_WORKOUT, workoutExercise);
@@ -188,13 +195,29 @@ public class WorkoutNotificationService extends IntentService {
         intent.putExtra(VideoPlayerActivity.KEY_USER_TRACK_ID, id);
 
         PendingIntent contentIntent =
-                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getActivity(this, hour + 1000, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(contentIntent);
 
         // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
+        createNotificationChannel(getApplicationContext(),manager);
+        manager.notify(hour, builder.build());
+    }
+
+    private void createNotificationChannel(Context context, NotificationManager notificationManager) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = context.getString(R.string.omb_channel_name);
+            String description = context.getString(R.string.omb_channel_description);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_OMB, name, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }

@@ -38,6 +38,8 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
     public static final String KEY_REDIRECTION_ACTIVITY = "redirection_activity";
     public static final String KEY_REDIRECTION_EXTRA = "redirection_extra";
     public static final String KEY_PREVIOUS_USER_ID = "user_id";
+    public static final String KEY_DO_SIGNUP = "do_signup";
+    public static final String KEY_REFERRAL_CODE = "referral_code";
     private ViewPager vpLogin;
     private WorkoutApplication application;
     private int workoutsFetchStatus;
@@ -58,6 +60,10 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent inputIntent = getIntent();
+        String referralCode = inputIntent.getStringExtra(KEY_REFERRAL_CODE);
+        boolean doSignup = inputIntent.getBooleanExtra(KEY_DO_SIGNUP, false);
+
         application = ((WorkoutApplication) getApplication());
 //        if (application.getDbHelper() == null) {
 //            application.setDbHelper(new DBHelper(MainActivity.this));
@@ -65,8 +71,13 @@ public class MainActivity extends BaseRequestActivity implements LoginFragment.L
         vpLogin = (ViewPager) findViewById(R.id.vp_forms);
         ViewPagerAdapter formsAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         formsAdapter.addItem(new LoginFragment());
-        formsAdapter.addItem(new RegisterFragment());
+        formsAdapter.addItem(RegisterFragment.newInstance(referralCode));
         vpLogin.setAdapter(formsAdapter);
+
+        if(doSignup){
+            vpLogin.setCurrentItem(1);
+        }
+
         ((SwipeDisabledViewPager) vpLogin).setPagingEnabled(false);
 
     }

@@ -31,12 +31,11 @@ import com.oneminutebefore.workout.models.WorkoutCategory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class RegisterFragment extends Fragment {
+    private static final String ARGS_REFERRAL_CODE = "referral_code";
     private EditText etFirstName, etEmail, etPassword, etReferenceCode, etPhone, etLastName;
     private Button btnRegister, btnSignIn;
     private Spinner spinnerLevcel, spinnerTimeZone;
@@ -47,21 +46,29 @@ public class RegisterFragment extends Fragment {
     private View fragmentView;
     private WorkoutApplication application;
 
+    private String referralCode;
+
     public RegisterFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance() {
-        return new RegisterFragment();
-
+    public static RegisterFragment newInstance(String referralCode) {
+        RegisterFragment fragment = new RegisterFragment();
+        Bundle args = new Bundle();
+        args.putString(ARGS_REFERRAL_CODE, referralCode);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Bundle args = getArguments();
+        if(args != null){
+            referralCode = args.getString(ARGS_REFERRAL_CODE);
+        }
     }
 
     @Override
@@ -128,6 +135,8 @@ public class RegisterFragment extends Fragment {
                 attemptRegister();
             }
         });
+
+        etReferenceCode.setText(referralCode);
         return fragmentView;
     }
 

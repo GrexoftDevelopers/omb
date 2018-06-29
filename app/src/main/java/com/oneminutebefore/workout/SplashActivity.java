@@ -1,14 +1,13 @@
 package com.oneminutebefore.workout;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.oneminutebefore.workout.helpers.DBHelper;
 import com.oneminutebefore.workout.helpers.HttpConnectException;
 import com.oneminutebefore.workout.helpers.HttpTask;
 import com.oneminutebefore.workout.helpers.Keys;
@@ -30,12 +29,28 @@ public class SplashActivity extends BaseRequestActivity {
     private boolean videosSaved;
     private boolean categoriesSaved;
     private WorkoutApplication application;
+    private String referralCode;
+    private boolean doSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
+
+        Uri data = getIntent().getData();
+        if(data != null && data.getScheme().equals("http")){
+            String signupUrl = data.toString();
+            if(!TextUtils.isEmpty(signupUrl)){
+                doSignup = true;
+                String codeVariable = "code=";
+                if(signupUrl.contains(codeVariable)){
+                    int beginIndex = signupUrl.lastIndexOf(codeVariable) + codeVariable.length();
+                    referralCode = signupUrl.substring(beginIndex);
+                    Toast.makeText(getApplicationContext(), "referral code : " + referralCode, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
 
         boolean areLinksDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_LINKS_DOWNLOADED, false);
         boolean areCategoriesDownloaded = false; // SharedPrefsUtil.getBooleanPreference(this, Keys.KEY_CATEGORIES_DOWNLOADED, false);
@@ -97,13 +112,10 @@ public class SplashActivity extends BaseRequestActivity {
             WorkoutApplication.getmInstance().setSessionToken(token);
             fetchUserInfo();
         } else {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finish();
-                }
-            }, 1500);
+            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+            mainIntent.putExtra(MainActivity.KEY_REFERRAL_CODE, referralCode);
+            mainIntent.putExtra(MainActivity.KEY_DO_SIGNUP, doSignup);
+            startActivity(mainIntent);
         }
     }
 
@@ -116,12 +128,6 @@ public class SplashActivity extends BaseRequestActivity {
 //        application.setDbHelper(new DBHelper(SplashActivity.this));
         Intent intent = new Intent(SplashActivity.this, HomeNewActivity.class);
         startActivity(intent);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, 1500);
     }
 
     private void fetchUserInfo() {
@@ -141,12 +147,6 @@ public class SplashActivity extends BaseRequestActivity {
                 public void onSessionTimeout() {
                     Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(intent);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    },1500);
                 }
             });
             httpTask.setmCallback(new HttpTask.HttpCallback() {
@@ -162,12 +162,6 @@ public class SplashActivity extends BaseRequestActivity {
                         Toast.makeText(SplashActivity.this, getString(R.string.some_error_occured), Toast.LENGTH_SHORT).show();
                         Utils.clearUserData(SplashActivity.this);
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                finish();
-                            }
-                        }, 1500);
                     }
                 }
             });
