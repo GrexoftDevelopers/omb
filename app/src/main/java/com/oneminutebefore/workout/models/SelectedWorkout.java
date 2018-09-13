@@ -1,5 +1,7 @@
 package com.oneminutebefore.workout.models;
 
+import com.oneminutebefore.workout.helpers.Utils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,7 +70,7 @@ public class SelectedWorkout extends WorkoutExercise {
     public String getTimeMeridian(){
         return getTimeMeridian(getTimeKey());
 //        int workoutHour = Integer.parseInt(getTimeKey().split("_")[0]);
-//        String meridian = workoutHour / 12 == 0 ? "A.M" : "P.M";
+//        String meridian = workoutHour / 12 == 0 ? Utils.MERIDIAN_AM : Utils.MERIDIAN_PM;
 //        workoutHour = workoutHour % 12;
 //        String workoutTime = workoutHour + ":59 " + meridian;
 //        return workoutTime;
@@ -128,12 +130,16 @@ public class SelectedWorkout extends WorkoutExercise {
 
     public static String getTimeMeridian(String timeKey){
         int workoutHour = Integer.parseInt(timeKey.split("_")[0]);
-        String meridian = workoutHour / 12 == 0 ? "A.M" : "P.M";
+        String meridian = workoutHour / 12 == 0 ? Utils.MERIDIAN_AM : Utils.MERIDIAN_PM;
         workoutHour = workoutHour % 12;
         if(workoutHour == 0){
             workoutHour = 12;
         }
-        String workoutTime = workoutHour + ":59 " + meridian;
+        String hourString = String.valueOf(workoutHour);
+        if(hourString.length() < 2){
+            hourString = "0" + hourString;
+        }
+        String workoutTime = hourString + ":59 " + meridian;
         return workoutTime;
     }
 
@@ -143,7 +149,7 @@ public class SelectedWorkout extends WorkoutExercise {
             hour = 0;
         }
         String meridian = timeMeridian.split(" ")[1];
-        if(meridian.equals("P.M")){
+        if(meridian.equals(Utils.MERIDIAN_PM)){
             hour += 12;
         }
         return hour + "_59";

@@ -15,6 +15,9 @@ import com.oneminutebefore.workout.WorkoutApplication;
 
 public class Utils {
 
+    public static final String MERIDIAN_AM = "AM";
+    public static final String MERIDIAN_PM = "PM";
+
 
     private static boolean isDialogShown;
 
@@ -49,7 +52,7 @@ public class Utils {
         if(hour == 12){
             hour = 0;
         }
-        if(meridian.equals("P.M")){
+        if(meridian.equals(MERIDIAN_PM)){
             hour += 12;
         }
         return hour + "_59";
